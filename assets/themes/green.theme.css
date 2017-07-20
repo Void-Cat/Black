@@ -1,0 +1,16 @@
+:root {
+  --mdc-theme-primary: #4CAF50; /* Green 500 */
+  --mdc-theme-secondary: #388E3C; /* Green 700 */
+  --mdc-theme-accent: #F44336; /* Red 500 */
+  --mdc-theme-background: #FAFAFA; /* Grey 50 */
+  --mdc-theme-elevated-background: #FFFFFF; /* White */
+  --mdc-theme-text-on-primary: black;
+  --mdc-theme-text-on-secondary: white;
+  --mdc-theme-text-on-accent: white;
+  --mdc-theme-text-on-background: black;
+  --mdc-theme-text: black;
+}
+
+.box {
+  background-color: white;
+}

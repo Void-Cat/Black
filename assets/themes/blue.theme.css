@@ -1,0 +1,12 @@
+:root {
+  --mdc-theme-primary: #2196F3; /* Blue 500 */
+  --mdc-theme-secondary: #1976D2; /* Blue 700 */
+  --mdc-theme-accent: #FF9800; /* Orange 500 */
+  --mdc-theme-background: #FAFAFA; /* Grey 50 */
+  --mdc-theme-elevated-background: #FFFFFF; /* White */
+  --mdc-theme-text-on-primary: white;
+  --mdc-theme-text-on-secondary: white;
+  --mdc-theme-text-on-accent: black;
+  --mdc-theme-text-on-background: black;
+  --mdc-theme-text: black;
+}

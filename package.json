@@ -1,0 +1,18 @@
+{
+  "name": "black",
+  "productName": "Black CTIS Viewer",
+  "version": "1.0.1",
+  "description": "An digital master/mistress",
+  "main": "black.js",
+  "scripts": {
+    "test": "electron ."
+  },
+  "author": "Galactic Cat",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "electron-config": "^1.0.0"
+  },
+  "devDependencies": {
+    "electron": "^1.6.11"
+  }
+}

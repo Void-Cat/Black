@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html style="background-color: black; color: white;">
+  <head>
+    <meta charset="utf-8">
+    <title>Black Tease</title>
+    <link rel="stylesheet" href="../external/material-components-web/material-components-web.min.css">
+    <link rel="stylesheet" href="../external/material-design-icons/material-icons.css">
+    <link rel="stylesheet" href="../css/black.css?v=1">
+    <link rel="stylesheet" id="theme">
+  </head>
+  <body class="mdc-typography mdc-theme--dark">
+
+    <header style="background-color: initial; -webkit-app-region: no-drag; position: absolute; z-index: 1;">
+      <div style="background-color: black; padding-right: 5px;">
+        <i id="menu-btn" class="native-btn material-icons" style="display: inline;">menu</i>
+        &nbsp;
+        <h1 class="mdc-typography--subheading1 slideInfo" style="margin: 0; display: inline; vertical-align: top; cursor: default;">Black</h1>
+      </div><br>
+      <div id="slideInfo" style="float: left;">
+        <h1 class="mdc-typography--subheading1" style="margin: 0; cursor: default; background-color: black; padding: 5px; border-radius: 1px;">
+          Strokecount:&nbsp;<span id="strokeCountDisplay"></span><span id="chastityDisplay" style="color: red; display: none;">&nbsp;In Chastity</span><br>
+          Slidetime:&nbsp;<span id="slideTimeDisplay"></span><br>
+          Slide&nbsp;<span id="slideNumberDisplay"></span><br>
+        </h1><br>
+        <h1 class="mdc-typography--subheading1" style="margin: 0; cursor: default; background-color: black; padding: 5px; border-radius: 1px;">
+          Mistress Mood:&nbsp;<span id="moodDisplay" class="material-icons">thumbs_up_down</span>
+        </h1>
+      </div>
+    </header>
+
+    <contact style="display: block; position: absolute; padding: 5px; top: 5px; margin: 0px auto;">
+
+    </contact>
+
+    <div id="itemlist" style="float: right; color: white; padding: 5px; border-radius: 1px; position: absolute; right: 5px; top: 5px; z-index: 1;">
+
+      <button id="keyDisplay" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" disabled>Keys: 0</button>
+    </div>
+
+    <aside class="mdc-temporary-drawer">
+      <nav class="mdc-temporary-drawer__drawer">
+        <header class="mdc-temporary-drawer__header">
+          <div class="mdc-temporary-drawer__header-content">
+            Black Tease
+          </div>
+        </header>
+        <nav class="mdc-temporary-drawer__content mdc-list">
+          <a class="mdc-list-item" onclick="$('#full-button').trigger('click')">
+            <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">flare</i>I Came!
+          </a>
+          <a class="mdc-list-item" onclick="$('#edge-button').trigger('click')">
+            <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">format_color_reset</i>I Edged!
+          </a>
+          <a class="mdc-list-item" onclick="$('#ruin-button').trigger('click')">
+            <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">bubble_chart</i>I Ruined My Orgasm!
+          </a>
+        </nav>
+        <nav class="mdc-temporary-drawer__content mdc-list">
+          <hr style="width: 90%; border-color: grey;">
+          <a class="mdc-list-item" style="display: none;">
+            <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">library_books</i>Active Cards
+          </a>
+          <a class="mdc-list-item" onclick="$('#controlbar').slideToggle(200)">
+            <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">settings_ethernet</i>Toggle Control Bar
+          </a>
+          <a class="mdc-list-item" onclick="$('#slideInfo').fadeToggle(200)">
+            <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">info</i>Toggle Slide Information
+          </a>
+        </nav>
+        <nav class="mdc-temporary-drawer__content mdc-list">
+          <hr style="width: 90%; border-color: grey;">
+          <a id="theme-btn" class="mdc-list-item">
+            <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">color_lens</i>Change Theme
+          </a>
+          <a id="exit-button" class="mdc-list-item">
+            <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">exit_to_app</i>Exit Tease
+          </a>
+        </nav>
+      </nav>
+    </aside>
+
+    <main style="overflow: hidden;">
+      <div id="pre-start" style="margin: 20px auto 0 auto; text-align: center;">
+        <h1 class="mdc-typography--title">Press the button to start the Tease!</h1>
+        <button type="button" class="mdc-button mdc-button--raised mdc-button--primary" id="startTease">Start Tease</button>
+        <hr>
+        <h1 class="mdc-typography--subheading1">The following CTIS cards will load take action before the first slide:</h1>
+        <div id="CTIS-preStart"></div>
+      </div>
+      <div id="mainImage-div" style="padding: 40px 0 0 0; text-align: center; display: none;">
+        <img id="mainImage" style="max-height: 90vh; max-width: 90%;" />
+      </div>
+    </main>
+
+    <footer id="controlbar" style="padding-bottom: 8px; width: 100%; display: flex; font-size: 35px;">
+      <section style="flex: 1; text-align: center;">
+        <button id="previous-button" type="button" class="mdc-button mdc-button--raised mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">skip_previous</button>
+        <button id="pause-play" type="button" class="mdc-button mdc-button--raised mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">pause</button>
+        <button id="next-button" type="button" class="mdc-button mdc-button--raised mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">skip_next</button>
+      </section>
+      <section style="flex: 3; text-align: center;">
+        <button id="strokedown-button" type="button" class="mdc-button mdc-button--raised mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">arrow_downward</button>
+        &nbsp;<i class="material-icons">pan_tool</i>&nbsp;
+        <button id="strokeup-button" type="button" class="mdc-button mdc-button--raised mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">arrow_upward</button>
+        &nbsp;&nbsp;<b>|</b>&nbsp;&nbsp;
+        <button id="timedown-button" type="button" class="mdc-button mdc-button--raised mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">arrow_downward</button>
+        &nbsp;<i class="material-icons">access_time</i>&nbsp;
+        <button id="timeup-button" type="button" class="mdc-button mdc-button--raised mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">arrow_upward</button>
+        &nbsp;&nbsp;<b>|</b>&nbsp;&nbsp;
+        <button id="full-button" type="button" class="mdc-button mdc-button--raised mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">flare</button>
+        &nbsp;<button id="edge-button" type="button" class="mdc-button mdc-button--raised mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">format_color_reset</button>
+        &nbsp;<button id="ruin-button" type="button" class="mdc-button mdc-button--raised mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">bubble_chart</button>
+      </section>
+    </footer>
+
+    <img id="preload" style="width: 0; height: 0;" />
+
+    <!-- Scripts -->
+    <script type="text/javascript">
+      const $ = require('../external/jquery/jquery.min.js')
+      const mdc = require('../external/material-components-web/material-components-web.min.js')
+      const Theme = require('../catworks/themer.js')
+      const Config = require('electron-config')
+      const {BrowserWindow, globalShortcut} = require('electron').remote
+      const {TeaseSlave} = require('../tease.js')
+
+      // Config Setup
+      var config = new Config()
+
+      // Tease slave
+      var teaseSlave = new TeaseSlave(config.get('teaseslave'))
+
+      // Theme Setup
+      var theme = new Theme({
+        themelist: [
+          // 'red',
+          'red.dark',
+          // 'blue',
+          'blue.dark',
+          // 'green',
+          'green.dark',
+          // 'yellow',
+          'yellow.dark',
+          // 'purp',
+          'purp.dark',
+          'black.dark'
+        ],
+        active: config.get('theme.index'),
+        path: '../themes/'
+      })
+      if (theme.active === -1) {
+        theme.setTheme('red.dark')
+      } else {
+        theme.setTheme(theme.active)
+      }
+      $('#theme-btn').on('click', _ => {
+        if (theme.active === theme.themelist.length - 1) {
+          theme.setTheme(0)
+        } else {
+          theme.setTheme(theme.active + 1)
+        }
+      })
+
+      // Tease Buttons
+      $('#exit-button').click(_ => {
+        teaseSlave.exit()
+      })
+
+      $('#pause-play').click(_ => {
+        teaseSlave.slideControl.pause()
+      })
+
+      $('#pause-play').change(_ => {
+        if (teaseSlave.slideControl.core.pause) {
+          $('#pause-play').text('play_arrow')
+        } else {
+          $('#pause-play').text('pause')
+        }
+      })
+
+      $('#next-button').click(_ => {
+        teaseSlave.slideControl.next()
+        if (teaseSlave.slideControl.core.current + 1 === teaseSlave.fileList.length) {
+          $('#next-button').prop('disabled', true)
+        } else {
+          $('#next-button').prop('disabled', false)
+        }
+      })
+
+      $('#previous-button').click(_ => {
+        teaseSlave.slideControl.previous()
+        if (teaseSlave.slideControl.core.current + 1 === 1) {
+          $('#previous-button').prop('disabled', true)
+        } else {
+          $('#previous-button').prop('disabled', false)
+        }
+      })
+
+      $('#strokeup-button').click(_ => {
+        teaseSlave.slideControl.core.strokes++
+        $('#strokeCountDisplay').trigger('change')
+      })
+
+      $('#strokedown-button').click(_ => {
+        if (teaseSlave.slideControl.core.strokes > 0) teaseSlave.slideControl.core.strokes--
+        $('#strokeCountDisplay').trigger('change')
+        if (teaseSlave.slideControl.core.strokes <= 0) {
+          $('#strokedown-button').prop('disabled', true)
+        } else {
+          $('#strokedown-button').prop('disabled', false)
+        }
+      })
+
+      $('#timeup-button').click(_ => {
+        teaseSlave.slideControl.core.time += 1000
+        $('#slideTimeDisplay').trigger('change')
+      })
+
+      $('#timedown-button').click(_ => {
+        if (teaseSlave.slideControl.core.time > 1000) teaseSlave.slideControl.core.time -= 1000
+        $('#slideTimeDisplay').trigger('change')
+        if (teaseSlave.slideControl.core.time <= 1000) {
+          $('#timedown-button').prop('disabled', true)
+        } else {
+          $('#timedown-button').prop('disabled', false)
+        }
+      })
+
+      $('#full-button').click(_ => {
+        teaseSlave.cumControl.update('full')
+      })
+
+      $('#ruin-button').click(_ => {
+        teaseSlave.cumControl.update('ruin')
+      })
+
+      $('#edge-button').click(_ => {
+        teaseSlave.cumControl.update('edge')
+      })
+
+      $('#keyDisplay').click((e) => {
+        if (teaseSlave.itemControl.keys > 0) {
+          if ($('#keyDisplay').hasClass('keySel')) {
+            $('#keyDisplay').removeClass('keySel')
+            $('.ctisitem').removeClass('keR')
+          } else {
+            $('#keyDisplay').addClass('keySel')
+            $('.ctisitem').addClass('keR')
+          }
+        }
+      })
+
+      $('#keyDisplay').on('unlock', (e, item) => {
+        if ($('#keyDisplay').hasClass('keySel') && teaseSlave.itemControl.keys > 0) {
+          teaseSlave.itemControl.useKey(item)
+        }
+        $('#keyDisplay.keySel').removeClass('keySel')
+        $('.ctisitem.keR').removeClass('keR')
+      })
+
+      $('#strokeCountDisplay').change(_ => {
+        if ($('#strokeCountDisplay').text().indexOf('(') !== -1) {
+          let old = $('#strokeCountDisplay').text().split('(')[1].split(')')[0]
+          $('#strokeCountDisplay').text(teaseSlave.slideControl.core.strokes + '(' + old + ')')
+        } else {
+          let old = $('#strokeCountDisplay').text()
+          $('#strokeCountDisplay').text(teaseSlave.slideControl.core.strokes + '(' + old + ')')
+        }
+      })
+
+      $('#slideTimeDisplay').change(_ => {
+        if ($('#slideTimeDisplay').text().indexOf('(') !== -1) {
+          let old = $('#slideTimeDisplay').text().split('(')[1].split(')')[0]
+          $('#slideTimeDisplay').text(teaseSlave.slideControl.core.strokes / 1000 + 's (' + old + 's)')
+        } else {
+          let old = $('#slideTimeDisplay').text()
+          $('#slideTimeDisplay').text(teaseSlave.slideControl.core.strokes / 1000 + 's (' + old + 's)')
+        }
+      })
+
+      $('#startTease').click(_ => {
+        $('#pre-start').fadeOut(100, _ => {
+          teaseSlave.init()
+          teaseSlave.slideControl.set(0)
+          $('#mainImage-div').fadeIn(100)
+        })
+      })
+
+      $('#mainImage').change(_ => {
+        console.debug('<tease.html / [#mainImage]> #mainImage changed setting strokeCountDisplay, slideTimeDisplay and slideNumberDisplay')
+        $('#strokeCountDisplay').text(teaseSlave.slideControl.core.strokes)
+        $('#slideTimeDisplay').text((teaseSlave.slideControl.core.time / 1000) + 's')
+        $('#slideNumberDisplay').text((teaseSlave.slideControl.core.current + 1) + ' / ' + teaseSlave.fileList.length)
+        if (teaseSlave.slideControl.core.current + 1 === 1) {
+          $('#previous-button').prop('disabled', true)
+        } else {
+          $('#previous-button').prop('disabled', false)
+        }
+        if (teaseSlave.slideControl.core.current + 1 === teaseSlave.fileList.length) {
+          $('#next-button').prop('disabled', true)
+        } else {
+          $('#next-button').prop('disabled', false)
+        }
+      })
+
+      $(document).ready(_ => {
+        mdc.autoInit()
+        let drawer = new mdc.drawer.MDCTemporaryDrawer($('.mdc-temporary-drawer')[0])
+        $('#menu-btn').click(_ => { drawer.open = true })
+        if (BrowserWindow && globalShortcut && teaseSlave) {}
+      })
+    </script>
+  </body>
+</html>

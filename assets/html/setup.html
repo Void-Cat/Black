@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<div class="mdc-elevation--z3 box">
+  <h1 class="mdc-typography--title" style="margin-bottom: 0;">Setting up a tease.</h1>
+  <div class="mdc-form-field">
+    <div class="mdc-checkbox">
+      <input type="checkbox" id="saveSetup" class="mdc-checkbox__native-control">
+      <div class="mdc-checkbox__background">
+        <svg class="mdc-checkbox__checkmark" viewbox="0 0 24 24">
+          <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+        </svg>
+        <div class="mdc-checkbox__mixedmark"></div>
+      </div>
+    </div>
+    <label for="saveSetup">Save setup for later teases.</label>
+  </div>
+  <br><br>
+
+  <div>
+    <span class="mdc-typography--body1">Select a cards folder:</span><br>
+    <button id="browseCardsBtn" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
+    <!-- <input id="browseCards" type="file" style="display: none;" webkitdirectory /> -->
+    <label id="browseCardsLabel" class="box" style="margin-left: 5px; background-color: rgba(0, 0, 0, 0.2); border-radius: 5px; display: none;"></label>
+  </div><br>
+  <div>
+    <span class="mdc-typography--body1">Select a pictures folder:</span><br>
+    <button id="browsePicturesBtn" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
+    <!-- <input id="browsePictures" type="file" style="display: none;" webkitdirectory /> -->
+    <label id="browsePicturesLabel" class="box" style="margin-left: 5px; background-color: rgba(0, 0, 0, 0.2); border-radius: 5px; display: none;"></label>
+  </div>
+  <br>
+
+  <div class="mdc-textfield" data-mdc-auto-init="MDCTextfield" style="width: 50%;">
+    <input type="number" min="0" class="mdc-textfield__input" id="pictureAmount" />
+    <label for="pictureAmount" class="mdc-textfield__label">Amount of pictures</label>
+  </div>
+  <br>
+
+  <h1 class="mdc-typography--subheading1">Card Categories:</h1>
+  <div id="categorylist" class="mdc-list">
+
+  </div>
+  <button type="button" id="cardCategoriesAdd" onclick="newCategory()" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Add category</button>
+  &nbsp;
+  <button type="button" id="cardCategoriesReset" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple">Reset to default</button>
+  &nbsp;
+  <button type="button" id="cardCategoriesClear" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple">Clear categories</button>
+  <br><br>
+
+  <h1 class="mdc-typography--subheading1">Timing:</h1>
+  <div class="mdc-textfield" data-mdc-auto-init="MDCTextfield" style="margin: 0; width: 50%;">
+    <input type="number" min="0" id="slideTime" class="mdc-textfield__input" />
+    <label for="slideTime" class="mdc-textfield__label">Seconds per slide</label>
+  </div>
+  <br>
+  <div class="mdc-form-field">
+    <div class="mdc-checkbox">
+      <input type="checkbox" id="enableTicker" class="mdc-checkbox__native-control" checked>
+      <div class="mdc-checkbox__background">
+        <svg class="mdc-checkbox__checkmark" viewbox="0 0 24 24">
+          <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+        </svg>
+        <div class="mdc-checkbox__mixedmark"></div>
+      </div>
+    </div>
+    <label for="enableTicker">Enable Ticker</label>
+  </div>
+</div>
+
+<button id="startTease" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" style="display: block; padding: 0 16px; width: calc(90% + 20px); margin: 0 auto;">Generate &amp; Tease</button>
+
+<div id="popover" style="top: 0; bottom: 0; left: 0; right: 0; padding-top: 10%; background-color: rgba(0, 0, 0, 0.6); position: fixed; display: none;">
+  <div class="box mdc-elevation--z3" style="width: 50%;">
+    <h1 id="newTease-0" class="mdc-typography--title">Generating Tease</h1>
+    <h1 id="newTease-1" class="mdc-typography--subheading1" style="display: none;">Building Filelist</h1>
+    <h1 id="newTease-2" class="mdc-typography--subheading1" style="display: none;">Preparing CTIS</h1>
+    <h1 id="newTease-3" class="mdc-typography--title" style="display: none;">Tease in progress!</h1>
+    <div role="progressbar" class="mdc-linear-progress" style="margin: 10px 0;">
+      <div class="mdc-linear-progress__buffer" style="background-color: rgba(0, 0, 0, 0.2)"></div>
+      <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
+        <span class="mdc-linear-progress__bar-inner"></span>
+      </div>
+      <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">
+        <span class="mdc-linear-progress__bar-inner"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  /* global $, mdc, dialog, config, generateFileList, findCTIS, TeaseMaster */
+  var genProgress, tease
+
+  function tCategory (id, name, amount) {
+    return '<div id="' + id + '" class="cardCategory mdc-list-item" style="display: flex; width: 60%;"><div style="width: 60%; display: flex;"><i class="material-icons" style="display: inline-block; vertical-align: sub; cursor: pointer;">delete</i>&nbsp;&nbsp;<div class="mdc-textfield" style="display: inline-block; margin: 0; flex: 1;"><input type="text" class="mdc-textfield__input" placeholder="Name/Folder" value="' + name + '" /></div></div>&nbsp;&nbsp;<div class="mdc-textfield" style="flex: 1; margin-bottom: 0;"><input type="number" min="0" class="mdc-textfield__input" placeholder="Amount" value="' + amount + '" /></div></div>'
+  }
+
+  function newCategory (name, amount, ee) {
+    // console.log('[setup.html / newCategory()] Call Received with parameters: ', [name, amount, ee])
+    let id
+    if (ee === undefined) {
+      id = 'cc' + $('div.cardCategory').length
+      let cycle = $('div.cardCategory').length
+      while ($('#' + id).length > 0) {
+        cycle++
+        id = 'cc' + cycle
+      }
+    } else {
+      id = ee
+    }
+    $('#categorylist').append(tCategory(id, name || '', amount || 0))
+    let newcat = $('#' + id)
+    $(newcat).find('input').on('change', (ed) => {
+      let category = $(ed.target).parents('.cardCategory').attr('id')
+      config.set('teaseParams.categories.' + category, {
+        name: $('#' + category).find('input[type="text"]').val() === '' ? undefined : $('#' + category).find('input[type="text"]').val(),
+        amount: parseInt($('#' + category).find('input[type="number"]').val(), 10) || 0
+      })
+    })
+    $(newcat).find('i.material-icons').click((ed) => {
+      let category = $(ed.target).parents('.cardCategory').attr('id')
+      config.set('teaseParams.categories.' + category, undefined)
+      $('#' + category).slideUp(100, _ => { $('#' + category).remove() })
+    })
+  }
+
+  $('#cardCategoriesClear').click(_ => {
+    $('#categorylist').find('i.material-icons').trigger('click')
+  })
+
+  $('#cardCategoriesReset').click(_ => {
+    $('#cardCategoriesClear').trigger('click')
+    let defaultlist = [
+      'Bondage',
+      'Chance to Cum',
+      'Chastity Belt',
+      'Delusional',
+      'Dilemma',
+      'Edge',
+      'Getting Into Character',
+      'Humiliation',
+      'Key',
+      'Nice Mistress',
+      'Rough Mistress',
+      'Special',
+      'Stroke It',
+      'Time Lapse',
+      'Work It'
+    ]
+    for (var i = 0; i < defaultlist.length; i++) {
+      newCategory(defaultlist[i])
+    }
+    $('#categorylist').find('input[type="text"]').trigger('change')
+  })
+
+  if (config.get('teaseParams.loadSetup')) {
+    $('#saveSetup').prop('checked', true)
+    $('#browseCardsLabel').text(config.get('teaseParams.cardFolder'))
+    $('#browseCardsLabel').fadeIn(100)
+    $('#browsePicturesLabel').text(config.get('teaseParams.pictureFolder'))
+    $('#browsePicturesLabel').fadeIn(100)
+    $('#pictureAmount').val(config.get('teaseParams.pictureAmount'))
+    let categories = config.get('teaseParams.categories')
+    for (var i = 0; i < Object.keys(categories).length; i++) {
+      let key = Object.keys(categories)[i]
+      newCategory(categories[key].name, categories[key].amount, key)
+    }
+    $('#slideTime').val(config.get('teaseParams.timing.slideTime'))
+    $('#enableTicker').prop('checked', config.get('teaseParams.timing.ticker'))
+  }
+
+  $('#saveSetup').on('change', _ => {
+    if ($('#saveSetup').is(':checked')) {
+      config.set('teaseParams.loadSetup', true)
+    } else {
+      config.set('teaseParams.loadSetup', false)
+    }
+  })
+  $('#browseCardsBtn').click(_ => {
+    dialog.showOpenDialog({
+      title: 'Select Cards Folder',
+      properties: ['openDirectory']
+    }, (path) => {
+      config.set('teaseParams.cardFolder', path)
+      if (path === '' || path === undefined) {
+        $('#browseCardsLabel').fadeOut(100)
+      } else {
+        $('#browseCardsLabel').text(path)
+        $('#browseCardsLabel').fadeIn(100)
+      }
+    })
+  })
+  $('#browsePicturesBtn').click(_ => {
+    dialog.showOpenDialog({
+      title: 'Select Picture Folder',
+      properties: ['openDirectory']
+    }, (path) => {
+      config.set('teaseParams.pictureFolder', path)
+      if (path === '' || path === undefined) {
+        $('#browsePictures').fadeOut(100)
+      } else {
+        $('#browsePicturesLabel').text(path)
+        $('#browsePicturesLabel').fadeIn(100)
+      }
+    })
+  })
+  $('#pictureAmount').on('change', _ => {
+    if ($('#pictureAmount').val() === '') {
+      $('#pictureAmount').val(0)
+    } else {
+      config.set('teaseParams.pictureAmount', parseInt($('#pictureAmount').val(), 10))
+    }
+  })
+
+  $('#slideTime').on('change', _ => {
+    let newtime = $('#slideTime').val()
+    if (newtime === '' || newtime < 0) {
+      $('#slideTime').val(0)
+      config.set('teaseParams.timing.slideTime', 0)
+    } else {
+      config.set('teaseParams.timing.slideTime', newtime)
+    }
+  })
+  $('#enableTicker').click(_ => {
+    config.set('teaseParams.timing.ticker', $('#enableTicker').is(':checked'))
+  })
+
+  $('#startTease').click(_ => {
+    $('#popover').fadeIn(100, _ => {
+      $('#newTease-1').slideDown(100)
+      genProgress.foundation_.setProgress(0)
+      $.when(generateFileList(config.get('teaseParams.pictureFolder')[0], config.get('teaseParams.cardFolder')[0], config.get('teaseParams.categories'))).then((ret) => {
+        let fileList = ret[0]
+        let icl = ret[1]
+        console.debug('<setup.html / [#startTease]> We got a filelist!')
+        $('#newTease-1').css('color', 'lime')
+        $('#newTease-2').slideDown(100)
+        genProgress.foundation_.setProgress(0.33)
+        $.when(findCTIS(fileList)).then((ctisList) => {
+          console.debug('<setup.html / [#startTease]> We got a ctisList!')
+          genProgress.foundation_.setProgress(0.67)
+          tease = new TeaseMaster(config.get('teaseParams'), fileList, ctisList, icl)
+          genProgress.foundation_.setProgress(1)
+          $('#newTease-0, #newTease-1, #newTease-2').slideUp(100)
+          $('#newTease-3').slideDown(100)
+          genProgress.foundation_.setDeterminate(false)
+          if (tease) {}
+        }, (err) => {
+          if (err !== undefined) { console.error(err) }
+        })
+      }, (err) => {
+        if (err !== undefined) { console.error(err) }
+      })
+    })
+  })
+
+  $(document).ready(_ => {
+    mdc.autoInit()
+    genProgress = new mdc.linearProgress.MDCLinearProgress($('.mdc-linear-progress')[0])
+  })
+</script>

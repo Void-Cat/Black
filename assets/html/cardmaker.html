@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<div id="cardMaker-0" class="mdc-elevation--z3 box">
+  <h1 class="mdc-typography--title">Cardmaker</h1>
+  <div class="mdc-form-field">
+    <div class="mdc-checkbox">
+      <input id="saveSettings" type="checkbox" class="mdc-checkbox__native-control" />
+      <div class="mdc-checkbox__background">
+        <svg class="mdc-checkbox__checkmark" viewbox="0 0 24 24">
+          <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
+        </svg>
+        <div class="mdc-checkbox__mixedmark"></div>
+      </div>
+    </div>
+    <label for="saveSettings">Save configuration for later use</label>
+  </div>
+  <h1 class="mdc-typography--subheading1">Step 1</h1>
+  <h1 class="mdc-typography--body1">Select a card type to create: (CTI S coming soon!)</h1>
+  <div class="mdc-form-field">
+    <div class="mdc-radio">
+      <input class="mdc-radio__native-control" type="radio" id="cardtype-cti1" name="cardtype">
+      <div class="mdc-radio__background">
+        <div class="mdc-radio__outer-circle"></div>
+        <div class="mdc-radio__inner-circle"></div>
+      </div>
+    </div>
+    <label for="cardtype-cti1">CTI 1</label>
+    &nbsp;&nbsp;
+    <div class="mdc-radio mdc-radio">
+      <input class="mdc-radio__native-control" type="radio" id="cardtype-ctis" name="cardtype" />
+      <div class="mdc-radio__background">
+        <div class="mdc-radio__outer-circle"></div>
+        <div class="mdc-radio__inner-circle"></div>
+      </div>
+    </div>
+    <label for="cardtype-ctis">CTI S (script)</label>
+  </div>
+  <br>
+  <div id="convert-cti1-field" class="mdc-form-field" style="display: none;">
+    <div class="mdc-checkbox">
+      <input id="convert-cti1" type="checkbox" class="mdc-checkbox__native-control" />
+      <div class="mdc-checkbox__background">
+        <svg class="mdc-checkbox__checkmark" viewbox="0 0 24 24">
+          <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
+        </svg>
+        <div class="mdc-checkbox__mixedmark"></div>
+      </div>
+    </div>
+    <label for="convert-cti1">Convert a CTI 1 card</label>
+  </div>
+  <br>
+  <div id="saveLocField">
+    <span class="mdc-typography--body1">Select a location to save the card</span><br>
+    <button id="saveLocBtn" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
+    <label id="saveLocLabel" class="box" style="margin-left: 5px; background-color: rgba(0, 0, 0, 0.2); border-radius: 5px; display: none;"></label>
+  </div>
+  <br>
+  <div style="width: 90%; margin: 0 auto; height: 40px;">
+    <button id="step-0-prev" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" style="float: left;" disabled>Previous</button>
+    <button id="step-0-skip" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="setStep(3)">Skip to CTIS</button>
+    <button id="step-0-next" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" style="float: right;">Next</button>
+  </div>
+</div>
+
+<div id="cardMaker-1" class="mdc-elevation--z3 box" style="display: none;">
+  <h1 class="mdc-typography--title">Cardmaker</h1>
+  <h1 class="mdc-typography--subheading1">Step 2</h1>
+  <div>
+    <span class="mdc-typography--body1">Select an image: (or if you're converting, the original card)</span><br>
+    <button id="browsePictureBtn" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
+    <label id="browsePictureLabel" class="box" style="margin-left: 5px; background-color: rgba(0, 0, 0, 0.2); border-radius: 5px; display: none;"></label>
+  </div>
+  <br>
+  <div id="cardInfo" style="display: none;">
+    <div class="mdc-textfield" data-mdc-auto-init="MDCTextfield">
+      <input id="cardType" type="text" class="mdc-textfield__input" />
+      <label for="cardType" class="mdc-textfield__label">Card type</label>
+    </div>
+    <p id="cardType-helptext" class="mdc-textfield-helptext" aria-hidden="true">
+      For instance: 'Nice Mistress', 'Chance to Cum', 'Bondage', 'Stroke It', etc.
+    </p>
+    <div class="mdc-form-field">
+      <div class="mdc-checkbox">
+        <input id="useSpecial" type="checkbox" class="mdc-checkbox__native-control" />
+        <div class="mdc-checkbox__background">
+          <svg class="mdc-checkbox__checkmark" viewbox="0 0 24 24">
+            <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
+          </svg>
+          <div class="mdc-checkbox__mixedmark"></div>
+        </div>
+      </div>
+      <label for="useSpecial">Make 'special' card (White background /w black text)</label>
+    </div>
+    <br>
+    <div class="mdc-textfield mdc-textfield--multiline" data-mdc-auto-init="MDCTextfield">
+      <textarea id="cardText" class="mdc-typography--body1 mdc-textfield__input" rows="3"></textarea>
+      <label for="cardText" class="mdc-textfield__label">Card Text</label>
+    </div>
+    <p id="cardText-helptext" class="mdc-textfield-helptext" aria-hidden="true">
+      The instruction(s) on the card. (CTIS behaviour comes later)
+    </p>
+    <div id="genderSelect" class="mdc-select" role="listbox" tabindex="0">
+      <span class="mdc-select__selected-text">Gender</span>
+      <div class="mdc-simple-menu mdc-select__menu">
+        <ul class="mdc-list mdc-simple-menu__items">
+          <li class="mdc-list-item" role="option" id="gender-neutral" tabindex="0">Neutral</li>
+          <li class="mdc-list-item" role="option" id="gender-male" tabindex="0">Male</li>
+          <li class="mdc-list-item" role="option" id="gender-female" tabindex="0">Female</li>
+          <li class="mdc-list-item" role="option" id="gender-transsexual" tabindex="0">Transsexual</li>
+          <li class="mdc-list-item" role="option" id="gender-straightcouple" tabindex="0">Straight Couple</li>
+          <li class="mdc-list-item" role="option" id="gender-gaycouple" tabindex="0">Gay Couple</li>
+          <li class="mdc-list-item" role="option" id="gender-lesbiancouple" tabindex="0">Lesbian Couple</li>
+        </ul>
+      </div>
+    </div>
+    <br>
+    <div class="mdc-textfield" data-mdc-auto-init="MDCTextfield">
+      <input type="text" id="author" class="mdc-textfield__input" />
+      <label for="author" class="mdc-textfield__label">Author Name</label>
+    </div>
+    <p id="author-helptext" class="mdc-textfield-helptext" aria-hidden="true">
+      Your handle. (Defaults to anonymous if left empty.)
+    </p>
+    <div class="mdc-textfield" data-mdc-auto-init="MDCTextfield">
+      <input type="text" id="deckName" class="mdc-textfield__input" />
+      <label for="deckName" class="mdc-textfield__label">Deck Name</label>
+    </div>
+    <p id="deckName-helptext" class="mdc-textfield-helptext" aria-hidden="true">
+      The name of the deck your card belongs to.
+    </p>
+    <div>
+      <span class="mdc-typography--body1">Select a deck image. (Will automatically fade and resize. Square images work best.)</span><br>
+      <button id="deckImageBtn" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
+      <label id="deckImageLabel" class="box" style="margin-left: 5px; background-color: rgba(0, 0, 0, 0.2); border-radius: 5px; display: none;"></label>
+    </div>
+    <br><br>
+  </div>
+  <div style="width: 90%; margin: 0 auto; height: 40px;">
+    <button id="step-1-prev" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" style="float: left;">Previous</button>
+    <button id="step-1-next" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" style="float: right;">Next</button>
+  </div>
+</div>
+
+<div id="cardMaker-2" class="mdc-elevation--z3 box" style="display: none;">
+  <h1 class="mdc-typography--title">Cardmaker</h1>
+  <h1 class="mdc-typography--subheading1">Sneak Peek</h1>
+  <br>
+  <div id="sneakPeek" style="text-align: center;"></div>
+  <br>
+  <div style="width: 90%; margin: 0 auto; height: 40px;">
+    <button id="step-2-prev" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" style="float: left;">Previous</button>
+    <button id="step-2-next" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" style="float: right;">Next</button>
+  </div>
+</div>
+
+<div id="cardMaker-3" class="mdc-elevation--z3 box" style="display: none;">
+  <h1 class="mdc-typography--title">Cardmaker</h1>
+  <h1 class="mdc-typography--subheading1">Adding CTI Script</h1>
+  <br>
+  <style media="screen">
+      .action-row > td {
+        display: inline-block;
+      }
+      .action-row > td > input {
+        background-color: rgba(0, 0, 0, 0.2);
+        border: none;
+        color: white;
+      }
+  </style>
+  <table style="font-family: monospace; background-color: rgba(0, 0, 0, 0.2); width: 50%;">
+    <tr>
+      <td>{</td><td></td>
+    </tr>
+    <tr>
+      <td>&nbsp;&nbsp;actions: [</td><td></td>
+    </tr>
+  </table>
+  <table id="action-0" class="action-block" style="font-family: monospace; background-color: rgba(0, 0, 0, 0.2); width: 50%;">
+    <tr>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;{</td><td></td>
+    </tr>
+    <tr class="action-row">
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;start:</td><td><input type="text" /></td><td>,</td>
+    </tr>
+    <tr class="action-row">
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type:</td><td><input type="text" /></td><td>,</td>
+    </tr>
+    <tr class="action-row">
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;conditional:</td><td><input type="text" /></td><td>,</td>
+    </tr>
+    <tr class="action-row">
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for:</td><td><input type="text" /></td><td>,</td>
+    </tr>
+    <tr class="action-row">
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;action:</td><td><input type="text" /></td><td>,</td>
+    </tr>
+    <tr class="action-row">
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;until:</td><td><input type="text" /></td><td>,</td>
+    </tr>
+    <tr>
+      <td class="lae">&nbsp;&nbsp;&nbsp;&nbsp;}</td><td></td>
+    </tr>
+  </table>
+  <table style="font-family: monospace; background-color: rgba(0, 0, 0, 0.2); width: 50%;">
+    <tr>
+      <td>&nbsp;&nbsp;]</td><td></td>
+    </tr>
+    <tr>
+      <td>}</td><td></td>
+    </tr>
+  </table>
+  <div style="margin: 5px 0;">
+    <button type="button" id="addAction" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Add Action</button>
+    <button type="button" id="removeAction" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple">Remove Action</button>
+    <button type="button" id="resetAction" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple">Clear All Actions</button>
+  </div>
+  <p>If you want to know what to put in those boxes, read <a onclick="shell.openExternal('https://github.com')">this</a>!</p>  
+</div>
+
+<script type="text/javascript">
+  /* global $, dialog, mdc, Image */
+  function setStep (step, bw) {
+    $('.box').slideUp(200, _ => {
+      $('#cardMaker-' + step).slideDown(200)
+    })
+  }
+
+  function createFit (srcWidth, srcHeight) { // Create a fit for the card image
+    let orientation, ratio
+    ratio = 1
+    srcWidth >= srcHeight ? orientation = 1 : orientation = 2
+    if (orientation === 1) { // Horizontal Image
+      if (srcWidth > 600) { ratio = 600 / srcWidth }
+      if (srcHeight * ratio > 400) { ratio = 400 / srcHeight } // Fix for images that are too square
+    } else if (orientation === 2) { // Vertical Image
+      if (srcHeight > 550) { ratio = 550 / srcHeight }
+      if (srcWidth * ratio > 500) { ratio = 500 / srcWidth } // Fix for images that are too square
+    }
+    return { // Returns an object with the desired width & height of the cardimage.
+      orientation: orientation,
+      width: Math.ceil(srcWidth * ratio),
+      height: Math.ceil(srcHeight * ratio)
+    }
+  }
+
+  function createFitB (srcWidth, srcHeight) { // Create a fit for the deck image
+    var ratio = 1
+    if (srcWidth > 94) ratio = 94 / srcWidth
+    if (srcHeight * ratio > 94) ratio = 94 / srcHeight // Fix for images that are too square
+    return {
+      width: Math.ceil(srcWidth * ratio),
+      height: Math.ceil(srcHeight * ratio)
+    }
+  }
+
+  function properWrap (ctx, text, x, y, maxWidth, lineHeight) {
+    let words = text.split(' ')
+    let line = ''
+    for (var n = 0; n < words.length; n++) {
+      let testLine = line + words[n] + ' '
+      let testWidth = ctx.measureText(testLine).width
+      if (testWidth > maxWidth && n > 0) {
+        ctx.fillText(line, x, y)
+        line = words[n] + ' '
+        y += lineHeight
+      } else {
+        line = testLine
+      }
+    }
+    ctx.fillText(line, x, y)
+    return y + lineHeight
+  }
+
+  function textOverflow (ctx, text, cardImageHeight, canvasHeight, lineHeight) {
+    let height = 0
+    for (var i = 0; i < text.length; i++) {
+      let words = text[i].split(' ')
+      for (var n = 0; n < words.length; n++) {
+        let line = ''
+        let testLine = line + words[n] + ' '
+        let testWidth = ctx.measureText(testLine).width
+        height += lineHeight * Math.ceil(testWidth / ctx.width)
+      }
+    }
+    if (cardImageHeight + height > canvasHeight) return height
+    return 0
+  }
+
+  function generateImage () {
+    let canvas = document.createElement('canvas')
+    let context = canvas.getContext('2d')
+    settings.cardImageDimensions = createFit(settings.cardImage.width, settings.cardImage.height)
+    settings.deckImageDimensions = createFitB(settings.deckImage.width, settings.deckImage.height)
+    if (settings.cardImageDimensions.orientation === 1) {
+      canvas.width = 750
+      canvas.height = 600
+    } else if (settings.cardImageDimensions.orientation === 2) {
+      canvas.width = 600
+      canvas.height = 750
+    }
+    canvas.height += textOverflow(context, settings.cardText, settings.cardImageDimensions.height + 132, canvas.height, 15)
+    let leftBorder = canvas.width / 2 - Math.ceil(settings.cardImageDimensions.width / 2) - 3
+    context.fillStyle = '#000000'
+    if (settings.useSpecial) context.fillStyle = '#ffffff'
+    context.fillRect(0, 0, canvas.width, canvas.height)
+    context.fill()
+    context.beginPath()
+    context.lineWidth = '2'
+    context.rect(leftBorder, 50, settings.cardImageDimensions.width + 2, settings.cardImageDimensions.height + 2)
+    context.strokeStyle = '#ffffff'
+    if (settings.useSpecial) context.strokeStyle = '#000000'
+    context.stroke() // Add card image border
+    context.drawImage(settings.cardImage, leftBorder + 1, 51, settings.cardImageDimensions.width, settings.cardImageDimensions.height)
+    context.fillStyle = '#ffffff'
+    if (settings.useSpecial) context.fillStyle = '#000000'
+    context.textBaseline = 'hanging'
+    context.font = '13px Arial'
+    context.fillText('Custom Tease Instructor' + (settings.type === 'ctis' ? ' Script' : ''), leftBorder - 1, 15) // Add 'Custom Tease Instructor (Script)'
+    context.font = '15px Arial Black'
+    context.fillText(settings.deckName, leftBorder - 1, 30) // Add deck name
+    context.textAlign = 'end'
+    context.font = '13px Arial'
+    context.fillText(settings.author, leftBorder + settings.cardImageDimensions.width + 4, 32) // Add author Name
+    context.textAlign = 'center'
+    context.font = '63px Times New Roman'
+    context.fillText(settings.cardType.toUpperCase(), canvas.width / 2, 71 + settings.cardImageDimensions.height, canvas.width - 6) // Add card type
+    context.font = '18px Arial'
+    let liney = settings.cardImageDimensions.height + 134
+    for (var i = 0; i < settings.cardText.length; i++) {
+      console.debug('Processing line:', settings.cardText[i], 'With liney:', liney)
+      liney = properWrap(context, settings.cardText[i], canvas.width / 2, liney, canvas.width - 10, 20) // Add card text
+    }
+    context.drawImage(settings.genderImage, Math.floor((canvas.width / 2 - settings.cardImageDimensions.width / 2) / 2 - (settings.genderImage.width / 2)) < 0 ? -1 : Math.floor((canvas.width / 2 - settings.cardImageDimensions.width / 2) / 2 - settings.genderImage.width / 2), 108)
+    context.globalAlpha = 0.5
+    context.drawImage(settings.deckImage, 4, 4, settings.deckImageDimensions.width, settings.deckImageDimensions.height)
+    context.drawImage(settings.tagImage, leftBorder + 5 + settings.cardImageDimensions.width, 50 + settings.cardImageDimensions.height - settings.tagImage.height)
+    $('#sneakPeek').append(canvas)
+    return canvas.toDataURL('image/png')
+  }
+
+  $(document).ready(_ => {
+    mdc.autoInit()
+  })
+
+  if (setStep) {}
+
+  // Setup
+  var settings = {} // type, convert, cardType, imgPath, saveLoc, deckImage, author
+  settings.cardImage = new Image()
+  settings.deckImage = new Image()
+  settings.genderImage = new Image()
+  settings.tagImage = new Image()
+  settings.tagImage.src = `file://${__dirname}/cardmaker/tag.png`
+
+  // First step
+  $('#cardtype-cti1, #cardtype-ctis').click((event) => {
+    if ($(event.target).attr('id') === 'cardtype-cti1') {
+      settings.type = 'cti1'
+      $('#convert-cti1-field').slideUp(200)
+    } else {
+      settings.type = 'ctis'
+      $('#convert-cti1-field').slideDown(200)
+    }
+  })
+
+  $('#convert-cti1-field').click((event) => {
+    if ($(event.target).is(':checked')) {
+      settings.convert = true
+      $('#saveLocField').slideUp(200)
+    } else {
+      settings.convert = false
+      $('#saveLocField').slideDown(200)
+    }
+  })
+
+  $('#saveLocBtn').click(_ => {
+    dialog.showOpenDialog({
+      title: 'Select Save Location',
+      properties: ['openDirectory']
+    }, (path) => {
+      if (path !== '' && path !== undefined) {
+        $('#saveLocLabel').text(path)
+        $('#saveLocLabel').fadeIn(100)
+        settings.saveLoc = path
+      } else {
+        $('#saveLocLabel').fadeOut(100)
+        settings.saveLoc = undefined
+      }
+    })
+  })
+
+  $('#step-0-next').click(_ => setStep(1))
+
+  // Second step
+  $('#browsePictureBtn').click(_ => {
+    dialog.showOpenDialog({
+      title: 'Select Card Image',
+      filters: [
+        {name: 'Image', extensions: ['jpg', 'jpeg', 'png', 'gif']},
+        {name: 'All Files', extensions: ['*']}
+      ],
+      properties: ['openFile']
+    }, (path) => {
+      if (path !== undefined) path = path[0]
+      console.debug('<cardmaker.html / [#browsePictureBtn]> Image selected, path is', path)
+      if (path !== '' && path !== undefined) {
+        $('#browsePictureLabel').text(path)
+        $('#browsePictureLabel').fadeIn(100)
+        settings.cardImage.src = path
+        if (!settings.convert) $('#cardInfo').slideDown(200)
+      } else {
+        $('#browsePictureLabel').fadeOut(100)
+        $('#cardInfo').slideUp(200)
+      }
+    })
+  })
+
+  $('#cardType').change(_ => {
+    let val = $('#cardType').val()
+    settings.cardType = val
+    if (val === '' || val === undefined) settings.cardType = ''
+  })
+
+  settings.useSpecial = false
+  $('#useSpecial').click(_ => {
+    settings.useSpecial = $('#useSpecial').is(':checked')
+    $('#genderSelect').trigger('MDCSelect:change')
+  })
+
+  $('#cardText').change(_ => {
+    if ($('#cardText').val() === '') {
+      settings.cardText = ['']
+    } else {
+      settings.cardText = $('#cardText').val().replace(/\r\n/g, '\n').split('\n')
+    }
+  })
+
+  $('#author').change(_ => {
+    if ($('#author').val() === '') {
+      settings.author = 'Anonymous'
+    } else {
+      settings.author = $('#author').val()
+    }
+  })
+
+  settings.gender = 'neutral'
+  var genderSelect = new mdc.select.MDCSelect($('#genderSelect')[0])
+  genderSelect.listen('MDCSelect:change', _ => {
+    settings.gender = genderSelect.value.split('-')[1] || 'neutral'
+    if (settings.useSpecial) {
+      settings.genderImage.src = `file://${__dirname}/cardmaker/gendericons/` + settings.gender + `-inverse.png`
+    } else {
+      settings.genderImage.src = `file://${__dirname}/cardmaker/gendericons/` + settings.gender + `.png`
+    }
+  })
+
+  $('#deckImageBtn').click(_ => {
+    dialog.showOpenDialog({
+      title: 'Select Deck Image',
+      filters: [
+        {name: 'Image', extensions: ['jpg', 'jpeg', 'png', 'gif']},
+        {name: 'All Files', extensions: ['*']}
+      ],
+      properties: ['openFile']
+    }, (path) => {
+      if (path !== undefined) path = path[0]
+      console.debug('<cardmaker.html / [#browsePictureBtn]> Image selected, path is', path)
+      if (path !== '' && path !== undefined) {
+        $('#deckImageLabel').text(path)
+        $('#deckImageLabel').fadeIn(100)
+        settings.deckImage.src = path
+      } else {
+        if (settings.type === 'ctis') {
+          settings.deckImage.src = `file://${__dirname}/cardmaker/ctis-logo.png`
+        } else {
+          settings.deckImage.src = `file://${__dirname}/cardmaker/cti1-logo.png`
+        }
+        $('#deckImageLabel').fadeOut(100)
+      }
+    })
+  })
+
+  $('#deckName').change(_ => {
+    if ($('#deckName').val() === '') {
+      settings.deckName = 'Supplemental'
+    } else {
+      settings.deckName = $('#deckName').val()
+    }
+  })
+
+  $('#step-1-prev').click(_ => setStep(0))
+
+  $('#step-1-next').click(_ => {
+    if (settings.convert) {
+      setStep(3)
+    } else {
+      console.debug(generateImage())
+      setStep(2)
+    }
+  })
+
+  // Third step / Sneak Peek
+  $('#step-2-prev').click(_ => {
+    setStep(1)
+    $('#sneakPeek').empty()
+  })
+
+  $('#step-2-next').click(_ => {
+    if (settings.type === 'ctis') {
+      setStep(3)
+    } else {
+      setStep(4)
+    }
+  })
+
+  // Fourth Step / CTIS hopdaflop
+
+  $('#addAction').click(_ => {
+    let n = $('.action-block').length
+    $('<table id="action-' + n + '" class="action-block" style="font-family: monospace; background-color: rgba(0, 0, 0, 0.2); width: 50%;"><tbody><tr><td>&nbsp;&nbsp;&nbsp;&nbsp;{</td><td></td></tr><tr class="action-row"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;start:</td><td><input type="text" /></td><td>,</td></tr><tr class="action-row"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type:</td><td><input type="text" /></td><td>,</td></tr><tr class="action-row"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;conditional:</td><td><input type="text" /></td><td>,</td></tr><tr class="action-row"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for:</td><td><input type="text" /></td><td>,</td></tr><tr class="action-row"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;action:</td><td><input type="text" /></td><td>,</td></tr><tr class="action-row"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;until:</td><td><input type="text" /></td><td>,</td></tr><tr><td class="lae">&nbsp;&nbsp;&nbsp;&nbsp;}</td><td></td></tr></tbody></table>').insertAfter($('.action-block')[$('.action-block').length - 1])
+    $($('.lae')[$('.action-block').length - 2]).html('&nbsp;&nbsp;&nbsp;&nbsp;},')
+  })
+
+  $('#removeAction').click(_ => {
+    $('#action-' + ($('.action-block').length - 1)).remove()
+    $($('.lae')[$('.action-block').length - 1]).html('&nbsp;&nbsp;&nbsp;&nbsp;}')
+  })
+
+  $('#resetAction').click(_ => {
+    for (var i = 1; i < $('.action-block').length; i++) {
+      $('.action-block')[i].remove()
+    }
+    $('#action-0').find('input').val('')
+    $($('.lae')[$('.action-block').length - 1]).html('&nbsp;&nbsp;&nbsp;&nbsp;}')
+  })
+</script>

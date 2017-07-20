@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<div class="mdc-elevation--z3 box">
+  <h1 class="mdc-typography--display1">Welcome to Black.</h1>
+  <p class="mdc-typography--body1">
+    Black is an electron based tease instructor, made especially for easily configured 'script' cards.
+    A script card consists of a regular card images and a CTIS-file written in a JSON format.
+    Black can also be used as a regular teaseviewer. Or with both CTIS and regular teasing enabled.
+    Black will never support CTI2 cards, those belong in 0131's Teaseviewer.
+  </p>
+</div>
+<div class="mdc-elevation--z3 box">
+  <h1 class="mdc-typography--subheading1">Quick start</h1>
+  <button class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="swapper.swap('setup')">Go to Tease Dashboard</button>
+</div>
+<div class="mdc-elevation--z3 box">
+  <h1 class="mdc-typography--subheading1">About You</h1>
+  <div id="aboutusr-fail" style="display: none;">
+    <p>It seems you have yet to create a profile. Please do so here:</p>
+    <button class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="swapper.swap('profile')">Go to Profile Settings</button>
+  </div>
+  <p id="aboutusr" class="mdc-typography--body1">
+    Welcome back <span class="aboutusr-0">%user%</span>. You're a <span class="aboutusr-1">%aboutusr-1%</span>.<br>
+    You came <span class="aboutusr-2">%camelasttease%</span> times in your last tease. And your cumming total is <span class="aboutusr-3">%cumtotal%</span> times.
+  </p>
+</div>
+
+<script type="text/javascript">
+  /* global $, config, mdc */
+
+  if (config.get('profile') === undefined) {
+    $('#aboutusr').hide()
+    $('#aboutusr-fail').show()
+  } else {
+    let aboutusr = [
+      config.get('profile.name.nick'),
+      config.get('profile.sublevel'),
+      config.get('stats.lastTease.cumming.full'),
+      config.get('stats.total.cumming.full')
+    ]
+    $('.aboutusr-0').text(aboutusr[0])
+    if (aboutusr[1] >= 3) {
+      $('.aboutusr-1').text('good')
+    } else if (aboutusr[1] <= -2) {
+      $('.aboutusr-1').text('bad')
+    } else {
+      $('.aboutusr-1').text('boring')
+    }
+    if (config.get('profile.gender.nick') === undefined) {
+      $('.aboutusr-1').text($('.aboutusr-1').text() + ' slave')
+    } else {
+      $('.aboutusr-1').text($('.aboutusr-1').text() + ' ' + config.get('profile.gender.nick').toLowerCase())
+    }
+    $('.aboutusr-2').text(aboutusr[2])
+    $('.aboutusr-3').text(aboutusr[3])
+  }
+
+  $('#swapper').ready(_ => {
+    mdc.autoInit()
+  })
+</script>
