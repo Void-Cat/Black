@@ -23,9 +23,36 @@
     You came <span class="aboutusr-2">%camelasttease%</span> times in your last tease. And your cumming total is <span class="aboutusr-3">%cumtotal%</span> times.
   </p>
 </div>
+<div id="newVersion" class="mdc-elevation--z3 box" style="display: none;">
+  <h1 class="mdc-typography--subheading1">You're rocking an old version of Black</h1>
+  <p class="mdc-typography--body2">A newer version - version <span class="nvn"></span> - is available here:</p>
+  <button id="versionPage" type="button" class="mdc-button mdc-button--raised mdc-button--primary" onclick="shell.openExternal('https://github.com/Galactic-Cat/Black/releases')">GitHub</button>
+</div>
 
 <script type="text/javascript">
-  /* global $, config, mdc */
+  /* global $, config, mdc, currentVersion */
+
+  function checkVersion () {
+    var vfd = $.Deferred()
+    $.getJSON('https://api.github.com/repos/Galactic-Cat/Black/releases').done((json) => {
+      let newVersion = json[0].split('.')
+      let oldVersion = currentVersion.split('.')
+      newVersion.forEach((t, i) => {
+        newVersion[i] = parseInt(t, 10)
+      })
+      oldVersion.forEach((t, i) => {
+        oldVersion[i] = parseInt(t, 10)
+      })
+      if (newVersion[0] > oldVersion[0] || (newVersion[0] === oldVersion[0] && newVersion[1] > oldVersion[1]) || (newVersion[0] === oldVersion[0] && newVersion[1] === oldVersion[1] && newVersion[2] > oldVersion[2])) {
+        vfd.resolve(newVersion.join('.'))
+      } else {
+        vfd.reject('isCurrent')
+      }
+    }).fail((err) => {
+      vfd.reject(err)
+    })
+    return vfd.promise()
+  }
 
   if (config.get('profile') === undefined) {
     $('#aboutusr').hide()
@@ -56,5 +83,13 @@
 
   $('#swapper').ready(_ => {
     mdc.autoInit()
+    $.when(checkVersion()).then((vn) => {
+      $('.nvn').text(vn)
+      $('#newVersion').slideDown(200)
+    }, (err) => {
+      if (err !== 'isCurrent') {
+        console.error(err)
+      }
+    })
   })
 </script>

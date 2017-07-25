@@ -73,8 +73,11 @@
       const mdc = require('./external/material-components-web/material-components-web.min.js')
       const Swapper = require('./catworks/swapper.js')
       const Config = require('electron-config')
-      const {dialog, BrowserWindow, globalShortcut, shell} = require('electron').remote
+      const {dialog, BrowserWindow, globalShortcut, shell, app} = require('electron').remote
       const {TeaseMaster, generateFileList, findCTIS} = require('./tease.js')
+      const fs = require('fs')
+
+      var currentVersion = app.getVersion()
 
       var config = new Config()
 
@@ -117,7 +120,7 @@
         let drawer = new mdc.drawer.MDCTemporaryDrawer($('.mdc-temporary-drawer')[0])
         $('#menu-btn').click(_ => { drawer.open = true })
         $('.mdc-temporary-drawer__content').children().click(_ => { drawer.open = false })
-        if (dialog && TeaseMaster && globalShortcut && generateFileList && findCTIS && BrowserWindow && shell) { console.debug('<index.html> Loaded everything we needed or something!') }
+        if (dialog && TeaseMaster && globalShortcut && generateFileList && findCTIS && BrowserWindow && shell && fs && currentVersion) { console.debug('<index.html> Loaded everything we needed or something!') }
       })
     </script>
   </body>

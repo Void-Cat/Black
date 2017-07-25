@@ -141,8 +141,11 @@ hr {
 }
 
 .msgbox {
-  padding: 2px;
+  padding: 4px;
   color: white;
+  text-align: center;
+  font-size: 14pt;
+  z-index: 2;
 }
 
 .msgbox-red {
@@ -158,6 +161,11 @@ hr {
 .msgbox-green {
   background: linear-gradient(#00cc00, #009900);
   border: 1px solid #00b300;
+}
+
+.msgbox-yellow {
+  background: linear-gradient(#cccc00, #999900);
+  border: 1px solid #b3b300;
 }
 
 .keySel {
@@ -179,4 +187,20 @@ hr {
 
 .keR:hover {
   cursor: pointer;
+}
+
+.ctisinstruction {
+  padding: 5px;
+  text-align: left;
+  background-color: #212121;
+  border: 1px solid #191919;
+  border-radius: 0.5px;
+  margin-bottom: 3px;
+}
+
+.punishment-card {
+  margin-right: 5px;
+  max-height: 500px;
+  vertical-align: middle;
+  display: inline;
 }

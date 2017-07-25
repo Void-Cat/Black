@@ -14,28 +14,26 @@ function Swapper (id, location, current) {
     console.debug('swap called', this, loc)
     let adr = this.location + loc + '.html'
     let id = '#' + this.id
-    if (this.current !== loc) {
-      $(id).fadeOut(100, _ => {
-        $(id).empty()
-        $(id).load(adr, _ => {
-          $(id).fadeIn(100)
-          this.current = loc
-          if ($('.mdc-temporary-drawer').length > 0) {
-            $('.mdc-temporary-drawer--selected').removeClass('mdc-temporary-drawer--selected')
-            $('.mdc-list-item[onclick="swapper.swap(\'' + this.current + '\')"]').addClass('mdc-temporary-drawer--selected')
-          } // This is for mdc drawers
-          if (Config !== null) { // This is for electron-config applications
-            let config = new Config()
-            config.set('swapper.last', this.current)
-          }
-          console.debug('swap finished', loc)
-        })
+    $(id).fadeOut(100, _ => {
+      $(id).empty()
+      $(id).load(adr, _ => {
+        $(id).fadeIn(100)
+        this.current = loc
+        if ($('.mdc-temporary-drawer').length > 0) {
+          $('.mdc-temporary-drawer--selected').removeClass('mdc-temporary-drawer--selected')
+          $('.mdc-list-item[onclick="swapper.swap(\'' + this.current + '\')"]').addClass('mdc-temporary-drawer--selected')
+        } // This is for mdc drawers
+        if (Config !== null) { // This is for electron-config applications
+          let config = new Config()
+          config.set('swapper.last', this.current)
+        }
+        console.debug('swap finished', loc)
       })
-    }
+    })
   }
   this.start = (cont, home) => {
     let config = new Config()
-    if (Config !== null && config.get('swapper.last') !== home && config.get('swapper.last') !== cont) {
+    if (Config !== null && config.get('swapper.last') !== home && config.get('swapper.last') !== cont && config.get('swapper.last') !== 'teaseend') {
       if (config.get('swapper.last') !== null) {
         config.set('swapper.continue', config.get('swapper.last'))
         this.swap(cont)
@@ -45,6 +43,9 @@ function Swapper (id, location, current) {
     } else {
       this.swap(home)
     }
+  }
+  this.reload = _ => {
+    this.swap(this.current)
   }
 }
 

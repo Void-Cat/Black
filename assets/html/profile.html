@@ -28,6 +28,12 @@
     <label id="genderReal-false-label" for="genderReal-false">No</label>
   </div>
 
+  <p class="mdc-typography--body1">Where are your punishments cards located?</p>
+  <div class="mdc-form-field">
+    <button type="button" id="setPunishmentButton" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
+    <label id="setPunishmentLabel" class="box" style="margin-left: 5px; background-color: rgba(0, 0, 0, 0.2); border-radius: 5px; display: none;"></label>
+  </div>
+
   <hr>
   <p class="mdc-typography--body2">Now answer some questions about your mistress:</p>
 
@@ -39,7 +45,7 @@
   <p class="mdc-typography--caption" style="margin: 0;">As in: "You've been a good <span id="genderNick-example" style="color: var(--mdc-theme-accent);">slave</span>."</p>
   <br>
 
-  <p class="mdc-typography--body1" style="margin-bottom: 0;">She also has a nickname for me, namely:</p>
+  <!--<p class="mdc-typography--body1" style="margin-bottom: 0;">She also has a nickname for me, namely:</p>
   <div id="nickname-textfield" class="mdc-textfield" data-mdc-auto-init="MDCTextfield" style="margin-top: 5px;">
     <input type="text" class="mdc-textfield__input" id="nickname">
     <label for="nickname" class="mdc-textfield__label">Nickname</label>
@@ -56,7 +62,7 @@
       </div>
     </div>
     <label for="noNickname">Don't use nicknames.</label>
-  </div>
+  </div>-->
   <hr>
   <button type="button" id="saveProfile" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Save Profile</button>
 </div>
@@ -78,7 +84,7 @@
 </div>
 
 <script type="text/javascript">
-  /* global $, mdc, config, alert, swapper */
+  /* global $, mdc, config, alert, swapper, dialog */
   // var genderReal = new mdc.radio.MDCRadio($('.mdc-radio')[0])
   // var noNickname = new mdc.checkbox.MDCCheckbox($('.mdc-checkbox')[0])
   $('[name="genderReal"]').click(_ => {
@@ -86,12 +92,13 @@
   })
   $('#realName').on('change', _ => {
     config.set('profile.name.real', $('#realName').val())
+    config.set('profile.name.nick', $('#realName').val())
   })
   $('#genderNick').on('change', _ => {
     $('#genderNick').val() === '' ? config.set('profile.gender.nick', 'slave') : config.set('profile.gender.nick', $('#genderNick').val())
     $('#genderNick-example').text($('#genderNick').val())
   })
-  $('#nickname').on('change', _ => {
+  /* $('#nickname').on('change', _ => {
     if ($('#nickname').val() !== '') {
       config.set('profile.name.nick', $('#nickname').val())
     } else {
@@ -106,7 +113,7 @@
       $('#nickname-textfield').slideDown(100)
       config.set('profile.name.nick', $('#nickname').val())
     }
-  })
+  }) */
   $('#saveProfile').click(_ => {
     let profiledata = [
       config.get('profile.name.real'),
@@ -139,6 +146,21 @@
       $('.profile-gender-real').text('female')
     }
   }
+
+  $('#setPunishmentButton').click(_ => {
+    dialog.showOpenDialog({
+      title: 'Select Punisment Cards Folder',
+      properties: ['openDirectory']
+    }, (path) => {
+      config.set('profile.punishment', path)
+      if (path === '' || path === undefined) {
+        $('#setPunishmentLabel').fadeOut(200)
+      } else {
+        $('#setPunishmentLabel').text(path)
+        $('#setPunishmentLabel').fadeIn(200)
+      }
+    })
+  })
 
   $('#deleteProfileBtn').click(_ => {
     config.set('profile', undefined)

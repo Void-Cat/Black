@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<div class="mdc-elevation--z3 box">
+  <h1 class="mdc-typography--title">End of tease</h1>
+  <p>
+    <span class="exit-user" style="color: red; display: none;">So you decided to quit the tease on your own?<br></span>
+    <span class="exit-end" style="color: lime; display: none;">You finished a complete tease!<br></span>
+    You've teased <span class="tease-total"></span> times now.<br>
+    Let's see how you did.<br>
+    You came <span class="cum-total"></span> times.<br>
+    <span class="cum-full"></span> of which were full orgasms and you ruined <span class="cum-ruin"></span> of them.<br>
+    You edged <span class="cum-edge"></span> times.<br>
+    <span class="cum-nonAllowed-line" style="color: red; display: none;">I see that you came <span class="cum-nonAllowed"></span> without permission! Bad boy.</span>
+    <span class="cum-allowed-line" style="color: lime; display: none;">And you didn't cum without permission.</span>
+  </p>
+  <br>
+  <div id="punishment-notset" style="display: none;">
+    <span>Your punishment card folder hasn't been set.</span>
+    <button id="punishmentSetButton" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
+  </div>
+  <div id="punishment-group" style="display: none;">
+    <span>You still have <span class="punishment"></span> punishments to draw.</span>
+    &nbsp;&nbsp;
+    <button id="punishmentButton" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Draw a punishment card</button>
+    <br>
+    <span id="noPunishments" style="color: red; display: none;">No punishments were found!</span>
+    <br>
+    <div id="punishmentDisplay" style="background-color: rgba(0, 0, 0, 0.2); padding: 5px; overflow-x: auto; display: flex;"></div>
+    <br>
+  </div>
+  <br>
+  <div>
+    <button type="button" id="home-btn" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="swapper.swap('home')">Return Home</button>
+    &nbsp;&nbsp;
+    <button type="button" id="rete-btn" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="swapper.swap('setup')">Go to Tease Dashboard</button>
+  </div>
+</div>
+
+<script type="text/javascript">
+  /* global config, $, dialog, fs */
+  if (typeof teaseExit === 'undefined') {
+    var teaseExit = config.get('teaseExit')
+    var cumInfo = config.get('stats.lastTease.cumming')
+    var punish = config.get('stats.lastTease.cumming.nonAllowed')
+    var sublevel = config.get('profile.sublevel')
+    var teaseTotal = config.get('stats.teases.total')
+  } else {
+    teaseExit = config.get('teaseExit')
+    cumInfo = config.get('stats.lastTease.cumming')
+    punish = config.get('stats.lastTease.cumming.nonAllowed')
+    sublevel = config.get('profile.sublevel')
+    teaseTotal = config.get('stats.teases.total')
+  }
+  $('#punishmentDisplay').hide()
+  if (teaseExit === 'user') {
+    if (sublevel > -5) sublevel--
+    punish++
+    $('.exit-user').slideDown(200)
+  } else if (teaseExit === 'end') {
+    if (sublevel < 5) sublevel++
+    $('.exit-end').slideDown(200)
+  }
+  $('.tease-total').text(teaseTotal)
+  $('.cum-total').text(cumInfo.full + cumInfo.ruin)
+  $('.cum-full').text(cumInfo.full)
+  $('.cum-edge').text(cumInfo.edge)
+  $('.cum-ruin').text(cumInfo.ruin)
+  if (cumInfo.nonAllowed > 0) {
+    if (sublevel > -5) sublevel--
+    $('.cum-nonAllowed').text(cumInfo.nonAllowed)
+    $('.cum-nonAllowed-line').slideDown(200)
+  } else {
+    if (sublevel < 5) sublevel++
+    $('.cum-allowed-line').slideDown(200)
+  }
+  if (punish > 0) {
+    if (config.get('profile.punishment') === undefined) {
+      $('#punishment-notset').slideDown(200)
+    } else {
+      $('.punishment').text(punish)
+      $('#punishment-group').slideDown(200)
+    }
+  } else {
+    $('#home-btn').addClass('mdc-button--primary')
+    $('#rete-btn').addClass('mdc-button--accent')
+  }
+
+  $('#punishmentSetButton').click(_ => {
+    dialog.showOpenDialog({
+      title: 'Select Punisment Cards Folder',
+      properties: ['openDirectory']
+    }, (path) => {
+      if (path !== '' && path !== undefined) {
+        config.set('profile.punishment', path)
+        $('#punishment-notset').slideUp(200)
+        if (punish > 0) {
+          $('.punishment').text(punish)
+          $('#punishment-group').slideDown(200)
+        }
+      }
+    })
+  })
+
+  $('#punishmentButton').click(_ => {
+    let path = config.get('profile.punishment')[0]
+    let fold = fs.readdirSync(path)
+    let pick = []
+    fold.forEach((item) => {
+      if (item.lastIndexOf('.') > 0) pick.push(item)
+    })
+    if (pick.length === 0) {
+      $('#noPunishments').slideDown(200)
+    } else {
+      let punishment = pick[Math.floor(Math.random() * pick.length)]
+      $('#punishmentDisplay').prepend('<img src="' + path + '/' + punishment + '" class="punishment-card" />')
+      $('#punishmentDisplay').slideDown(200)
+      if (punish > 0) punish--
+      $('.punishment').text(punish)
+      if (punish === 0) {
+        $('#punishmentButton').removeClass('mdc-button--primary')
+        $('#home-btn').addClass('mdc-button--primary')
+        $('#rete-btn').addClass('mdc-button--accent')
+      }
+    }
+  })
+</script>

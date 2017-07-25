@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html style="background-color: black; color: white;">
+<html style="background-color: black; color: white; transition: background-color 1s;">
   <head>
     <meta charset="utf-8">
     <title>Black Tease</title>
@@ -25,16 +25,23 @@
         <h1 class="mdc-typography--subheading1" style="margin: 0; cursor: default; background-color: black; padding: 5px; border-radius: 1px;">
           Mistress Mood:&nbsp;<span id="moodDisplay" class="material-icons">thumbs_up_down</span>
         </h1>
+      </div><br>
+      <div id="instructionDisplay" style="float: left;">
+        <h1 id="instructionHead" class="mdc-typography--subheading1">Instructions:</h1>
+        <h1 class="mdc-typography--body2">Position:&nbsp;<span id="position" class="mdc-typography--body1">Free</span></h1>
       </div>
     </header>
 
-    <contact style="display: block; position: absolute; padding: 5px; top: 5px; margin: 0px auto;">
+    <div id="contact" style="position: absolute; padding: 5px 20%; top: 5px; width: 60%;">
 
-    </contact>
+    </div>
 
     <div id="itemlist" style="float: right; color: white; padding: 5px; border-radius: 1px; position: absolute; right: 5px; top: 5px; z-index: 1;">
 
       <button id="keyDisplay" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" disabled>Keys: 0</button>
+    </div>
+    <div style="float: right; color: white; padding: 5px; border-radius: 1px; margin: 5px;">
+
     </div>
 
     <aside class="mdc-temporary-drawer">
@@ -57,8 +64,11 @@
         </nav>
         <nav class="mdc-temporary-drawer__content mdc-list">
           <hr style="width: 90%; border-color: grey;">
-          <a class="mdc-list-item" style="display: none;">
-            <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">library_books</i>Active Cards
+          <a class="mdc-list-item" id="toggleInstructions" onclick="$('#instructionDisplay').fadeToggle(200)">
+            <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">view_agenda</i>Toggle Instruction Display
+          </a>
+          <a class="mdc-list-item" id="toggleItems" onclick="$('#itemlist').fadeToggle(200)">
+            <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">dns</i>Toggle Item Display
           </a>
           <a class="mdc-list-item" onclick="$('#controlbar').slideToggle(200)">
             <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">settings_ethernet</i>Toggle Control Bar
@@ -87,7 +97,7 @@
         <h1 class="mdc-typography--subheading1">The following CTIS cards will load take action before the first slide:</h1>
         <div id="CTIS-preStart"></div>
       </div>
-      <div id="mainImage-div" style="padding: 40px 0 0 0; text-align: center; display: none;">
+      <div id="mainImage-div" style="padding: 20px 0 0 0; text-align: center; display: none;">
         <img id="mainImage" style="max-height: 90vh; max-width: 90%;" />
       </div>
     </main>
@@ -163,7 +173,7 @@
 
       // Tease Buttons
       $('#exit-button').click(_ => {
-        teaseSlave.exit()
+        teaseSlave.exit('user')
       })
 
       $('#pause-play').click(_ => {
@@ -252,6 +262,7 @@
 
       $('#keyDisplay').on('unlock', (e, item) => {
         if ($('#keyDisplay').hasClass('keySel') && teaseSlave.itemControl.keys > 0) {
+          teaseSlave.slideControl.heraut(teaseSlave.slideControl.core.current, 'key')
           teaseSlave.itemControl.useKey(item)
         }
         $('#keyDisplay.keySel').removeClass('keySel')
@@ -261,20 +272,20 @@
       $('#strokeCountDisplay').change(_ => {
         if ($('#strokeCountDisplay').text().indexOf('(') !== -1) {
           let old = $('#strokeCountDisplay').text().split('(')[1].split(')')[0]
-          $('#strokeCountDisplay').text(teaseSlave.slideControl.core.strokes + '(' + old + ')')
+          $('#strokeCountDisplay').text(teaseSlave.slideControl.core.strokes + ' (' + old + ')')
         } else {
           let old = $('#strokeCountDisplay').text()
-          $('#strokeCountDisplay').text(teaseSlave.slideControl.core.strokes + '(' + old + ')')
+          $('#strokeCountDisplay').text(teaseSlave.slideControl.core.strokes + ' (' + old + ')')
         }
       })
 
       $('#slideTimeDisplay').change(_ => {
         if ($('#slideTimeDisplay').text().indexOf('(') !== -1) {
-          let old = $('#slideTimeDisplay').text().split('(')[1].split(')')[0]
-          $('#slideTimeDisplay').text(teaseSlave.slideControl.core.strokes / 1000 + 's (' + old + 's)')
+          let old = $('#slideTimeDisplay').text().split('(')[1].split('s)')[0]
+          $('#slideTimeDisplay').text(teaseSlave.slideControl.core.time / 1000 + 's (' + old + 's)')
         } else {
           let old = $('#slideTimeDisplay').text()
-          $('#slideTimeDisplay').text(teaseSlave.slideControl.core.strokes / 1000 + 's (' + old + 's)')
+          $('#slideTimeDisplay').text(teaseSlave.slideControl.core.time / 1000 + 's (' + old + 's)')
         }
       })
 
