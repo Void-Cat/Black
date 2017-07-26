@@ -1,4 +1,6 @@
 # Black
+> Please note that Black is still work in progress. It's first release should be less than a week away.
+
 ## CTIS Tease Viewer
 
 Black is a image slideshow program for a NSFW game called Custom Tease Instructor. Black is a card viewer and generator for so called 'CTIS' or 'CTI Script' cards, which execute small non-complex code when drawn.
