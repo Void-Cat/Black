@@ -752,7 +752,7 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
             if (teaseSlave.itemControl.active.indexOf('Chastity') === -1) teaseSlave.itemControl.add('Chastity')
             teaseSlave.itemControl.chastity(true)
           }
-          if (this.parameters.until !== undefined && this.parameters.until !== 'end') this.parameters.untilAct = 'chastity'
+          if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant') this.parameters.untilAct = 'chastity'
         } else if (this.parameters.type === 'item') {
           let item = this.parameters.action
           if (this.parameters.until !== undefined && this.parameters.until !== 'end') this.parameters.untilAct = 'item:' + item
