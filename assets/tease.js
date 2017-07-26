@@ -466,6 +466,7 @@ function TeaseSlave (options) {
       }
       config.set('stats.total.cumming', newtotal)
       config.set('stats.teases.total', (config.get('stats.teases.total') || 0) + 1)
+      if (type === 'user' && this.allowExit) type = 'card'
       if (type === 'user') config.set('stats.teases.etes', (config.get('stats.teases.etes') || 0) + 1)
       config.set('teaseExit', type)
       close()
@@ -732,9 +733,14 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
               this.parameters.untilAct = 'unblockQuit'
             }
             teaseSlave.blockExit = true
+          } else if (this.parameters.action === 'allow') {
+            teaseSlave.allowExit = true
+            if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant') {
+              this.parameters.untilAct = 'disallowQuit'
+            }
           } else {
-            console.debug('<tease.js / CTISAction> Should have quit now:', this.parameters)
-            // teaseSlave.exit('card')
+            // console.debug('<tease.js / CTISAction> Should have quit now:', this.parameters)
+            teaseSlave.exit('card')
           }
         } else if (this.parameters.type === 'ctc' || this.parameters.type.split(':')[0] === 'ctc') {
           if (teaseSlave.ctc !== this.parameters.action) teaseSlave.ctc = this.parameters.action
@@ -788,6 +794,7 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
       if (this.until(type, 'after')) {
         if (this.parameters.untilAct !== undefined) {
           if (this.parameters.untilAct === 'unblockQuit') teaseSlave.blockExit = false
+          if (this.parameters.untilAct === 'disallowQuit') teaseSlave.allowExit = false
           if (this.parameters.untilAct.indexOf('key:') !== -1) {
             if (teaseSlave.itemControl.keys >= parseInt(this.parameters.untilAct.split(':')[1], 10)) teaseSlave.itemControl.useKey('')
           }
