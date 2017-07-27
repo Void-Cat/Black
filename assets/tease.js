@@ -724,7 +724,7 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
           } else if (modifier === '/') {
             coreboy = Math.floor(coreboy / parseInt(this.parameters.action.replace('/', '')))
           } else {
-            coreboy = Math.floor(parseInt(teaseSlave.slideControl.core.action, 10))
+            coreboy = Math.floor(parseInt(teaseSlave.parameters.action, 10))
           }
           teaseSlave.slideControl.set(coreboy)
         } else if (this.parameters.type === 'stop') {
