@@ -789,6 +789,22 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
           teaseSlave.superMode.go()
         } else if (this.parameters.type === 'ignore') {
           teaseSlave.slideControl.ignore(this.parameters.action)
+        } else if (this.parameters.type === 'mood') {
+          if (this.parameters.action === 'good') teaseSlave.subControl.mood.good()
+          if (this.parameters.action === 'bad') teaseSlave.subControl.mood.bad()
+        } else if (this.parameters.type === 'sublevel') {
+          let modifier = this.parameters.action.charAt(0)
+          if (modifier === '+') {
+            teaseSlave.subControl.core.sublevel += parseInt(this.parameters.action.slice(1), 10)
+          } else if (modifier === '-') {
+            teaseSlave.subControl.core.sublevel -= parseInt(this.parameters.action.slice(1), 10)
+          } else {
+            if (!isNaN(parseInt(this.parameters.action, 10))) {
+              teaseSlave.subControl.core.sublevel = parseInt(this.parameters.action, 10)
+            }
+          }
+          if (teaseSlave.subControl.core.sublevel > 5) teaseSlave.subControl.core.sublevel = 5
+          if (teaseSlave.subControl.core.sublevel < -5) teaseSlave.subControl.core.sublevel = -5
         }
       }
       // Until after
