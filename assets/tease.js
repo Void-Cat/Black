@@ -586,6 +586,7 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
     if (this.parameters.start !== 'start') this.start = true
   }
   this.until = (type, boa) => {
+    if (this.parameters.type === 'on' && boa === 'before') return false
     if (this.parameters.delay > 0) return false
     if (this.parameters.until === undefined) this.parameters.until = 'instant'
     let until = this.parameters.until.split('*')[0].toLowerCase()
