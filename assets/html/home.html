@@ -35,7 +35,7 @@
   function checkVersion () {
     var vfd = $.Deferred()
     $.getJSON('https://api.github.com/repos/Galactic-Cat/Black/releases').done((json) => {
-      let newVersion = json[0].split('.')
+      let newVersion = json[0].tag_name.split('.')
       let oldVersion = currentVersion.split('.')
       newVersion.forEach((t, i) => {
         newVersion[i] = parseInt(t, 10)
