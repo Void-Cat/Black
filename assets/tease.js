@@ -181,7 +181,7 @@ function TeaseMaster (teaseParams, fileList, ctisList, icl) {
     globalShortcut.unregister('O')
     globalShortcut.unregister('Esc')
     globalShortcut.unregister('CommandOrControl+Q')
-    globalShortcut.unregister('CommandOrControl+Shift+S')
+    // globalShortcut.unregister('CommandOrControl+Shift+S')
     swapper.swap('teaseend')
   })
 }
@@ -553,14 +553,14 @@ function TeaseSlave (options) {
     }),
     exit2: globalShortcut.register('CommandOrControl+Q', _ => {
       $('#exit-button').trigger('click')
-    }),
-    super: globalShortcut.register('CommandOrControl+Shift+S', _ => {
+    })
+    /* super: globalShortcut.register('CommandOrControl+Shift+S', _ => {
       if (this.superMode.active) {
         this.superMode.end()
       } else {
         this.superMode.go()
       }
-    })
+    }) */
   }
 }
 
