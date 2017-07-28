@@ -75,9 +75,9 @@ function generateFileList (picturePath, cardPath, categories) {
   Object.keys(categories).forEach((gcKey) => {
     gameCards += categories[gcKey].amount
     eM[gcKey] = categories[gcKey].amount
-    console.debug('<tease.js / generateFileList> Going through amounts for eM, on categorie:', gcKey, 'amount is', categories[gcKey].amount, 'eM is now', eM)
+    // console.debug('<tease.js / generateFileList> Going through amounts for eM, on categorie:', gcKey, 'amount is', categories[gcKey].amount, 'eM is now', eM)
   })
-  console.debug(eM)
+  // console.debug(eM)
   let ratio = Math.floor(Math.max((pictureAmount / gameCards), (gameCards / pictureAmount)))
   let oL = {}
   Object.keys(raw.cards).forEach((key) => {
@@ -87,8 +87,9 @@ function generateFileList (picturePath, cardPath, categories) {
   // Get Schwifty
   console.debug('<tease.js / generateFileList> Going into swifty mode with the following data:', {eM: eM, raw: raw, ratio: ratio, gameCards: gameCards, oL: oL, icl: icl})
   for (var n = 0; n < (pictureAmount + gameCards); n++) {
-    if (n % ratio === 0 && n !== 0) {
+    if (n % ratio === 0 && n !== 0 && Object.keys(raw.cards).length > 0) {
       let pcat = Object.keys(raw.cards)[Math.floor(Math.random() * Object.keys(raw.cards).length)]
+      console.debug('Selected categorie', pcat, 'is:', categories[pcat])
       if (oL[pcat] < categories[pcat].amount) {
         fin.push(raw.cards[pcat][Math.floor(Math.random() * raw.cards[pcat].length)])
       } else {
@@ -759,7 +760,7 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
             if (teaseSlave.itemControl.active.indexOf('Chastity') === -1) teaseSlave.itemControl.add('Chastity')
             teaseSlave.itemControl.chastity(true)
           }
-          if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant') this.parameters.untilAct = 'chastity'
+          if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant' && this.parameters.action !== 'false') this.parameters.untilAct = 'chastity'
         } else if (this.parameters.type === 'item') {
           let item = this.parameters.action
           if (this.parameters.until !== undefined && this.parameters.until !== 'end') this.parameters.untilAct = 'item:' + item
