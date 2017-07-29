@@ -4,7 +4,7 @@ function clean (arr, deleteValue) {
   let mod = 0
   arr.forEach((val, i) => {
     if (arr[i - mod] === deleteValue) {
-      arr.splice(i, 1)
+      arr.splice(i - mod, 1)
       mod++
     }
   })
@@ -91,6 +91,7 @@ function generateFileList (picturePath, cardPath, categories) {
   })
   // console.debug(eM)
   let ratio = Math.floor(Math.max((pictureAmount / gameCards), (gameCards / pictureAmount)))
+  gameCards--
   let oL = {}
   Object.keys(raw.cards).forEach((key) => {
     oL[key] = raw.cards[key].length
@@ -120,7 +121,7 @@ function generateFileList (picturePath, cardPath, categories) {
       }
     }
   }
-  fin = clean(fin)
+  fin = clean(fin, undefined)
   fin.forEach((r, i) => {
     // console.debug('<tease.js / generateFileList> Fin replace with r:', r, 'and i:', i)
     if (r !== undefined) fin[i] = r.replace(/\\/g, '\\\\')
@@ -205,7 +206,7 @@ function TeaseSlave (options) {
       time: this.teaseParams.timing.slideTime * 1000,
       pause: false,
       run: this.teaseParams.timing.slideTime * 1000,
-      ticker: new Audio('../audio/ticker.ogg')
+      ticker: new Audio(this.teaseParams.timing.tickersrc || '../audio/ticker.ogg')
     },
     next: _ => {
       if (this.slideControl.core.current < this.fileList.length - 1) {
@@ -224,7 +225,7 @@ function TeaseSlave (options) {
     },
     set: (slide) => {
       clearTimeout(this.slideControl.core.backup)
-      if (slide > this.fileList.length - 1) this.exit('end')
+      if (slide >= this.fileList.length) this.exit('end')
       $('#mainImage').attr('src', this.fileList[slide])
       $('#preload').attr('src', this.fileList[slide + 1])
       clearInterval(this.slideControl.interval.ticker)
@@ -343,6 +344,12 @@ function TeaseSlave (options) {
     position: (id, position) => {
       $('#position').attr('pos', id)
       $('#position').text(position)
+    },
+    ctcUpdate: _ => {
+      $('#edge-button, #full-button, #ruin-button').removeClass('mdc-button--accent')
+      if (this.ctc === 'full') $('#full-button').addClass('mdc-button--accent')
+      if (this.ctc === 'edge') $('#edge-button').addClass('mdc-button--accent')
+      if (this.ctc === 'ruin') $('#ruin-button').addClass('mdc-button--accent')
     }
   }
 
@@ -380,12 +387,6 @@ function TeaseSlave (options) {
       } else if (bool === false) {
         $('#chastityDisplay').fadeOut(100)
       }
-    },
-    ctcUpdate: _ => {
-      $('#edge-button, #full-button, #ruin-button').removeClass('mdc-button--accent')
-      if (this.ctc === 'full') $('#full-button').addClass('mdc-button--accent')
-      if (this.ctc === 'edge') $('#edge-button').addClass('mdc-button--accent')
-      if (this.ctc === 'ruin') $('#ruin-button').addClass('mdc-button--accent')
     }
   }
 
@@ -430,9 +431,9 @@ function TeaseSlave (options) {
         this.subControl.mood.update()
       },
       update: _ => {
-        if (this.subControl.core.mood === 'good') $('#moodDisplay').text('thumbs_up')
+        if (this.subControl.core.mood === 'good') $('#moodDisplay').text('thumb_up')
         if (this.subControl.core.mood === 'neutral') $('#moodDisplay').text('thumbs_up_down')
-        if (this.subControl.core.mood === 'bad') $('#moodDisplay').text('thumbs_down')
+        if (this.subControl.core.mood === 'bad') $('#moodDisplay').text('thumb_down')
       }
     },
     get: (val) => {
@@ -581,6 +582,7 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
     if (this.parameters.start !== 'start') this.start = true
   }
   this.until = (type, boa) => {
+    if (this.drawn === false) return false
     if (this.parameters.type === 'on' && boa === 'before') return false
     if (this.parameters.delay > 0) return false
     if (this.parameters.until === undefined) this.parameters.until = 'instant'
@@ -589,7 +591,7 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
     let fire = false
     type = type.split(':')
     console.debug('<tease.js / CTISAction> until is called with until:', until, ', and type:', type)
-    if (until === 'instant' && boa !== 'before') return true
+    if (until === 'instant' && boa === 'after') return true
     if (teaseSlave.slideControl.core.current === this.index) return false
     until = until.split(':')
     if (until[1] === type[0]) {
@@ -740,7 +742,7 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
           }
         } else if (this.parameters.type === 'ctc' || this.parameters.type.split(':')[0] === 'ctc') {
           if (teaseSlave.ctc !== this.parameters.action) teaseSlave.ctc = this.parameters.action
-          teaseSlave.cumControl.update()
+          teaseSlave.slideControl.ctcUpdate()
           if (this.parameters.type.indexOf(':force') !== -1) {
             this.parameters.untilAct = 'ctc:force'
           } else {
@@ -850,12 +852,6 @@ function CTISCard (instruction, index) {
   this.actions = []
   this.update = (p) => {
     if (this.actions.length > 0) {
-      if (p.index === this.index - 1) {
-        this.actions.forEach((action) => {
-          console.debug('<tease.js / CTISCard> Card drawn, notifying action:', action)
-          action.draw()
-        })
-      }
       let rv = []
       this.actions.forEach((action, i) => {
         rv.push(action.run(p.type, p.index))
@@ -873,6 +869,12 @@ function CTISCard (instruction, index) {
       ra.forEach((rval) => {
         this.actions.push(rval)
       })
+      if (p.index === this.index - 1) {
+        this.actions.forEach((action) => {
+          console.debug('<tease.js / CTISCard> Card drawn, notifying action:', action)
+          action.draw()
+        })
+      }
       if (this.actions.length <= 0) {
         return 'remove'
       } else {
