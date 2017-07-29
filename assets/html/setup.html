@@ -63,6 +63,18 @@
       </div>
     </div>
     <label for="enableTicker">Enable Ticker</label>
+  </div><br>
+  <div class="mdc-form-field">
+    <label for="ticker-sound">Ticker Sound&nbsp;&nbsp;</label>
+    <div class="mdc-select" id="ticker-sound" role="listbox" tabindex="0">
+      <span class="mdc-select__selected-text">Default</span>
+      <div class="mdc-simple-menu mdc-select__menu">
+        <ul class="mdc-list mdc-simple-menu__items">
+          <li class="mdc-list-item" role="option" aria-selected id="ticker-default" tabindex="0">Default</li>
+          <li class="mdc-list-item" role="option" id="ticker-metronome" tabindex="0">Metronome</li>
+        </ul>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -153,6 +165,8 @@
     $('#categorylist').find('input[type="text"]').trigger('change')
   })
 
+  var tickerSelect = new mdc.select.MDCSelect($('#ticker-sound')[0])
+
   if (config.get('teaseParams.loadSetup')) {
     $('#saveSetup').prop('checked', true)
     $('#browseCardsLabel').text(config.get('teaseParams.cardFolder'))
@@ -167,6 +181,7 @@
     }
     $('#slideTime').val(config.get('teaseParams.timing.slideTime'))
     $('#enableTicker').prop('checked', config.get('teaseParams.timing.ticker'))
+    tickerSelect.selectedIndex = config.get('teaseParams.timing.tickersrc').indexOf('ticker.ogg') >= 0 ? 0 : 1
   }
 
   $('#saveSetup').on('change', _ => {
@@ -223,6 +238,14 @@
   })
   $('#enableTicker').click(_ => {
     config.set('teaseParams.timing.ticker', $('#enableTicker').is(':checked'))
+  })
+
+  tickerSelect.listen('MDCSelect:change', _ => {
+    if (tickerSelect.selectedIndex === 1) {
+      config.set('teaseParams.timing.tickersrc', '../audio/metronome.ogg')
+    } else {
+      config.set('teaseParams.timing.tickersrc', '../audio/ticker.ogg')
+    }
   })
 
   $('#startTease').click(_ => {
