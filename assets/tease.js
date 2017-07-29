@@ -209,12 +209,9 @@ function TeaseSlave (options) {
       ticker: new Audio(this.teaseParams.timing.tickersrc || '../audio/ticker.ogg')
     },
     next: _ => {
-      if (this.slideControl.core.current < this.fileList.length - 1) {
-        this.slideControl.core.current++
-        console.debug('<tease.js / TeaseSlave> Next called current will be:', this.slideControl.core.current)
-        this.slideControl.set(this.slideControl.core.current)
-      }
-      if (this.slideControl.core.current >= this.fileList.length) this.slideControl.set(this.fileList.length)
+      this.slideControl.core.current++
+      console.debug('<tease.js / TeaseSlave> Next called current will be:', this.slideControl.core.current)
+      this.slideControl.set(this.slideControl.core.current)
     },
     previous: _ => {
       if (this.slideControl.core.current > 0) {
@@ -449,7 +446,7 @@ function TeaseSlave (options) {
   }
 
   this.exit = (type) => {
-    if (this.blockExit) {
+    if (this.blockExit && type !== 'end') {
       alert('Your Mistress won\'t allow you to leave!')
     } else {
       config.set('stats.lastTease.cumming', {full: this.cumControl.total.full, edge: this.cumControl.total.edge, ruin: this.cumControl.total.ruin, nonAllowed: this.cumControl.nonAllowed})
@@ -465,6 +462,7 @@ function TeaseSlave (options) {
       if (type === 'user' && this.allowExit) type = 'card'
       if (type === 'user') config.set('stats.teases.etes', (config.get('stats.teases.etes') || 0) + 1)
       config.set('teaseExit', type)
+      if (type === 'end') alert('You\'ve reached the end of the tease. The tease will now close.')
       close()
     }
   }
@@ -607,7 +605,7 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
     }
     if (fire) {
       if (times !== undefined) {
-        if (parseInt(times, 10) >= this.counter + 1) return true
+        if (parseInt(times, 10) <= this.counter + 1) return true
         this.counter++
         return false
       }
