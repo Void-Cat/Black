@@ -1,5 +1,4 @@
 # Black
-> Please note that Black is still work in progress. It's first release should be less than a week away.
 
 ## CTIS Tease Viewer
 
