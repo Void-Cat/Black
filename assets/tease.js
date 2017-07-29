@@ -85,11 +85,11 @@ function generateFileList (picturePath, cardPath, categories) {
   })
   oL['pictures'] = raw.pictures.length
   // Get Schwifty
-  console.debug('<tease.js / generateFileList> Going into swifty mode with the following data:', {eM: eM, raw: raw, ratio: ratio, gameCards: gameCards, oL: oL, icl: icl})
+  // console.debug('<tease.js / generateFileList> Going into swifty mode with the following data:', {eM: eM, raw: raw, ratio: ratio, gameCards: gameCards, oL: oL, icl: icl})
   for (var n = 0; n < (pictureAmount + gameCards); n++) {
     if (n % ratio === 0 && n !== 0 && Object.keys(raw.cards).length > 0) {
       let pcat = Object.keys(raw.cards)[Math.floor(Math.random() * Object.keys(raw.cards).length)]
-      console.debug('Selected categorie', pcat, 'is:', categories[pcat])
+      // console.debug('Selected categorie', pcat, 'is:', categories[pcat])
       if (oL[pcat] < categories[pcat].amount) {
         fin.push(raw.cards[pcat][Math.floor(Math.random() * raw.cards[pcat].length)])
       } else {
@@ -746,7 +746,7 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
           }
         } else if (this.parameters.type === 'ctc' || this.parameters.type.split(':')[0] === 'ctc') {
           if (teaseSlave.ctc !== this.parameters.action) teaseSlave.ctc = this.parameters.action
-          teaseSlave.slideControl.ctcUpdate()
+          teaseSlave.cumControl.update()
           if (this.parameters.type.indexOf(':force') !== -1) {
             this.parameters.untilAct = 'ctc:force'
           } else {
