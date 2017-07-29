@@ -549,7 +549,7 @@ function TeaseSlave (options) {
     mute: Mousetrap.bind('m', _ => {
       this.slideControl.core.ticker.muted = !this.slideControl.core.ticker.muted
     })
-    /* super: globalShortcut.register('CommandOrControl+Shift+S', _ => {
+    /* super: Mousetrap.bind(['ctrl+shift+s', 'command+shift+s'], _ => {
       if (this.superMode.active) {
         this.superMode.end()
       } else {
