@@ -396,7 +396,7 @@
     $('#saveLocLabel').text(settings.saveLoc)
     $('#saveLocLabel').fadeIn(100)
     $('#getSaveLoc').text(settings.saveLoc)
-    genderSelect.nameditem('gender-' + settings.gender)
+    genderSelect.selectedIndex = ['neutral', 'male', 'female', 'transsexual', 'straightcouple', 'gaycouple', 'lesbiancouple'].indexOf(settings.gender)
     $('#author').val(settings.author)
     $('#deckName').val(settings.deckName)
     $('#cardtype-' + settings.type).trigger('click')
@@ -404,7 +404,7 @@
     let dil = settings.deckImage
     settings.deckImage = new Image()
     settings.deckImage.src = dil
-    $('#deckImageLabel').text(dil)
+    $('#deckImageLabel').text(settings.deckImage.src)
     $('#deckImageLabel').fadeIn(100)
   } else {
     settings.deckImage = new Image()
