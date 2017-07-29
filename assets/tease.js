@@ -14,6 +14,7 @@ function clean (arr, deleteValue) {
 const fs = require('fs')
 const url = require('url')
 const path = require('path')
+const Mousetrap = require('mousetrap')
 
 function getPictures (path, recursive) {
   console.debug('<tease.js / getPictures> Function called with arguments: ', {path: path, recursive: recursive})
@@ -53,6 +54,12 @@ function generateFileList (picturePath, cardPath, categories) {
     dfd.reject('Not enough arguments.')
   }
 
+  // Trim categories
+  Object.keys(categories).forEach((cat) => {
+    if (categories[cat].amount < 1) delete categories[cat]
+  })
+  console.debug('Trimmed categories to:', categories)
+
   // Read directory files
   let pictures = getPictures(picturePath, true)
   let cards = getPictures(cardPath, true)
@@ -66,11 +73,16 @@ function generateFileList (picturePath, cardPath, categories) {
         raw.cards[cat].push(c)
       }
     })
+    // Trim categories again
+    if (raw.cards[cat].length <= 0) {
+      delete raw.cards[cat]
+      delete categories[cat]
+    }
   })
 
   // Get the ratio of pictures to cards
   let pictureAmount = config.get('teaseParams.pictureAmount')
-  let gameCards = 0
+  let gameCards = 1
   let eM = {}
   Object.keys(categories).forEach((gcKey) => {
     gameCards += categories[gcKey].amount
@@ -154,35 +166,16 @@ function TeaseMaster (teaseParams, fileList, ctisList, icl) {
   }))
   console.debug('<tease.js / TeaseMaster> Window URL set to:', `file://${__dirname}/src/html/tease.html`)
   this.window.setFullScreen(true)
-  this.keyconfig = {
-    mute: globalShortcut.register('M', _ => {
-      this.window.webContents.setAudioMuted(!this.window.webContents.isAudioMuted())
-    }),
-    devTools: globalShortcut.register('CommandOrControl+Shift+Y', _ => {
-      this.window.webContents.toggleDevTools()
-    })
-  } // Part of the keyconfig is done by Master: to control the window, and part is done by Slave: to control the Tease.
+  this.devTools = globalShortcut.register('CommandOrControl+Shift+Y', _ => {
+    this.window.webContents.toggleDevTools()
+  })
   this.window.webContents.executeJavaScript('var teaseSlave = new TeaseSlave(config.get(\'teaseslave\'))')
   if (teaseParams.timing.ticker === undefined) teaseParams.timing.ticker = true
-  this.window.webContents.setAudioMuted(!teaseParams.timing.ticker)
   this.window.once('ready-to-show', _ => {
     this.window.show()
   })
   this.window.on('close', _ => {
-    globalShortcut.unregister('M')
     globalShortcut.unregister('CommandOrControl+Shift+Y')
-    globalShortcut.unregister('Right')
-    globalShortcut.unregister('Left')
-    globalShortcut.unregister('Up')
-    globalShortcut.unregister('Down')
-    globalShortcut.unregister('=')
-    globalShortcut.unregister('-')
-    globalShortcut.unregister('Space')
-    globalShortcut.unregister('I')
-    globalShortcut.unregister('O')
-    globalShortcut.unregister('Esc')
-    globalShortcut.unregister('CommandOrControl+Q')
-    // globalShortcut.unregister('CommandOrControl+Shift+S')
     swapper.swap('teaseend')
   })
 }
@@ -449,6 +442,7 @@ function TeaseSlave (options) {
   }
 
   this.init = _ => {
+    this.slideControl.core.ticker.muted = !this.teaseParams.timing.ticker
     this.slideControl.interval.run = setInterval(this.slideControl.run, 500)
     this.slideControl.next()
   }
@@ -520,40 +514,40 @@ function TeaseSlave (options) {
 
   // Keyconfig
   this.keyconfig = {
-    next: globalShortcut.register('Right', _ => {
+    next: Mousetrap.bind('right', _ => {
       $('#next-button').trigger('click')
-      this.slideControl.heraut(this.slideControl.current, 'button')
+      this.slideControl.heraut(this.slideControl.core.current, 'button')
     }),
-    previous: globalShortcut.register('Left', _ => {
+    previous: Mousetrap.bind('left', _ => {
       $('#previous-button').trigger('click')
-      this.slideControl.heraut(this.slideControl.current, 'button')
+      this.slideControl.heraut(this.slideControl.core.current, 'button')
     }),
-    add: globalShortcut.register('Up', _ => {
+    add: Mousetrap.bind('up', _ => {
       $('#strokeup-button').trigger('click')
     }),
-    sub: globalShortcut.register('Down', _ => {
+    sub: Mousetrap.bind('down', _ => {
       $('#strokedown-button').trigger('click')
     }),
-    longer: globalShortcut.register('=', _ => {
+    longer: Mousetrap.bind(['=', '+'], _ => {
       $('#timeup-button').trigger('click')
     }),
-    shorter: globalShortcut.register('-', _ => {
+    shorter: Mousetrap.bind('-', _ => {
       $('#timedown-button').trigger('click')
     }),
-    pause: globalShortcut.register('Space', _ => {
+    pause: Mousetrap.bind('space', _ => {
       $('#pause-play').trigger('click')
     }),
-    items: globalShortcut.register('I', _ => {
+    items: Mousetrap.bind('i', _ => {
       $('#toggleItems').trigger('click')
     }),
-    instructions: globalShortcut.register('O', _ => {
+    instructions: Mousetrap.bind('o', _ => {
       $('#toggleInstructions').trigger('click')
     }),
-    exit: globalShortcut.register('Esc', _ => {
+    exit: Mousetrap.bind('esc', _ => {
       $('#exit-button').trigger('click')
     }),
-    exit2: globalShortcut.register('CommandOrControl+Q', _ => {
-      $('#exit-button').trigger('click')
+    mute: Mousetrap.bind('m', _ => {
+      this.slideControl.core.ticker.muted = !this.slideControl.core.ticker.muted
     })
     /* super: globalShortcut.register('CommandOrControl+Shift+S', _ => {
       if (this.superMode.active) {
