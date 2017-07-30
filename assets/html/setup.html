@@ -181,6 +181,7 @@
     }
     $('#slideTime').val(config.get('teaseParams.timing.slideTime'))
     $('#enableTicker').prop('checked', config.get('teaseParams.timing.ticker'))
+    if (config.get('teaseParams.timing.tickersrc') === undefined) config.set('teaseParams.timing.tickersrc', '../audio/ticker.ogg')
     tickerSelect.selectedIndex = config.get('teaseParams.timing.tickersrc').indexOf('ticker.ogg') >= 0 ? 0 : 1
   }
 

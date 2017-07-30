@@ -90,7 +90,8 @@ function generateFileList (picturePath, cardPath, categories) {
     // console.debug('<tease.js / generateFileList> Going through amounts for eM, on categorie:', gcKey, 'amount is', categories[gcKey].amount, 'eM is now', eM)
   })
   // console.debug(eM)
-  let ratio = Math.floor(Math.max((pictureAmount / gameCards), (gameCards / pictureAmount)))
+  let ratio = (pictureAmount + gameCards) / gameCards
+  ratio = [ratio, ratio]
   gameCards--
   let oL = {}
   Object.keys(raw.cards).forEach((key) => {
@@ -100,7 +101,8 @@ function generateFileList (picturePath, cardPath, categories) {
   // Get Schwifty
   // console.debug('<tease.js / generateFileList> Going into swifty mode with the following data:', {eM: eM, raw: raw, ratio: ratio, gameCards: gameCards, oL: oL, icl: icl})
   for (var n = 0; n < (pictureAmount + gameCards); n++) {
-    if (n % ratio === 0 && n !== 0 && Object.keys(raw.cards).length > 0) {
+    if (n + 1 > ratio[0] && n !== 0 && Object.keys(raw.cards).length > 0) {
+      ratio[0] += ratio[1]
       let pcat = Object.keys(raw.cards)[Math.floor(Math.random() * Object.keys(raw.cards).length)]
       // console.debug('Selected categorie', pcat, 'is:', categories[pcat])
       if (oL[pcat] < categories[pcat].amount) {
@@ -450,12 +452,12 @@ function TeaseSlave (options) {
       alert('Your Mistress won\'t allow you to leave!')
     } else {
       config.set('stats.lastTease.cumming', {full: this.cumControl.total.full, edge: this.cumControl.total.edge, ruin: this.cumControl.total.ruin, nonAllowed: this.cumControl.nonAllowed})
-      let oldtotal = config.get('stats.total.cumming')
+      let oldtotal = config.get('stats.total.cumming') || {full: 0, edge: 0, ruin: 0, nonAllowed: 0}
       let newtotal = {
         full: oldtotal.full + this.cumControl.total.full,
         edge: oldtotal.edge + this.cumControl.total.edge,
         ruin: oldtotal.ruin + this.cumControl.total.ruin,
-        nonAllowed: (oldtotal.nonAllowed || 0) + this.cumControl.nonAllowed
+        nonAllowed: oldtotal.nonAllowed + this.cumControl.nonAllowed
       }
       config.set('stats.total.cumming', newtotal)
       config.set('stats.teases.total', (config.get('stats.teases.total') || 0) + 1)
@@ -592,10 +594,11 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
     if (until === 'instant' && boa === 'after') return true
     if (teaseSlave.slideControl.core.current === this.index) return false
     until = until.split(':')
+    if (until[1] === 'any' && (type[0] === 'picture' || type[0] === 'instruction')) fire = true
     if (until[1] === type[0]) {
-      if (until[2] === 'any' && type[1] !== 'edge') {
+      if (until[2] === 'any' && (type[0] === 'picture' || type[0] === 'instruction')) {
         fire = true
-      } else if (until[1] === 'instruction' && until[2] === 'mistress' && type[1].indexOf('mistress') !== -1) {
+      } else if (until[1] === 'instruction' && until[2] === 'mistress' && (type[1].indexOf('mistress') !== -1 || type[1].indexOf('master') !== -1)) {
         fire = true
       } else if (until[2] === type[1]) {
         fire = true
@@ -605,7 +608,7 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
     }
     if (fire) {
       if (times !== undefined) {
-        if (parseInt(times, 10) <= this.counter + 1) return true
+        if (parseInt(times, 10) <= this.counter) return true
         this.counter++
         return false
       }
@@ -624,6 +627,13 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
   }
   this.run = (type, slide) => {
     type = type.toLowerCase()
+    // Delay
+    if (this.parameters.delay > 0) {
+      if (slide >= this.index) {
+        if (type.indexOf('instruction') >= 0 || type.indexOf('picture') >= 0) this.parameters.delay--
+      }
+      return 'fail'
+    }
     if (this.start === true) {
       // Until (before)
       if (this.until(type, 'before') && this.parameters.type !== 'on') {
@@ -681,11 +691,6 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
             return 'fail'
           }
         }
-      }
-      // Delay
-      if (this.parameters.delay > 0) {
-        if (this.index !== teaseSlave.slideControl.core.current) this.parameters.delay--
-        return 'fail'
       }
       // Fors
       if (this.parameters.fors.split(':')[1] === 'any' ||
