@@ -611,7 +611,7 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
     until = until.split(':')
     if (until[1] === 'any' && (type[0] === 'picture' || type[0] === 'instruction')) fire = true
     if (until[1] === type[0]) {
-      if (until[2] === 'any' && (type[0] === 'picture' || type[0] === 'instruction')) {
+      if (until[2] === 'any' && (type[0] === 'picture' || type[0] === 'instruction' || type[0] === 'cum')) {
         fire = true
       } else if (until[1] === 'instruction' && until[2] === 'mistress' && (type[1].indexOf('mistress') !== -1 || type[1].indexOf('master') !== -1)) {
         fire = true
