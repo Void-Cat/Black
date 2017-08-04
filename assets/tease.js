@@ -1,5 +1,13 @@
 /* global $, config, swapper, globalShortcut, BrowserWindow, Audio, alert, close, teaseSlave */
 
+function shrink (arr) {
+  let retarr = []
+  arr.forEach((val) => {
+    if (val !== undefined) retarr.push(val)
+  })
+  return retarr
+}
+
 function clean (arr, deleteValue) {
   let mod = 0
   arr.forEach((val, i) => {
@@ -8,6 +16,7 @@ function clean (arr, deleteValue) {
       mod++
     }
   })
+  shrink(arr)
   return arr
 }
 
@@ -80,6 +89,39 @@ function generateFileList (picturePath, cardPath, categories) {
     }
   })
 
+  // Double check any double cards (expirimental)
+  var mfd = []
+  Object.keys(raw.cards).forEach((cat) => {
+    let catname = categories[cat].name.toLowerCase()
+    raw.cards[cat].forEach((check, i) => {
+      check = check.toLowerCase()
+      Object.keys(raw.cards).forEach((cat1) => {
+        let cat1name = categories[cat1].name.toLowerCase()
+        if (cat1 !== cat) {
+          if (check.lastIndexOf(cat1name) !== -1) {
+            if (check.indexOf('\\' + cat1name + '\\') !== -1) {
+              mfd.push(cat + ':::' + i)
+            } else if (check.lastIndexOf(cat1name) > check.lastIndexOf(catname)) {
+              mfd.push(cat + ':::' + i)
+            } else if (check.split(catname).length <= 2 && check.indexOf('\\' + catname + '\\') === -1) {
+              mfd.push(cat + ':::' + i)
+            }
+          }
+        }
+      })
+    })
+  })
+  let mft = {}
+  mfd.forEach((tp) => {
+    mft[tp.split(':::')[0]] = 0
+  })
+  mfd.forEach((td) => {
+    let tdp = td.split(':::')
+    delete raw.cards[tdp[0]][tdp[1] - mft[tdp[0]]]
+    mft[tdp[0]]++
+    raw.cards[tdp[0]] = shrink(raw.cards[tdp[0]])
+  })
+
   // Get the ratio of pictures to cards
   let pictureAmount = config.get('teaseParams.pictureAmount')
   let gameCards = 1
@@ -99,7 +141,7 @@ function generateFileList (picturePath, cardPath, categories) {
   })
   oL['pictures'] = raw.pictures.length
   // Get Schwifty
-  // console.debug('<tease.js / generateFileList> Going into swifty mode with the following data:', {eM: eM, raw: raw, ratio: ratio, gameCards: gameCards, oL: oL, icl: icl})
+  console.debug('<tease.js / generateFileList> Going into swifty mode with the following data:', {eM: eM, raw: raw, ratio: ratio, gameCards: gameCards, oL: oL, icl: icl})
   for (var n = 0; n < (pictureAmount + gameCards); n++) {
     if (n + 1 > ratio[0] && n !== 0 && Object.keys(raw.cards).length > 0) {
       ratio[0] += ratio[1]
@@ -212,7 +254,7 @@ function TeaseSlave (options) {
     },
     next: _ => {
       this.slideControl.core.current++
-      console.debug('<tease.js / TeaseSlave> Next called current will be:', this.slideControl.core.current)
+      console.debug('<tease.js / TeaseSlave> New current:', this.slideControl.core.current)
       this.slideControl.set(this.slideControl.core.current)
     },
     previous: _ => {
@@ -223,6 +265,9 @@ function TeaseSlave (options) {
       }
     },
     set: (slide) => {
+      if (typeof slide !== 'number') slide = parseInt(slide, 10)
+      if (isNaN(slide)) console.error('<tease.js / TeaseSlave> Set called but slide value is NaN, namely:', slide)
+      if (this.slideControl.core.current !== slide) this.slideControl.core.current = slide
       clearTimeout(this.slideControl.core.backup)
       if (slide >= this.fileList.length) this.exit('end')
       $('#mainImage').attr('src', this.fileList[slide])
@@ -288,17 +333,7 @@ function TeaseSlave (options) {
       }
       if (ev !== undefined) p.type = ev
       p.index = slide
-      let rv = []
-      this.ctisCards.forEach((f, i) => {
-        if (f.update(p) === 'remove') {
-          rv.push(i)
-        }
-      })
-      let transform = 0
-      rv.forEach((i) => {
-        this.ctisCards.splice(i - transform, 1)
-        transform++
-      })
+      this.actionControl.run(p)
     },
     adjust: (timer, adjustment) => {
       let coreboy
@@ -513,6 +548,70 @@ function TeaseSlave (options) {
     setTimeout(_ => { $('#contact > #' + id).fadeOut(100, _ => { $('#contact > #' + id).remove() }) }, 4100)
   }
 
+  this.actionControl = {
+    core: {
+      active: {}
+    },
+    add: (action) => {
+      let idf = Math.floor(Math.random() * 100000)
+      while (this.actionControl.core.active[idf] !== undefined) {
+        idf++
+      }
+      this.actionControl.core.active[idf] = action
+      console.debug('<tease.js / TeaseSlave / actionControl> Added action with identifier', idf)
+      return idf
+    },
+    remove: (idf) => {
+      if (this.actionControl.core.active[idf] !== undefined) delete this.actionControl.core.active[idf]
+      console.debug('<tease.js / TeaseSlave / actionControl> Removed action with identifier', idf)
+      return true
+    },
+    run: (p, idx) => {
+      console.debug('<tease.js / TeaseSlave / actionControl> Run called with arguments:', {p: p, idx: idx})
+      if (idx === undefined) {
+        if (p.type.split(':')[0] === 'instruction') {
+          this.ctisCards.forEach((card) => {
+            let check = card.check(p.index)
+            if (check !== false) {
+              check.forEach((newact) => {
+                this.actionControl.add(newact)
+              })
+            }
+          })
+        }
+        Object.keys(this.actionControl.core.active).forEach((idf) => {
+          let rv = this.actionControl.core.active[idf].run(p.type, p.index)
+          console.debug('<tease.js / TeaseSlave / actionControl> Run returned', rv, 'on action', idf)
+          if (rv === 'remove') {
+            let after = this.actionControl.core.active[idf].afterAct()
+            if (after !== undefined) {
+              after.forEach((a) => {
+                let ida = this.actionControl.add(a)
+                this.actionControl.run({type: 'firstrun', index: p.index}, ida)
+              })
+            }
+            this.actionControl.remove(idf)
+          }
+        })
+      } else {
+        if (this.actionControl.core.active[idx] !== undefined) {
+          let rv = this.actionControl.core.active[idx].run(p.type, p.index)
+          console.debug('<tease.js / TeaseSlave / actionControl> Run returned', rv, 'on action', idx)
+          if (rv === 'remove') {
+            let after = this.actionControl.core.active[idx].afterAct()
+            if (after !== undefined) {
+              after.forEach((a) => {
+                let ida = this.actionControl.add(a)
+                this.actionControl.run({type: 'firstrun', index: p.index}, ida)
+              })
+            }
+            this.actionControl.remove(idx)
+          }
+        }
+      }
+    }
+  }
+
   // Keyconfig
   this.keyconfig = {
     next: Mousetrap.bind('right', _ => {
@@ -562,7 +661,7 @@ function TeaseSlave (options) {
 
 function CTISAction (start, delay, type, fors, conditional, action, until, after, index) {
   console.debug('<tease.js / CTISAction> Action initialized with parameters:', {start: start, type: type, fors: fors, conditional: conditional, action: action, until: until, index: index})
-  if (delay === undefined) delay = 1
+  if (delay === undefined) delay = 0
   this.parameters = {
     start: start || 'draw',
     delay: parseInt(delay, 10),
@@ -575,21 +674,13 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
   }
   this.counter = 0
   this.index = index
-  this.drawn = false
-  this.start = this.parameters.start === 'start' || false
-  this.draw = _ => {
-    this.drawn = true
-    if (this.parameters.start !== 'start') this.start = true
-  }
   this.until = (type, boa) => {
     if (this.parameters.until === 'fulltrue') return true
-    if (this.drawn === false) return false
     if (this.parameters.type === 'on' && boa === 'before') return false
     if (this.parameters.delay > 0) return false
     if (this.parameters.until === undefined) this.parameters.until = 'instant'
-    // let until = this.parameters.until.split('*')[0].toLowerCase()
-    let until, times, delay
-    // let times = this.parameters.until.split('*')[1] || undefined
+    let until = this.parameters.until.toLowerCase()
+    let times, delay
     let fire = false
     if (until.indexOf('+') !== -1) {
       until = until.split('+')[0]
@@ -599,6 +690,7 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
       times = parseInt(until.split('*')[1], 10)
       until = until.split('*')[0]
     }
+    if (delay === undefined) delay = '0'
     if (delay.indexOf('*') !== -1) {
       times = parseInt(delay.split('*')[1], 10)
       delay = delay.split('*')[0]
@@ -637,11 +729,14 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
       this.parameters.after.forEach((act) => {
         ret.push(new CTISAction(act.start, act.delay, act.type, act.fors, act.conditional, act.action, act.until, act.after, teaseSlave.slideControl.core.current))
       })
+      // console.debug('<tease.js / CTISAction> After parameter found, returning actions:', ret)
       return ret
     } else { return undefined }
   }
   this.run = (type, slide) => {
     type = type.toLowerCase()
+    // Drawing too early failsafe
+    if (this.parameters.start === 'draw' && teaseSlave.slideControl.core.current < this.index) return 'fail'
     // Delay
     if (this.parameters.delay > 0) {
       if (slide >= this.index) {
@@ -649,192 +744,12 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
       }
       return 'fail'
     }
-    if (this.start === true) {
-      // Until (before)
-      if (this.until(type, 'before') && this.parameters.type !== 'on') {
-        if (this.parameters.untilDelay === undefined) {
-          console.debug('<tease.js / CTISAction> Until succeeded, extra info:', {boa: 'before', until: this.parameters.until, type: type})
-          if (this.parameters.untilAct !== undefined) {
-            if (this.parameters.untilAct === 'unblockQuit') teaseSlave.blockExit = false
-            if (this.parameters.untilAct.indexOf('key:') !== -1) {
-              if (teaseSlave.itemControl.keys >= parseInt(this.parameters.untilAct.split(':')[1], 10)) teaseSlave.itemControl.useKey('')
-            }
-            if (this.parameters.untilAct === 'ctc') {
-              teaseSlave.ctc = 'false'
-              teaseSlave.slideControl.ctcUpdate()
-            }
-            if (this.parameters.untilAct === 'ctc:force') {
-              let lastCum = teaseSlave.cumControl.core.cumControl.last.split(':')
-              if (parseInt(lastCum[0], 10) > this.index && lastCum[1] === this.parameters.action) {
-                let ol = 'came'
-                if (lastCum[1] === 'edge') ol = 'edged'
-                teaseSlave.contact('You ' + ol + ' in time and Mistress is pleased.', 'green')
-                teaseSlave.subControl.mood.good()
-              } else {
-                let ol = 'cum'
-                if (lastCum[1] === 'edge') ol = 'edge'
-                teaseSlave.contact('You didn\'t ' + ol + ' in time and Mistress is displeased.', 'red')
-                teaseSlave.subControl.mood.bad()
-              }
-              teaseSlave.ctc = 'false'
-              teaseSlave.slideControl.ctcUpdate()
-            }
-            if (this.parameters.untilAct === 'chastity') teaseSlave.itemControl.chastity(false)
-            if (this.parameters.untilAct.indexOf('item:') !== -1) teaseSlave.itemControl.remove(this.parameters.untilAct.split(':')[1])
-            if (this.parameters.untilAct.indexOf('instruction:') !== -1) teaseSlave.slideControl.removeInstruction(parseInt(this.parameters.untilAct.split(':')[1], 10))
-            if (this.parameters.untilAct.indexOf('position:') !== -1 && this.parameters.untilAct.split(':')[1] === $('#position').attr('pos')) teaseSlave.slideControl.position(0, 'Free')
-          }
-          return 'remove'
-        } else if (this.parameters.untilDelay <= 0) {
-          return 'remove'
-        } else if (this.parameters.untilDelay > 0) {
-          this.parameters.until = 'fulltrue'
-          this.parameters.untilDelay--
-        }
-      }
-      // Conditional
-      if (this.parameters.conditional !== undefined && this.parameters.conditional !== 'none') {
-        let conditional = this.parameters.conditional.split(':')
-        if (conditional[0] === 'mood') {
-          if (conditional[1] !== teaseSlave.subControl.core.mood) {
-            if (conditional[2] === 'force') {
-              return 'remove'
-            }
-            return 'fail'
-          }
-        } else if (conditional[0] === 'sublevel') {
-          let comparator = this.parameters.conditional.split(':')[1]
-          let factor = this.parameters.conditional.split(':')[2]
-          if ((comparator === '==' && teaseSlave.subControl.core.sublevel !== parseInt(factor, 10)) ||
-             (comparator === '>=' && teaseSlave.subControl.core.sublevel < parseInt(factor, 10)) ||
-             (comparator === '<=' && teaseSlave.subControl.core.sublevel > parseInt(factor, 10)) ||
-             (comparator === '>' && teaseSlave.subControl.core.sublevel <= parseInt(factor, 10)) ||
-             (comparator === '<' && teaseSlave.subControl.core.sublevel >= parseInt(factor, 10)) ||
-             (comparator === '!=' && teaseSlave.subControl.core.sublevel === parseInt(factor, 10))) {
-            return 'fail'
-          }
-        }
-      }
-      // Fors
-      if (this.parameters.fors.split(':')[1] === 'any' ||
-          this.parameters.fors === 'instant' ||
-          (this.parameters.fors.split(':')[1] === 'picture' && type === 'picture') ||
-          (this.parameters.fors.split(':')[1] === 'instruction' && (this.parameters.fors.split(':')[2] === 'any' || this.parameters.fors.split(':')[2] === type.split(':')[1])) ||
-          (this.parameters.fors.split(':')[1] === 'instruction' && this.parameters.fors.split(':')[2] === 'mistress' && type.split(':')[1].indexOf('mistress') !== -1) ||
-          (this.parameters.fors.split(':')[1] === 'cum' && type.split(':')[0] === 'cum' && (this.parameters.fors.split(':')[2] === type.split(':')[1] || this.parameters.fors.split(':')[2] === 'any'))) {
-        console.debug('<tease.js / CTISAction> Action is qualified, action type:', this.parameters.type, ', action:', this.parameters.action)
-        if (this.parameters.fors === 'instant') this.parameters.fors = 'never'
-        // Action
-        if (this.parameters.type === 'strokecount' || this.parameters.type === 'slidetime') {
-          if (this.parameters.action.indexOf('sw:') === -1) {
-            teaseSlave.slideControl.adjust(this.parameters.type, this.parameters.action)
-          } else {
-            let types = this.parameters.action.split('sw:')[1].split(',')
-            if (this.parameters.memory === undefined) this.parameters.memory = 0
-            teaseSlave.slideControl.adjust(this.parameters.type, '=' + types[this.parameters.memory])
-            this.parameters.memory++
-            if (this.parameters.memory >= types.length) this.parameters.memory = 0
-          }
-        } else if (this.parameters.type === 'setslide') {
-          let modifier = this.parameters.action.split('', 1)
-          let coreboy = slide
-          if (modifier === '+') {
-            coreboy += parseInt(this.parameters.action.replace('+', ''), 10)
-          } else if (modifier === '-') {
-            coreboy -= parseInt(this.parameters.action.replace('-', ''), 10)
-          } else if (modifier === '*') {
-            coreboy = coreboy * parseInt(this.parameters.action.replace('*', ''))
-          } else if (modifier === '/') {
-            coreboy = Math.floor(coreboy / parseInt(this.parameters.action.replace('/', '')))
-          } else {
-            coreboy = Math.floor(parseInt(teaseSlave.parameters.action, 10))
-          }
-          teaseSlave.slideControl.set(coreboy)
-        } else if (this.parameters.type === 'stop') {
-          if (this.parameters.action === 'block') {
-            if (this.parameters.until === 'end') this.parameters.until = 'instant'
-            if (this.parameters.until !== undefined && this.paramters.until !== 'instant') {
-              this.parameters.untilAct = 'unblockQuit'
-            }
-            teaseSlave.blockExit = true
-          } else if (this.parameters.action === 'allow') {
-            teaseSlave.allowExit = true
-            if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant') {
-              this.parameters.untilAct = 'disallowQuit'
-            }
-          } else {
-            // console.debug('<tease.js / CTISAction> Should have quit now:', this.parameters)
-            teaseSlave.exit('card')
-          }
-        } else if (this.parameters.type === 'ctc' || this.parameters.type.split(':')[0] === 'ctc') {
-          if (teaseSlave.ctc !== this.parameters.action) teaseSlave.ctc = this.parameters.action
-          teaseSlave.slideControl.ctcUpdate()
-          if (this.parameters.type.indexOf(':force') !== -1) {
-            this.parameters.untilAct = 'ctc:force'
-          } else {
-            this.parameters.untilAct = 'ctc'
-          }
-        } else if (this.parameters.type === 'chastity') {
-          if (this.parameters.action === 'false' || this.parameters.action === false) {
-            teaseSlave.itemControl.remove('Chastity')
-            teaseSlave.itemControl.chastity(false)
-          } else {
-            if (teaseSlave.itemControl.active.indexOf('Chastity') === -1) teaseSlave.itemControl.add('Chastity')
-            teaseSlave.itemControl.chastity(true)
-          }
-          if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant' && this.parameters.action !== 'false') this.parameters.untilAct = 'chastity'
-        } else if (this.parameters.type === 'item') {
-          let item = this.parameters.action
-          if (this.parameters.until !== undefined && this.parameters.until !== 'end') this.parameters.untilAct = 'item:' + item
-          teaseSlave.itemControl.add(item)
-        } else if (this.parameters.type === 'key') {
-          let n = 1
-          if (typeof parseInt(this.parameters.action, 10) === 'number') n = parseInt(this.parameters.action, 10)
-          teaseSlave.itemControl.addKey(n)
-          if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant') this.parameters.untilAct = 'key:' + teaseSlave.itemControl.keys
-        } else if (this.parameters.type === 'instruction') {
-          let id = Math.floor(Math.random() * 10000)
-          teaseSlave.slideControl.addInstruction(id, this.parameters.action)
-          if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant') this.parameters.untilAct = 'instruction:' + id
-        } else if (this.parameters.type === 'position') {
-          let id = Math.floor(Math.random() * 10000)
-          teaseSlave.slideControl.position(id, this.parameters.action)
-          if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant') this.parameters.untilAct = 'position:' + id
-        } else if (this.parameters.type === 'contact') {
-          let color = this.parameters.action.split(':')[0]
-          let message = this.parameters.action.split(':')[1]
-          teaseSlave.contact(message, color)
-        } else if (this.parameters.type === 'on') {
-          if (this.parameters.after === undefined) this.parameters.after = []
-          this.parameters.after = this.parameters.after.concat(this.parameters.action)
-          return 'remove'
-        } else if (this.parameters.type === 'supermode') {
-          teaseSlave.superMode.go()
-        } else if (this.parameters.type === 'ignore') {
-          teaseSlave.slideControl.ignore(this.parameters.action)
-        } else if (this.parameters.type === 'mood') {
-          if (this.parameters.action === 'good') teaseSlave.subControl.mood.good()
-          if (this.parameters.action === 'bad') teaseSlave.subControl.mood.bad()
-        } else if (this.parameters.type === 'sublevel') {
-          let modifier = this.parameters.action.charAt(0)
-          if (modifier === '+') {
-            teaseSlave.subControl.core.sublevel += parseInt(this.parameters.action.slice(1), 10)
-          } else if (modifier === '-') {
-            teaseSlave.subControl.core.sublevel -= parseInt(this.parameters.action.slice(1), 10)
-          } else {
-            if (!isNaN(parseInt(this.parameters.action, 10))) {
-              teaseSlave.subControl.core.sublevel = parseInt(this.parameters.action, 10)
-            }
-          }
-          if (teaseSlave.subControl.core.sublevel > 5) teaseSlave.subControl.core.sublevel = 5
-          if (teaseSlave.subControl.core.sublevel < -5) teaseSlave.subControl.core.sublevel = -5
-        }
-      }
-      // Until after
-      if (this.until(type, 'after')) {
+    // Until (before)
+    if (this.until(type, 'before') && this.parameters.type !== 'on') {
+      if (this.parameters.untilDelay === undefined) {
+        console.debug('<tease.js / CTISAction> Until succeeded, extra info:', {boa: 'before', until: this.parameters.until, type: type})
         if (this.parameters.untilAct !== undefined) {
           if (this.parameters.untilAct === 'unblockQuit') teaseSlave.blockExit = false
-          if (this.parameters.untilAct === 'disallowQuit') teaseSlave.allowExit = false
           if (this.parameters.untilAct.indexOf('key:') !== -1) {
             if (teaseSlave.itemControl.keys >= parseInt(this.parameters.untilAct.split(':')[1], 10)) teaseSlave.itemControl.useKey('')
           }
@@ -864,10 +779,221 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
           if (this.parameters.untilAct.indexOf('position:') !== -1 && this.parameters.untilAct.split(':')[1] === $('#position').attr('pos')) teaseSlave.slideControl.position(0, 'Free')
         }
         return 'remove'
+      } else if (this.parameters.untilDelay <= 0) {
+        return 'remove'
+      } else if (this.parameters.untilDelay > 0) {
+        this.parameters.until = 'fulltrue'
+        this.parameters.untilDelay--
       }
-      this.first = true
-      return true
     }
+    // Conditional
+    if (this.parameters.conditional !== undefined && this.parameters.conditional !== 'none') {
+      let conditional = this.parameters.conditional.split(':')
+      if (conditional[0] === 'mood') {
+        if (conditional[1] !== teaseSlave.subControl.core.mood) {
+          if (conditional[2] === 'force') {
+            return 'remove'
+          }
+          return 'fail'
+        }
+      } else if (conditional[0] === 'sublevel') {
+        let comparator = this.parameters.conditional.split(':')[1]
+        let factor = this.parameters.conditional.split(':')[2]
+        if ((comparator === '==' && teaseSlave.subControl.core.sublevel !== parseInt(factor, 10)) ||
+           (comparator === '>=' && teaseSlave.subControl.core.sublevel < parseInt(factor, 10)) ||
+           (comparator === '<=' && teaseSlave.subControl.core.sublevel > parseInt(factor, 10)) ||
+           (comparator === '>' && teaseSlave.subControl.core.sublevel <= parseInt(factor, 10)) ||
+           (comparator === '<' && teaseSlave.subControl.core.sublevel >= parseInt(factor, 10)) ||
+           (comparator === '!=' && teaseSlave.subControl.core.sublevel === parseInt(factor, 10))) {
+          return 'fail'
+        }
+      }
+    }
+    // Fors
+    if ((this.parameters.fors.split(':')[1] === 'any' && (type === 'picture' || type.split(':')[0] === 'instruction' || type.split(':') === 'cum')) ||
+        this.parameters.fors === 'instant' ||
+        (this.parameters.fors.split(':')[1] === 'picture' && type === 'picture') ||
+        (this.parameters.fors.split(':')[1] === 'instruction' && (this.parameters.fors.split(':')[2] === 'any' || this.parameters.fors.split(':')[2] === type.split(':')[1])) ||
+        (this.parameters.fors.split(':')[1] === 'instruction' && this.parameters.fors.split(':')[2] === 'mistress' && (type.split(':')[1].indexOf('mistress') !== -1 || type.split(':')[1].indexOf('master'))) ||
+        (this.parameters.fors.split(':')[1] === 'cum' && type.split(':')[0] === 'cum' && (this.parameters.fors.split(':')[2] === type.split(':')[1] || this.parameters.fors.split(':')[2] === 'any'))) {
+      console.debug('<tease.js / CTISAction> Action is qualified, action type:', this.parameters.type, ', action:', this.parameters.action)
+      if (this.parameters.fors === 'instant') this.parameters.fors = 'never'
+      // Action
+      if (this.parameters.type === 'strokecount' || this.parameters.type === 'slidetime') {
+        if (this.parameters.action.indexOf('sw:') === -1) {
+          teaseSlave.slideControl.adjust(this.parameters.type, this.parameters.action)
+        } else {
+          let types = this.parameters.action.split('sw:')[1].split(',')
+          if (this.parameters.memory === undefined) this.parameters.memory = 0
+          teaseSlave.slideControl.adjust(this.parameters.type, '=' + types[this.parameters.memory])
+          this.parameters.memory++
+          if (this.parameters.memory >= types.length) this.parameters.memory = 0
+        }
+      } else if (this.parameters.type === 'setslide') {
+        let modifier = this.parameters.action.split('', 1)
+        let coreboy = slide
+        if (modifier === '+') {
+          coreboy += parseInt(this.parameters.action.replace('+', ''), 10)
+        } else if (modifier === '-') {
+          coreboy -= parseInt(this.parameters.action.replace('-', ''), 10)
+        } else if (modifier === '*') {
+          coreboy = coreboy * parseInt(this.parameters.action.replace('*', ''))
+        } else if (modifier === '/') {
+          coreboy = Math.floor(coreboy / parseInt(this.parameters.action.replace('/', '')))
+        } else {
+          coreboy = Math.floor(parseInt(teaseSlave.parameters.action, 10))
+        }
+        teaseSlave.slideControl.set(coreboy)
+      } else if (this.parameters.type === 'stop') {
+        if (this.parameters.action === 'block') {
+          if (this.parameters.until === 'end') this.parameters.until = 'instant'
+          if (this.parameters.until !== undefined && this.paramters.until !== 'instant') {
+            this.parameters.untilAct = 'unblockQuit'
+          }
+          teaseSlave.blockExit = true
+        } else if (this.parameters.action === 'allow') {
+          teaseSlave.allowExit = true
+          if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant') {
+            this.parameters.untilAct = 'disallowQuit'
+          }
+        } else {
+          // console.debug('<tease.js / CTISAction> Should have quit now:', this.parameters)
+          teaseSlave.exit('card')
+        }
+      } else if (this.parameters.type === 'ctc' || this.parameters.type.split(':')[0] === 'ctc') {
+        if (teaseSlave.ctc !== this.parameters.action) teaseSlave.ctc = this.parameters.action
+        teaseSlave.slideControl.ctcUpdate()
+        if (this.parameters.type.indexOf(':force') !== -1) {
+          this.parameters.untilAct = 'ctc:force'
+        } else {
+          this.parameters.untilAct = 'ctc'
+        }
+      } else if (this.parameters.type === 'chastity') {
+        if (this.parameters.action === 'false' || this.parameters.action === false) {
+          teaseSlave.itemControl.remove('Chastity')
+          teaseSlave.itemControl.chastity(false)
+        } else {
+          if (teaseSlave.itemControl.active.indexOf('Chastity') === -1) teaseSlave.itemControl.add('Chastity')
+          teaseSlave.itemControl.chastity(true)
+        }
+        if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant' && this.parameters.action !== 'false') this.parameters.untilAct = 'chastity'
+      } else if (this.parameters.type === 'item') {
+        let item = this.parameters.action
+        if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant') this.parameters.untilAct = 'item:' + item
+        teaseSlave.itemControl.add(item)
+      } else if (this.parameters.type === 'key') {
+        let n = 1
+        if (typeof parseInt(this.parameters.action, 10) === 'number') n = parseInt(this.parameters.action, 10)
+        teaseSlave.itemControl.addKey(n)
+        if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant') this.parameters.untilAct = 'key:' + teaseSlave.itemControl.keys
+      } else if (this.parameters.type === 'instruction') {
+        let id = Math.floor(Math.random() * 10000)
+        teaseSlave.slideControl.addInstruction(id, this.parameters.action)
+        if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant') this.parameters.untilAct = 'instruction:' + id
+      } else if (this.parameters.type === 'position') {
+        let id = Math.floor(Math.random() * 10000)
+        teaseSlave.slideControl.position(id, this.parameters.action)
+        if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant') this.parameters.untilAct = 'position:' + id
+      } else if (this.parameters.type === 'contact') {
+        let color = this.parameters.action.split(':')[0]
+        let message = this.parameters.action.split(':')[1]
+        teaseSlave.contact(message, color)
+      } else if (this.parameters.type === 'on') {
+        if (this.parameters.after === undefined) this.parameters.after = []
+        this.parameters.after = this.parameters.after.concat(this.parameters.action)
+        return 'remove'
+      } else if (this.parameters.type === 'supermode') {
+        teaseSlave.superMode.go()
+      } else if (this.parameters.type === 'ignore') {
+        teaseSlave.slideControl.ignore(this.parameters.action)
+      } else if (this.parameters.type === 'mood') {
+        if (this.parameters.action === 'good') teaseSlave.subControl.mood.good()
+        if (this.parameters.action === 'bad') teaseSlave.subControl.mood.bad()
+      } else if (this.parameters.type === 'sublevel') {
+        let modifier = this.parameters.action.charAt(0)
+        if (modifier === '+') {
+          teaseSlave.subControl.core.sublevel += parseInt(this.parameters.action.slice(1), 10)
+        } else if (modifier === '-') {
+          teaseSlave.subControl.core.sublevel -= parseInt(this.parameters.action.slice(1), 10)
+        } else {
+          if (!isNaN(parseInt(this.parameters.action, 10))) {
+            teaseSlave.subControl.core.sublevel = parseInt(this.parameters.action, 10)
+          }
+        }
+        if (teaseSlave.subControl.core.sublevel > 5) teaseSlave.subControl.core.sublevel = 5
+        if (teaseSlave.subControl.core.sublevel < -5) teaseSlave.subControl.core.sublevel = -5
+      } else if (this.parameters.type === 'skip') {
+        let inverseMove = (this.parameters.action.charAt(0) === '-')
+        if (inverseMove) this.parameters.action = this.parameters.action.slice(1)
+        let goalType = this.parameters.action.split(':')[1].toLowerCase()
+        let times = parseInt(this.parameters.action.split(':')[0], 10)
+        let goal
+        if (inverseMove) {
+          for (var d = teaseSlave.slideControl.core.current - 1; d >= 0; d--) {
+            if (teaseSlave.icl[d] !== undefined) {
+              if (teaseSlave.icl[d].toLowerCase() === goalType && goal === undefined) {
+                if (times > 0) times--
+                if (times === 0) goal = d
+              }
+            }
+          }
+        } else {
+          // console.debug('<tease.js / CTISAction> Checking for', goalType, 'instruction cards')
+          for (var u = teaseSlave.slideControl.core.current + 1; u < teaseSlave.fileList.length; u++) {
+            // console.debug('<tease.js / CTISAction> checking against', teaseSlave.icl[u], 'where u is', u, 'and times is', times)
+            if (teaseSlave.icl[u] !== undefined) {
+              if (teaseSlave.icl[u].toLowerCase() === goalType && goal === undefined) {
+                if (times > 0) times--
+                if (times === 0) goal = u
+              }
+            }
+          }
+        }
+        if (goal !== undefined) {
+          teaseSlave.contact('A card skipped you to slide ' + (goal + 1) + '.', 'green')
+          teaseSlave.slideControl.set(goal)
+        } else {
+          teaseSlave.contact('No applicable ' + goalType + ' card was found.', 'yellow')
+        }
+      }
+    }
+    // Until after
+    if (this.until(type, 'after')) {
+      if (this.parameters.untilAct !== undefined) {
+        if (this.parameters.untilAct === 'unblockQuit') teaseSlave.blockExit = false
+        if (this.parameters.untilAct === 'disallowQuit') teaseSlave.allowExit = false
+        if (this.parameters.untilAct.indexOf('key:') !== -1) {
+          if (teaseSlave.itemControl.keys >= parseInt(this.parameters.untilAct.split(':')[1], 10)) teaseSlave.itemControl.useKey('')
+        }
+        if (this.parameters.untilAct === 'ctc') {
+          teaseSlave.ctc = 'false'
+          teaseSlave.slideControl.ctcUpdate()
+        }
+        if (this.parameters.untilAct === 'ctc:force') {
+          let lastCum = teaseSlave.cumControl.core.cumControl.last.split(':')
+          if (parseInt(lastCum[0], 10) > this.index && lastCum[1] === this.parameters.action) {
+            let ol = 'came'
+            if (lastCum[1] === 'edge') ol = 'edged'
+            teaseSlave.contact('You ' + ol + ' in time and Mistress is pleased.', 'green')
+            teaseSlave.subControl.mood.good()
+          } else {
+            let ol = 'cum'
+            if (lastCum[1] === 'edge') ol = 'edge'
+            teaseSlave.contact('You didn\'t ' + ol + ' in time and Mistress is displeased.', 'red')
+            teaseSlave.subControl.mood.bad()
+          }
+          teaseSlave.ctc = 'false'
+          teaseSlave.slideControl.ctcUpdate()
+        }
+        if (this.parameters.untilAct === 'chastity') teaseSlave.itemControl.chastity(false)
+        if (this.parameters.untilAct.indexOf('item:') !== -1) teaseSlave.itemControl.remove(this.parameters.untilAct.split(':')[1])
+        if (this.parameters.untilAct.indexOf('instruction:') !== -1) teaseSlave.slideControl.removeInstruction(parseInt(this.parameters.untilAct.split(':')[1], 10))
+        if (this.parameters.untilAct.indexOf('position:') !== -1 && this.parameters.untilAct.split(':')[1] === $('#position').attr('pos')) teaseSlave.slideControl.position(0, 'Free')
+      }
+      return 'remove'
+    }
+    this.first = true
+    return true
   }
 }
 
@@ -876,38 +1002,11 @@ function CTISCard (instruction, index) {
   this.instruction = instruction
   this.index = index
   this.actions = []
-  this.update = (p) => {
-    if (this.actions.length > 0) {
-      let rv = []
-      this.actions.forEach((action, i) => {
-        rv.push(action.run(p.type, p.index))
-      })
-      let transform = 0
-      let ra = []
-      rv.forEach((rval, i) => {
-        if (rval === 'remove') {
-          let c = this.actions[i - transform].afterAct()
-          if (c !== undefined) ra.concat(c)
-          transform++
-          this.actions.splice(i, 1)
-        }
-      })
-      ra.forEach((rval) => {
-        this.actions.push(rval)
-      })
-      if (p.index === this.index - 1) {
-        this.actions.forEach((action) => {
-          console.debug('<tease.js / CTISCard> Card drawn, notifying action:', action)
-          action.draw()
-        })
-      }
-      if (this.actions.length <= 0) {
-        return 'remove'
-      } else {
-        return true
-      }
+  this.check = (slide) => {
+    if (slide === this.index) {
+      return this.actions
     } else {
-      return 'remove'
+      return false
     }
   }
   this.init = _ => {
