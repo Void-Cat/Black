@@ -298,7 +298,7 @@
       })
 
       $('#mainImage').change(_ => {
-        console.debug('<tease.html / [#mainImage]> #mainImage changed setting strokeCountDisplay, slideTimeDisplay and slideNumberDisplay')
+        // console.debug('<tease.html / [#mainImage]> #mainImage changed setting strokeCountDisplay, slideTimeDisplay and slideNumberDisplay')
         $('#strokeCountDisplay').text(teaseSlave.slideControl.core.strokes)
         $('#slideTimeDisplay').text((teaseSlave.slideControl.core.time / 1000) + 's')
         $('#slideNumberDisplay').text((teaseSlave.slideControl.core.current + 1) + ' / ' + teaseSlave.fileList.length)
