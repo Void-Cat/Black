@@ -674,54 +674,116 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
   }
   this.counter = 0
   this.index = index
-  this.until = (type, boa) => {
-    if (this.parameters.until === 'fulltrue') return true
-    if (this.parameters.type === 'on' && boa === 'before') return false
-    if (this.parameters.delay > 0) return false
+  this.until = (type, loc) => {
+    type = type.toLowerCase().split(':')
+    // Get times and/or delay
     if (this.parameters.until === undefined) this.parameters.until = 'instant'
-    let until = this.parameters.until.toLowerCase()
-    let times, delay
+    let until, times, delay
+    if (this.parameters.until.indexOf('*') !== -1 || this.parameters.until.indexOf('+') !== -1) {
+      if (this.parameters.until.indexOf('*') !== -1 && this.parameters.until.indexOf('+') !== -1) {
+        if (this.parameters.until.indexOf('*') < this.parameters.until.indexOf('+')) {
+          delay = parseInt(this.parameters.until.split('+')[1], 10)
+          times = parseInt(this.parameters.until.split('+')[0].split('*')[1], 10)
+          until = this.parameters.until.toLowerCase().split('*')[0].split(':')
+        } else {
+          times = parseInt(this.parameters.until.split('*')[1], 10)
+          delay = parseInt(this.parameters.until.split('*')[0].split('+')[1], 10)
+          until = this.parameters.until.toLowerCase().split('+')[0].split(':')
+        }
+      } else if (this.parameters.until.indexOf('*') !== -1) {
+        times = parseInt(this.parameters.until.split('*')[1], 10)
+        until = this.parameters.until.toLowerCase().split('*')[0].split(':')
+      } else if (this.parameters.until.indexOf('+') !== -1) {
+        delay = parseInt(this.parameters.until.split('+')[1], 10)
+        until = this.parameters.until.toLowerCase().split('+')[0].split(':')
+      }
+    } else {
+      until = this.parameters.until.toLowerCase().split(':')
+    }
+    // Prepare
+    if (until[0] === 'type') until = until.splice(1, 2)
     let fire = false
-    if (until.indexOf('+') !== -1) {
-      until = until.split('+')[0]
-      delay = until.split('+')[1]
+    switch (until[0]) {
+      case 'cum':
+        if (type[0] === 'cum' && (until[1] === type[1] || until[1] === 'any')) {
+          fire = true
+        }
+        break
+      case 'instruction':
+        if (type[0] === 'instruction' && (until[1] === type[1] || until[1] === 'any' || (until[1] === 'mistress' && (type[1].indexOf('mistress') !== -1 || type[1].indexOf('master') !== -1)))) {
+          fire = true
+        }
+        break
+      case 'any':
+        if (type[0] === 'instruction' || type[0] === 'picture') {
+          fire = true
+        }
+        break
+      case 'picture':
+        if (type[0] === 'picture') {
+          fire = true
+        }
+        break
+      case 'instant':
+        if (loc !== 'before') fire = true
+        break
+      case 'delay':
+        if (parseInt(until[1], 10) > 1) {
+          this.parameters.until = 'type:delay:' + (parseInt(until[1], 10) - 1)
+        }
     }
-    if (until.indexOf('*') !== -1) {
-      times = parseInt(until.split('*')[1], 10)
-      until = until.split('*')[0]
-    }
-    if (delay === undefined) delay = '0'
-    if (delay.indexOf('*') !== -1) {
-      times = parseInt(delay.split('*')[1], 10)
-      delay = delay.split('*')[0]
-    }
-    this.parameters.untilDelay = parseInt(delay, 10)
-    type = type.split(':')
-    console.debug('<tease.js / CTISAction> until is called with until:', until, ', and type:', type)
-    if (until === 'instant' && boa === 'after') return true
-    if (teaseSlave.slideControl.core.current === this.index) return false
-    until = until.split(':')
-    if (until[1] === 'any' && (type[0] === 'picture' || type[0] === 'instruction')) fire = true
-    if (until[1] === type[0]) {
-      if (until[2] === 'any' && (type[0] === 'picture' || type[0] === 'instruction' || type[0] === 'cum')) {
-        fire = true
-      } else if (until[1] === 'instruction' && until[2] === 'mistress' && (type[1].indexOf('mistress') !== -1 || type[1].indexOf('master') !== -1)) {
-        fire = true
-      } else if (until[2] === type[1]) {
-        fire = true
-      } else if ([until[1], until[2]].join(':') === type.join(':')) {
-        fire = true
+    console.debug('<tease.js / CTISAction> Until after switch, with fire', fire, 'for type', type.join(':'))
+    if (fire === true && !(this.parameters.type === 'on' && loc === 'before')) {
+      if (typeof times !== 'undefined') {
+        if (this.counter < times) {
+          if (loc === 'before') this.counter++
+          fire = false
+        }
+      }
+      if (typeof delay !== 'undefined') {
+        if (typeof times === undefined || this.counter >= times) {
+          this.parameters.until = 'type:delay:' + delay
+          fire = false
+        }
       }
     }
     if (fire) {
-      if (times !== undefined) {
-        if (parseInt(times, 10) <= this.counter) return true
-        this.counter++
-        return false
+      // this.parameters.untilAct
+      if (this.parameters.untilAct !== undefined) {
+        if (this.parameters.untilAct === 'unblockQuit') teaseSlave.blockExit = false
+        if (this.parameters.untilAct === 'disallowQuit') teaseSlave.allowExit = false
+        if (this.parameters.untilAct.indexOf('key:') !== -1) {
+          if (teaseSlave.itemControl.keys >= parseInt(this.parameters.untilAct.split(':')[1], 10)) teaseSlave.itemControl.useKey('')
+        }
+        if (this.parameters.untilAct === 'ctc') {
+          teaseSlave.ctc = 'false'
+          teaseSlave.slideControl.ctcUpdate()
+        }
+        if (this.parameters.untilAct === 'ctc:force') {
+          let lastCum = teaseSlave.cumControl.core.cumControl.last.split(':')
+          if (parseInt(lastCum[0], 10) > this.index && lastCum[1] === this.parameters.action) {
+            let ol = 'came'
+            if (lastCum[1] === 'edge') ol = 'edged'
+            teaseSlave.contact('You ' + ol + ' in time and Mistress is pleased.', 'green')
+            teaseSlave.subControl.mood.good()
+          } else {
+            let ol = 'cum'
+            if (lastCum[1] === 'edge') ol = 'edge'
+            teaseSlave.contact('You didn\'t ' + ol + ' in time and Mistress is displeased.', 'red')
+            teaseSlave.subControl.mood.bad()
+          }
+          teaseSlave.ctc = 'false'
+          teaseSlave.slideControl.ctcUpdate()
+        }
+        if (this.parameters.untilAct === 'chastity') teaseSlave.itemControl.chastity(false)
+        if (this.parameters.untilAct.indexOf('item:') !== -1) teaseSlave.itemControl.remove(this.parameters.untilAct.split(':')[1])
+        if (this.parameters.untilAct.indexOf('instruction:') !== -1) teaseSlave.slideControl.removeInstruction(parseInt(this.parameters.untilAct.split(':')[1], 10))
+        if (this.parameters.untilAct.indexOf('position:') !== -1 && this.parameters.untilAct.split(':')[1] === $('#position').attr('pos')) teaseSlave.slideControl.position(0, 'Free')
       }
       return true
+    } else {
+      return false
     }
-    return false
   }
   this.afterAct = _ => {
     if (this.parameters.after !== undefined) {
@@ -746,45 +808,7 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
     }
     // Until (before)
     if (this.until(type, 'before') && this.parameters.type !== 'on') {
-      if (this.parameters.untilDelay === undefined) {
-        console.debug('<tease.js / CTISAction> Until succeeded, extra info:', {boa: 'before', until: this.parameters.until, type: type})
-        if (this.parameters.untilAct !== undefined) {
-          if (this.parameters.untilAct === 'unblockQuit') teaseSlave.blockExit = false
-          if (this.parameters.untilAct.indexOf('key:') !== -1) {
-            if (teaseSlave.itemControl.keys >= parseInt(this.parameters.untilAct.split(':')[1], 10)) teaseSlave.itemControl.useKey('')
-          }
-          if (this.parameters.untilAct === 'ctc') {
-            teaseSlave.ctc = 'false'
-            teaseSlave.slideControl.ctcUpdate()
-          }
-          if (this.parameters.untilAct === 'ctc:force') {
-            let lastCum = teaseSlave.cumControl.core.cumControl.last.split(':')
-            if (parseInt(lastCum[0], 10) > this.index && lastCum[1] === this.parameters.action) {
-              let ol = 'came'
-              if (lastCum[1] === 'edge') ol = 'edged'
-              teaseSlave.contact('You ' + ol + ' in time and Mistress is pleased.', 'green')
-              teaseSlave.subControl.mood.good()
-            } else {
-              let ol = 'cum'
-              if (lastCum[1] === 'edge') ol = 'edge'
-              teaseSlave.contact('You didn\'t ' + ol + ' in time and Mistress is displeased.', 'red')
-              teaseSlave.subControl.mood.bad()
-            }
-            teaseSlave.ctc = 'false'
-            teaseSlave.slideControl.ctcUpdate()
-          }
-          if (this.parameters.untilAct === 'chastity') teaseSlave.itemControl.chastity(false)
-          if (this.parameters.untilAct.indexOf('item:') !== -1) teaseSlave.itemControl.remove(this.parameters.untilAct.split(':')[1])
-          if (this.parameters.untilAct.indexOf('instruction:') !== -1) teaseSlave.slideControl.removeInstruction(parseInt(this.parameters.untilAct.split(':')[1], 10))
-          if (this.parameters.untilAct.indexOf('position:') !== -1 && this.parameters.untilAct.split(':')[1] === $('#position').attr('pos')) teaseSlave.slideControl.position(0, 'Free')
-        }
-        return 'remove'
-      } else if (this.parameters.untilDelay <= 0) {
-        return 'remove'
-      } else if (this.parameters.untilDelay > 0) {
-        this.parameters.until = 'fulltrue'
-        this.parameters.untilDelay--
-      }
+      return 'remove'
     }
     // Conditional
     if (this.parameters.conditional !== undefined && this.parameters.conditional !== 'none') {
@@ -959,40 +983,8 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
     }
     // Until after
     if (this.until(type, 'after')) {
-      if (this.parameters.untilAct !== undefined) {
-        if (this.parameters.untilAct === 'unblockQuit') teaseSlave.blockExit = false
-        if (this.parameters.untilAct === 'disallowQuit') teaseSlave.allowExit = false
-        if (this.parameters.untilAct.indexOf('key:') !== -1) {
-          if (teaseSlave.itemControl.keys >= parseInt(this.parameters.untilAct.split(':')[1], 10)) teaseSlave.itemControl.useKey('')
-        }
-        if (this.parameters.untilAct === 'ctc') {
-          teaseSlave.ctc = 'false'
-          teaseSlave.slideControl.ctcUpdate()
-        }
-        if (this.parameters.untilAct === 'ctc:force') {
-          let lastCum = teaseSlave.cumControl.core.cumControl.last.split(':')
-          if (parseInt(lastCum[0], 10) > this.index && lastCum[1] === this.parameters.action) {
-            let ol = 'came'
-            if (lastCum[1] === 'edge') ol = 'edged'
-            teaseSlave.contact('You ' + ol + ' in time and Mistress is pleased.', 'green')
-            teaseSlave.subControl.mood.good()
-          } else {
-            let ol = 'cum'
-            if (lastCum[1] === 'edge') ol = 'edge'
-            teaseSlave.contact('You didn\'t ' + ol + ' in time and Mistress is displeased.', 'red')
-            teaseSlave.subControl.mood.bad()
-          }
-          teaseSlave.ctc = 'false'
-          teaseSlave.slideControl.ctcUpdate()
-        }
-        if (this.parameters.untilAct === 'chastity') teaseSlave.itemControl.chastity(false)
-        if (this.parameters.untilAct.indexOf('item:') !== -1) teaseSlave.itemControl.remove(this.parameters.untilAct.split(':')[1])
-        if (this.parameters.untilAct.indexOf('instruction:') !== -1) teaseSlave.slideControl.removeInstruction(parseInt(this.parameters.untilAct.split(':')[1], 10))
-        if (this.parameters.untilAct.indexOf('position:') !== -1 && this.parameters.untilAct.split(':')[1] === $('#position').attr('pos')) teaseSlave.slideControl.position(0, 'Free')
-      }
       return 'remove'
     }
-    this.first = true
     return true
   }
 }
