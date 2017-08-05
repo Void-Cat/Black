@@ -23,10 +23,32 @@
     You came <span class="aboutusr-2">%camelasttease%</span> times in your last tease. And your cumming total is <span class="aboutusr-3">%cumtotal%</span> times.
   </p>
 </div>
-<div id="newVersion" class="mdc-elevation--z3 box" style="display: none;">
-  <h1 class="mdc-typography--subheading1">You're rocking an old version of Black</h1>
-  <p class="mdc-typography--body2">A newer version - version <span class="nvn"></span> - is available here:</p>
-  <button id="versionPage" type="button" class="mdc-button mdc-button--raised mdc-button--primary" onclick="shell.openExternal('https://github.com/Galactic-Cat/Black/releases')">GitHub</button>
+<div id="version" class="mdc-elevation--z3 box">
+  <div id="version-checking">
+    <h1 class="mdc-typography--subheading2">Checking for newer versions...</h1>
+    <div role="progressbar" class="mdc-linear-progress mdc-linear-progress--indeterminate" style="background-color: rgba(0, 0, 0, 0.2); margin-bottom: 3px;">
+      <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
+        <span class="mdc-linear-progress__bar-inner"></span>
+      </div>
+      <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">
+        <span class="mdc-linear-progress__bar-inner"></span>
+      </div>
+    </div>
+  </div>
+  <div id="version-current" style="display: none;">
+    <h1 class="mdc-typography--subheading1">Your version of Black is up to date.</h1>
+    <p class="mdc-typography--body1">Your version - version <span class="lvn"></span> - is the latest version.</p>
+  </div>
+  <div id="version-new" style="display: none;">
+    <h1 class="mdc-typography--subheading1">You're rocking an old version of Black</h1>
+    <p class="mdc-typography--body1">A newer version - version <span class="lvn"></span> - is available here:</p>
+    <button id="versionPage" type="button" class="mdc-button mdc-button--raised mdc-button--primary" onclick="shell.openExternal('https://github.com/Galactic-Cat/Black/releases')">GitHub</button>
+  </div>
+  <div id="version-fail" style="display: none;">
+    <h1 class="mdc-typography--subheading1">Checking for a new version failed.</h1>
+    <p class="mdc-typography--body1">Check your internet connection and press the button below to retry:</p>
+    <button type="button" class="mdc-button mdc-button--raised mdc-button--accent" onclick="swapper.reload()">Retry</button>
+  </div>
 </div>
 
 <script type="text/javascript">
@@ -46,7 +68,7 @@
       if (newVersion[0] > oldVersion[0] || (newVersion[0] === oldVersion[0] && newVersion[1] > oldVersion[1]) || (newVersion[0] === oldVersion[0] && newVersion[1] === oldVersion[1] && newVersion[2] > oldVersion[2])) {
         vfd.resolve(newVersion.join('.'))
       } else {
-        vfd.reject('isCurrent')
+        vfd.reject('isCurrent:' + oldVersion.join('.'))
       }
     }).fail((err) => {
       vfd.reject(err)
@@ -84,12 +106,20 @@
   $('#swapper').ready(_ => {
     mdc.autoInit()
     $.when(checkVersion()).then((vn) => {
-      $('.nvn').text(vn)
-      $('#newVersion').slideDown(200)
+      $('.lvn').text(vn)
+      $('#version-checking').slideUp(200, _ => {
+        $('#version-new').slideDown(200)
+      })
     }, (err) => {
-      if (err !== 'isCurrent') {
-        console.error(err)
-      }
+      $('#version-checking').slideUp(200, _ => {
+        if (err.indexOf('isCurrent') !== -1) {
+          $('.lvn').text(err.split(':')[1])
+          $('#version-current').slideDown(200)
+        } else {
+          $('#version-fail').slideDown(200)
+          console.error('<home.html / checkVersion> Version check failed with error:', '\n', err)
+        }
+      })
     })
   })
 </script>
