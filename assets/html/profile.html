@@ -67,6 +67,64 @@
   <button type="button" id="saveProfile" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Save Profile</button>
 </div>
 
+<div id="editProfile" class="mdc-elevation--z3 box" style="display: none;">
+  <h1 class="mdc-typography--title">Edit your profile</h1>
+  <p class="mdc-typography--body1">Values you can edit:</p>
+  <div class="mdc-textfield mdc-textfield--upgraded" data-mdc-auto-init="MDCTextfield" style="margin-top: 5px;">
+    <input id="edit-realname" type="text" class="mdc-textfield__input">
+    <label class="mdc-textfield__label mdc-textfield__label--float-above" for="edit-realname">Your first name</label>
+  </div>
+  <br><br>
+  <div class="mdc-form-field">
+    <p class="mdc-typography--body1">Do you have a penis? (Are you male?)</p>
+    <div class="mdc-radio">
+      <input class="mdc-radio__native-control" type="radio" id="edit-genderReal-true" name="genderReal">
+      <div class="mdc-radio__background">
+        <div class="mdc-radio__outer-circle"></div>
+        <div class="mdc-radio__inner-circle"></div>
+      </div>
+    </div>
+    <label id="edit-genderReal-true-label" for="edit-genderReal-true">Yes</label>
+    &nbsp;
+    <div class="mdc-radio" data-mdc-auto-init="MDCRadio">
+      <input class="mdc-radio__native-control" type="radio" id="edit-genderReal-false" name="genderReal">
+      <div class="mdc-radio__background">
+        <div class="mdc-radio__outer-circle"></div>
+        <div class="mdc-radio__inner-circle"></div>
+      </div>
+    </div>
+    <label id="edit-genderReal-false-label" for="edit-genderReal-false">No</label>
+  </div>
+  <br><br>
+  <p class="mdc-typography--body1">Where are your punishments cards located?</p>
+  <div class="mdc-form-field">
+    <button type="button" id="editPunishmentButton" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
+    <label id="editPunishmentLabel" class="box" style="margin-left: 5px; background-color: rgba(0, 0, 0, 0.2); border-radius: 5px; display: none;"></label>
+  </div>
+  <br><br>
+  <p class="mdc-typography--body1" style="margin-bottom: 0;">My mistress calls me a:</p>
+  <div class="mdc-textfield mdc-textfield--upgraded" data-mdc-auto-init="MDCTextfield" style="margin-top: 5px;">
+    <input type="text" class="mdc-textfield__input" id="edit-genderNick">
+    <label for="genderNick" class="mdc-textfield__label mdc-textfield__label--float-above">Boy/Girl/Pet/Slave/Other</label>
+  </div>
+  <p class="mdc-typography--caption" style="margin: 0;">As in: "You've been a good <span id="edit-genderNick-example" style="color: var(--mdc-theme-accent);">slave</span>."</p>
+  <br>
+  <button type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" id="edit-saveProfileBtn">Save Profile</button>
+  &nbsp;
+  <button type="button" class="mdc-button mdc-button--raised mdc-button--accent mdc-ripple" data-mdc-auto-init="MDCRipple" id="cancelEdit">Cancel Editing</button>
+  &nbsp;
+  <button type="button" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" id="deleteProfileBtn">Delete Profile</button>
+  <hr>
+  <p class="mdc-typography--body1">Values you can reset:</p>
+  <span class="mdc-typography--caption">Clicking any of the buttons below will reset the associated value instantly, with no way to undo so.</span><br>
+  <br>
+  <button type="button" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="resetVal('sublevel')">Reset Submission Level (sublevel)</button>
+  <br><br>
+  <button type="button" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="resetVal('cumming')">Reset Cumming Statistics</button>
+  <br><br>
+  <button type="button" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="resetVal('teases')">Reset Tease Statistics</button>
+</div>
+
 <div id="profile" class="mdc-elevation--z3 box">
   <h1 class="mdc-typography--title">Your profile</h1>
   <p class="mdc-typography--body1">Your real name is <span class="profile-card profile-name-real"></span>.</p>
@@ -76,17 +134,27 @@
   <p class="mdc-typography--body1">Your gender is <span class="profile-gender-real"></span>,</p>
   <p class="mdc-typography--body1">But to mistress you're just a <span class="profile-card profile-gender-nick"></span>.</p>
   <br>
-  <button type="button" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" id="editProfileBtn" disabled>Edit Profile</button>
-  &nbsp;
-  <button type="button" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" id="deleteProfileBtn">Delete Profile</button>
-  <br>
-  <span class="mdc-typography--caption">Editing is as of yet impossible, if you must change your profile you need to delete and re-make it.</span>
+  <button type="button" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" id="editProfileBtn">Edit Profile</button>
 </div>
 
 <script type="text/javascript">
   /* global $, mdc, config, alert, swapper, dialog */
   // var genderReal = new mdc.radio.MDCRadio($('.mdc-radio')[0])
   // var noNickname = new mdc.checkbox.MDCCheckbox($('.mdc-checkbox')[0])
+  if (typeof edit === 'undefined') {
+    var edit
+  }
+  edit = {
+    name: {
+      nick: '',
+      real: ''
+    },
+    gender: {
+      real: undefined,
+      nick: ''
+    }
+  }
+
   $('[name="genderReal"]').click(_ => {
     config.set('profile.gender.real', $('#genderReal-true').is(':checked'))
   })
@@ -121,15 +189,15 @@
       config.get('profile.gender.real'),
       config.get('profile.gender.nick')
     ]
-    if (profiledata.length >= 4) {
+    if (profiledata.indexOf(undefined) === -1) {
       config.set('stats.total.cumming', {full: 0, edge: 0, ruin: 0, nonAllowed: 0})
       config.set('stats.lastTease.cumming', {full: 0, edge: 0, ruin: 0, nonAllowed: 0})
       config.set('stats.teases', {etes: 0, total: 0})
       config.set('profile.sublevel', 0)
       alert('Profile saved.')
-      swapper.swap('home')
+      swapper.reload()
     } else {
-      alert('Not all fields seem to be filled (correctly). Please make sure they are before saving!')
+      alert('Not all fields seem to be filled (correctly).\nPlease make sure they are before saving!')
     }
   })
 
@@ -148,6 +216,21 @@
     }
   }
 
+  $('#editPunishmentButton').click(_ => {
+    dialog.showOpenDialog({
+      title: 'Select Punisment Cards Folder',
+      properties: ['openDirectory']
+    }, (path) => {
+      edit.punishment = path
+      if (path === '' || path === undefined) {
+        $('#editPunishmentLabel').fadeOut(200)
+      } else {
+        $('#editPunishmentLabel').text(path)
+        $('#editPunishmentLabel').fadeIn(200)
+      }
+    })
+  })
+
   $('#setPunishmentButton').click(_ => {
     dialog.showOpenDialog({
       title: 'Select Punisment Cards Folder',
@@ -163,13 +246,86 @@
     })
   })
 
+  $('#editProfileBtn').click(_ => {
+    let profile = config.get('profile')
+    $('#edit-realname').change(_ => {
+      edit.name.real = $('#edit-realname').val()
+      edit.name.nick = $('#edit-realname').val()
+    })
+    $('#edit-realname').val(profile.name.real)
+    $('#edit-realname').trigger('change')
+    $('#edit-genderReal-true, #edit-genderReal-false').click(_ => {
+      if ($('#edit-genderReal-true').is(':checked')) {
+        edit.gender.real = true
+      } else {
+        edit.gender.real = false
+      }
+    })
+    $('#edit-genderReal-' + profile.gender.real)
+      .prop('checked', true)
+      .trigger('click')
+    if (profile.punishment !== undefined) {
+      $('#editPunishmentLabel').text(profile.punishment)
+      $('#editPunishmentLabel').show()
+    }
+    $('#edit-genderNick').change(_ => {
+      $('#edit-genderNick-example').text($('#edit-genderNick').val())
+      edit.gender.nick = $('#edit-genderNick').val()
+    })
+    $('#edit-genderNick').val(profile.gender.nick)
+    $('#edit-genderNick').trigger('change')
+    edit.punishment = profile.punishment
+    $('#profile').slideUp(200, _ => {
+      $('#editProfile').slideDown(200)
+    })
+  })
+
+  $('#cancelEdit').click(_ => {
+    $('#editProfile').slideUp(200, _ => {
+      $('#profile').slideDown(200)
+    })
+  })
+
+  function resetVal (value) {
+    if (value === 'sublevel') {
+      config.set('profile.sublevel', 0)
+      alert('Sublevel has been reset to 0.')
+    } else if (value === 'cumming') {
+      config.set('stats.total.cumming', {full: 0, edge: 0, ruin: 0, nonAllowed: 0})
+      config.set('stats.lastTease.cumming', {full: 0, edge: 0, ruin: 0, nonAllowed: 0})
+      alert('Cumming statistics have all been reset to 0.')
+    } else if (value === 'teases') {
+      config.set('stats.teases', {etes: 0, total: 0})
+      alert('Tease statistics have all been reset to 0.')
+    } else {
+      console.error('<profile.html / resetVal>\nValue', value, 'was not recognized.')
+    }
+  }
+
+  $('#edit-saveProfileBtn').click(_ => {
+    let test = [edit.name.real, edit.name.nick, edit.gender.real, edit.gender.nick]
+    if (test.indexOf(undefined) === -1 && test.indexOf('') === -1) {
+      config.set('profile.name.real', edit.name.real)
+      config.set('profile.name.nick', edit.name.nick)
+      config.set('profile.gender.real', edit.gender.real)
+      config.set('profile.gender.nick', edit.gender.nick)
+      config.set('profile.punishment', edit.punishment)
+      alert('Profile saved.')
+      swapper.reload()
+    } else {
+      alert('Not all fields seem to be filled (correctly).\nPlease make sure they are before saving!')
+    }
+  })
+
   $('#deleteProfileBtn').click(_ => {
     config.set('profile', undefined)
+    config.set('stats', undefined)
     alert('Profile deleted.')
-    swapper.swap('home')
+    swapper.reload()
   })
 
   $('#swapper').ready(_ => {
     mdc.autoInit()
+    if (resetVal) {}
   })
 </script>
