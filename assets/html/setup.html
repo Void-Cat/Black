@@ -75,7 +75,24 @@
         </ul>
       </div>
     </div>
-  </div>
+  </div><br><br>
+  <div class="mdc-form-field">
+    <label for="announce-card">Announce card&nbsp;&nbsp;</label>
+    <div class="mdc-switch">
+      <input type="checkbox" id="announce-card" class="mdc-switch__native-control" />
+      <div class="mdc-switch__background">
+        <div class="mdc-switch__knob"></div>
+      </div>
+    </div>
+    &nbsp;&nbsp;&nbsp;
+    <label for="announce-picture">Announce picture&nbsp;&nbsp;</label>
+    <div class="mdc-switch">
+      <input type="checkbox" id="announce-picture" class="mdc-switch__native-control" />
+      <div class="mdc-switch__background">
+        <div class="mdc-switch__knob"></div>
+      </div>
+    </div>
+  </div><br><br>
 </div>
 
 <button id="startTease" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" style="display: block; padding: 0 16px; width: calc(90% + 20px); margin: 0 auto;">Generate &amp; Tease</button>
@@ -181,6 +198,12 @@
     }
     $('#slideTime').val(config.get('teaseParams.timing.slideTime'))
     $('#enableTicker').prop('checked', config.get('teaseParams.timing.ticker'))
+    if (config.get('teaseParams.timing.announce') === 'card' || config.get('teaseParams.timing.announce') === 'both') {
+      $('#announce-card').prop('checked', true)
+    }
+    if (config.get('teaseParams.timing.announce') === 'picture' || config.get('teaseParams.timing.announce') === 'both') {
+      $('#announce-picture').prop('checked', true)
+    }
     if (config.get('teaseParams.timing.tickersrc') === undefined) config.set('teaseParams.timing.tickersrc', '../audio/ticker.ogg')
     tickerSelect.selectedIndex = config.get('teaseParams.timing.tickersrc').indexOf('ticker.ogg') >= 0 ? 0 : 1
   }
@@ -239,6 +262,20 @@
   })
   $('#enableTicker').click(_ => {
     config.set('teaseParams.timing.ticker', $('#enableTicker').is(':checked'))
+  })
+
+  $('#announce-card, #announce-picture').click(_ => {
+    let card = $('#announce-card').is(':checked')
+    let picture = $('#announce-picture').is(':checked')
+    if (card && picture) {
+      config.set('teaseParams.timing.announce', 'both')
+    } else if (card) {
+      config.set('teaseParams.timing.announce', 'card')
+    } else if (picture) {
+      config.set('teaseParams.timing.announce', 'picture')
+    } else {
+      config.set('teaseParams.timing.announce', undefined)
+    }
   })
 
   tickerSelect.listen('MDCSelect:change', _ => {

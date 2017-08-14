@@ -250,7 +250,11 @@ function TeaseSlave (options) {
       time: this.teaseParams.timing.slideTime * 1000,
       pause: false,
       run: this.teaseParams.timing.slideTime * 1000,
-      ticker: new Audio(this.teaseParams.timing.tickersrc || '../audio/ticker.ogg')
+      ticker: new Audio(this.teaseParams.timing.tickersrc || '../audio/ticker.ogg'),
+      announce: {
+        picture: new Audio('../audio/slidechange.ogg'),
+        card: new Audio('../audio/card.ogg')
+      }
     },
     next: _ => {
       this.slideControl.core.current++
@@ -299,7 +303,17 @@ function TeaseSlave (options) {
       }
     },
     ticker: _ => {
-      this.slideControl.core.ticker.play()
+      if (this.teaseParams.announce !== 'undefined' && this.slideControl.core.run === 0) {
+        if (this.teaseParams.timing.announce === 'cards' || this.teaseParams.timing.announce === 'pictures' || this.teaseParams.timing.announce === 'both') {
+          if (this.icl[this.slideControl.core.current] !== undefined && (this.teaseParams.timing.announce === 'cards' || this.teaseParams.timing.announce === 'both')) {
+            this.slideControl.core.announce.card.play()
+          } else if (this.icl[this.slideControl.core.current] === undefined && (this.teaseParams.timing.announce === 'pictures' || this.teaseParams.timing.announce === 'both')) {
+            this.slideControl.core.announce.picture.play()
+          }
+        }
+      } else {
+        this.slideControl.core.ticker.play()
+      }
     },
     interval: {
       run: null,
