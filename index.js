@@ -7,7 +7,7 @@ const config = new Config()
 let win
 
 function createWindow () {
-  let opts = {frame: false, backgroundColor: '#191919', show: false, icon: path.join(__dirname, 'aassets/icons/png/64x64.png')}
+  let opts = {frame: false, backgroundColor: '#191919', show: false, icon: path.join(__dirname, 'assets/icons/png/64x64.png')}
   Object.assign(opts, config.get('winBounds') || {width: 800, height: 600})
   win = new BrowserWindow(opts)
 
