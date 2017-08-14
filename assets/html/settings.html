@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<div class="mdc-elevation--z3 box">
+  <h1 class="mdc-typography--title">Tease Dashboard</h1>
+  <div>
+    <p class="mdc-typography--body1" style="margin-bottom: 0;">Preferred ratio of cards to pictures.</p>
+    <div id="ratioslider" class="mdc-slider mdc-slider--discrete" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="10" aria-label="Select Value">
+      <div class="mdc-slider__track-container" style="background-color: var(--mdc-theme-primary);">
+        <div class="mdc-slider__track" style="background-color: var(--mdc-theme-accent);"></div>
+      </div>
+      <div class="mdc-slider__thumb-container">
+        <div class="mdc-slider__pin">
+          <span class="mdc-slider__pin-value-marker"></span>
+        </div>
+        <svg class="mdc-slider__thumb" width="21" height="21" style="stroke: var(--mdc-theme-accent);">
+          <circle cx="10.5" cy="10.5" r="7.875"></circle>
+        </svg>
+        <div class="mdc-slider__focus-ring"></div>
+      </div>
+    </div>
+    <p class="mdc-typography--caption" style="margin: -10px 0 0 0; width: 100%; text-align: center;">
+      <span class="mdc-theme--accent" style="float: left;">cards</span>
+      <span><span id="ratioperc" class="mdc-theme--accent">10%</span> / <span id="notratioperc" class="mdc-theme--primary">90%</span></span>
+      <span class="mdc-theme--primary" style="float: right;">pictures</span>
+    </p>
+    <p class="mdc-typography--caption" style="margin-top: 0;">Default is <span class="mdc-theme--accent">10%</span> / <span class="mdc-theme--primary">90%</span></p>
+  </div>
+</div>
+<div class="mdc-elevation--z3 box">
+  <h1 class="mdc-typography--title">Danger Zone</h1>
+  <div class="mdc-form-field">
+    <p class="mdc-typography--body1">To delete all values (this cannot be undone), open the developer console with <span class="mdc-theme--accent">Ctrl + Shift + C</span>.<br>
+    Then, navigate to the <span class="mdc-theme--accent">Console</span> tab, and type <span class="mdc-theme--accent">resetAll()</span> and press enter.
+    </p>
+  </div>
+</div>
+<div style="margin: 10px 0;">
+  <p class="mdc-typography--body1" style="text-align: center;">Settings are saved automatically.</p>
+</div>
+
+<script type="text/javascript">
+  /* global $, mdc, config */
+
+  if (typeof ratioslider !== 'undefined') {
+    ratioslider = ratioslider.destroy()
+  }
+  var ratioslider = new mdc.slider.MDCSlider($('#ratioslider')[0])
+  ratioslider.value = config.get('settings.cardratio') || 10
+  $('#ratioperc').text((config.get('settings.cardratio') || 10) + '%')
+  $('#notratioperc').text((100 - (config.get('settings.cardratio') || 10)) + '%')
+
+  ratioslider.listen('MDCSlider:change', _ => {
+    $('#ratioperc').text(`${ratioslider.value}%`)
+    $('#notratioperc').text(`${100 - ratioslider.value}%`)
+    config.set('settings.cardratio', ratioslider.value)
+  })
+
+  function resetAll () {
+    config.clear()
+    document.location.href = document.location.href
+  }
+
+  $('#swapper').ready(_ => {
+    ratioslider.layout()
+    mdc.autoInit()
+    if (resetAll) {}
+  })
+</script>
