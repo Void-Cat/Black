@@ -380,6 +380,7 @@ function TeaseSlave (options) {
         adjustment = '=' + adjustment
       }
       let factor = parseInt(adjustment.slice(1), 10)
+      if (coreboy === 'time' && (modifier !== '*' && modifier !== '/')) factor *= 1000
       console.debug('<tease.js / TeaseSlave> Adjust called currently timer is:', timer + ',', 'modifier is:', modifier, 'and adjustment is:', adjustment)
       if (isNaN(factor)) return false
       if (modifier === '+') {
