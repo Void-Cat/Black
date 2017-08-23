@@ -250,7 +250,25 @@ function TeaseSlave (options) {
       time: this.teaseParams.timing.slideTime * 1000,
       pause: false,
       run: this.teaseParams.timing.slideTime * 1000,
-      ticker: new Audio(this.teaseParams.timing.tickersrc || '../audio/ticker.ogg'),
+      ticker: {
+        play: _ => {
+          if (this.slideControl.core.ticker.muted !== true) {
+            this.slideControl.core.ticker.robin[0].play()
+            this.slideControl.core.ticker.robin.push(this.slideControl.core.ticker.robin.shift())
+          }
+        },
+        robin: [new Audio(this.teaseParams.timing.tickersrc || '../audio/ticker.ogg')],
+        init: _ => {
+          for (var n = 0; n < 5; n++) {
+            this.slideControl.core.ticker.robin.push(this.slideControl.core.ticker.robin[0].cloneNode())
+          }
+        },
+        volume: (v) => {
+          this.slideControl.core.ticker.robin.forEach((audio) => {
+            audio.volume = v
+          })
+        }
+      },
       announce: {
         picture: new Audio('../audio/slidechange.ogg'),
         card: new Audio('../audio/card.ogg')
@@ -286,10 +304,10 @@ function TeaseSlave (options) {
     pause: _ => {
       if (this.slideControl.core.pause) {
         this.slideControl.core.pause = false
-        this.slideControl.core.ticker.volume = 1
+        this.slideControl.core.ticker.volume(1)
       } else {
         this.slideControl.core.pause = true
-        this.slideControl.core.ticker.volume = 0
+        this.slideControl.core.ticker.volume(0)
       }
       $('#pause-play').trigger('change')
     },
@@ -303,13 +321,13 @@ function TeaseSlave (options) {
       }
     },
     ticker: _ => {
-      if (this.teaseParams.announce !== 'undefined' && this.slideControl.core.run === 0) {
-        if (this.teaseParams.timing.announce === 'cards' || this.teaseParams.timing.announce === 'pictures' || this.teaseParams.timing.announce === 'both') {
-          if (this.icl[this.slideControl.core.current] !== undefined && (this.teaseParams.timing.announce === 'cards' || this.teaseParams.timing.announce === 'both')) {
-            this.slideControl.core.announce.card.play()
-          } else if (this.icl[this.slideControl.core.current] === undefined && (this.teaseParams.timing.announce === 'pictures' || this.teaseParams.timing.announce === 'both')) {
-            this.slideControl.core.announce.picture.play()
-          }
+      if ((this.teaseParams.timing.announce === 'card' || this.teaseParams.timing.announce === 'picture' || this.teaseParams.timing.announce === 'both') && this.slideControl.core.run === 0) {
+        if (this.icl[this.slideControl.core.current] !== undefined && (this.teaseParams.timing.announce === 'card' || this.teaseParams.timing.announce === 'both')) {
+          this.slideControl.core.announce.card.play()
+        } else if (this.icl[this.slideControl.core.current] === undefined && (this.teaseParams.timing.announce === 'picture' || this.teaseParams.timing.announce === 'both')) {
+          this.slideControl.core.announce.picture.play()
+        } else {
+          this.slideControl.core.ticker.play()
         }
       } else {
         this.slideControl.core.ticker.play()
@@ -546,7 +564,7 @@ function TeaseSlave (options) {
       console.debug('<tease.js / TeaseSlave> Go go supermode!')
       this.slideControl.heraut(this.slideControl.core.current, 'supermode:start')
       if (!this.superMode.active) {
-        teaseSlave.slideControl.core.ticker.volume = 0
+        teaseSlave.slideControl.core.ticker.volume(0)
         this.superMode.music.play()
         this.superMode.active = true
         setTimeout(_ => {
@@ -564,7 +582,7 @@ function TeaseSlave (options) {
       teaseSlave.slideControl.heraut(teaseSlave.slideControl.core.current, 'supermode:end')
       if (this.superMode.active) {
         this.superMode.active = false
-        teaseSlave.slideControl.core.ticker.volume = 1
+        teaseSlave.slideControl.core.ticker.volume(1)
         clearInterval(this.superMode.interval)
         $('html').css('background-color', 'black')
         this.superMode.music.pause()
