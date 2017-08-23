@@ -232,8 +232,8 @@ function TeaseSlave (options) {
   this.icl = options.icl
   this.ctisCards = []
   Object.keys(this.ctisList).forEach((ccard) => {
-    console.debug('<tease.js / TeaseSlave> Reading CTIS card: ', JSON.parse(fs.readFileSync(this.ctisList[ccard], {encoding: 'utf8'})))
-    this.ctisCards[ccard] = new CTISCard(JSON.parse(fs.readFileSync(this.ctisList[ccard], {encoding: 'utf8'})), parseInt(ccard, 10))
+    // console.debug('<tease.js / TeaseSlave> Reading CTIS card: ', JSON.parse(fs.readFileSync(this.ctisList[ccard], {encoding: 'utf8'})))
+    this.ctisCards[ccard] = new CTISCard(JSON.parse(fs.readFileSync(this.ctisList[ccard], {encoding: 'utf8'})), parseInt(ccard, 10), this.ctisList[ccard].split('\\').pop())
   })
   this.ctisCards.forEach((ccard) => {
     ccard.init()
@@ -494,6 +494,25 @@ function TeaseSlave (options) {
     this.slideControl.core.ticker.muted = !this.teaseParams.timing.ticker
     this.slideControl.interval.run = setInterval(this.slideControl.run, 500)
     this.slideControl.next()
+    this.actionControl.run({index: -1, type: 'teasestart'})
+  }
+
+  this.preInit = _ => {
+    let start = []
+    let names = []
+    Object.keys(this.ctisCards).forEach((key, i) => {
+      let card = this.ctisCards[key]
+      card.instruction.actions.forEach((instruction, index) => {
+        if (instruction.start === 'start') {
+          card.actions.splice(index, 1)
+          start.push(card.instruction.actions[index])
+          names.push(card.name)
+        }
+      })
+    })
+    this.ctisCards.push(new CTISCard({actions: start}, -1))
+    this.ctisCards[this.ctisCards.length - 1].init()
+    return names
   }
 
   this.exit = (type) => {
@@ -570,20 +589,21 @@ function TeaseSlave (options) {
       let idf = Math.floor(Math.random() * 100000)
       while (this.actionControl.core.active[idf] !== undefined) {
         idf++
+        if (idf > 100000) idf = 1
       }
       this.actionControl.core.active[idf] = action
-      console.debug('<tease.js / TeaseSlave / actionControl> Added action with identifier', idf)
+      console.debug('<tease.js / TeaseSlave / actionControl>\nAdded action with identifier', idf)
       return idf
     },
     remove: (idf) => {
       if (this.actionControl.core.active[idf] !== undefined) delete this.actionControl.core.active[idf]
-      console.debug('<tease.js / TeaseSlave / actionControl> Removed action with identifier', idf)
+      console.debug('<tease.js / TeaseSlave / actionControl>\nRemoved action with identifier', idf)
       return true
     },
     run: (p, idx) => {
-      console.debug('<tease.js / TeaseSlave / actionControl> Run called with arguments:', {p: p, idx: idx})
+      console.debug('<tease.js / TeaseSlave / actionControl>\nRun called with arguments:', {p: p, idx: idx})
       if (idx === undefined) {
-        if (p.type.split(':')[0] === 'instruction') {
+        if (p.type.split(':')[0] === 'instruction' || p.type === 'teasestart') {
           this.ctisCards.forEach((card) => {
             let check = card.check(p.index)
             if (check !== false) {
@@ -593,20 +613,22 @@ function TeaseSlave (options) {
             }
           })
         }
-        Object.keys(this.actionControl.core.active).forEach((idf) => {
-          let rv = this.actionControl.core.active[idf].run(p.type, p.index)
-          console.debug('<tease.js / TeaseSlave / actionControl> Run returned', rv, 'on action', idf)
-          if (rv === 'remove') {
-            let after = this.actionControl.core.active[idf].afterAct()
-            if (after !== undefined) {
-              after.forEach((a) => {
-                let ida = this.actionControl.add(a)
-                this.actionControl.run({type: 'firstrun', index: p.index}, ida)
-              })
+        if (p.type !== 'teasestart') {
+          Object.keys(this.actionControl.core.active).forEach((idf) => {
+            let rv = this.actionControl.core.active[idf].run(p.type, p.index)
+            console.debug('<tease.js / TeaseSlave / actionControl> Run returned', rv, 'on action', idf)
+            if (rv === 'remove') {
+              let after = this.actionControl.core.active[idf].afterAct()
+              if (after !== undefined) {
+                after.forEach((a) => {
+                  let ida = this.actionControl.add(a)
+                  this.actionControl.run({type: 'firstrun', index: p.index}, ida)
+                })
+              }
+              this.actionControl.remove(idf)
             }
-            this.actionControl.remove(idf)
-          }
-        })
+          })
+        }
       } else {
         if (this.actionControl.core.active[idx] !== undefined) {
           let rv = this.actionControl.core.active[idx].run(p.type, p.index)
@@ -812,7 +834,7 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
   this.run = (type, slide) => {
     type = type.toLowerCase()
     // Drawing too early failsafe
-    if (this.parameters.start === 'draw' && teaseSlave.slideControl.core.current < this.index) return 'fail'
+    //   if (this.parameters.start === 'draw' && teaseSlave.slideControl.core.current < this.index) return 'fail'
     // Delay
     if (this.parameters.delay > 0) {
       if (slide >= this.index) {
@@ -1003,9 +1025,10 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
   }
 }
 
-function CTISCard (instruction, index) {
-  console.debug('<tease.js / CTISCard> Card initialized. With parameters:', {instruction: instruction, index: index})
+function CTISCard (instruction, index, name) {
+  console.debug('<tease.js / CTISCard> Card initialized. With parameters:', {instruction: instruction, index: index, name: name})
   this.instruction = instruction
+  this.name = name || 'Unknown Name'
   this.index = index
   this.actions = []
   this.check = (slide) => {

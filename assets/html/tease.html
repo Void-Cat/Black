@@ -95,7 +95,7 @@
         <button type="button" class="mdc-button mdc-button--raised mdc-button--primary" id="startTease">Start Tease</button>
         <hr>
         <h1 class="mdc-typography--subheading1">The following CTIS cards will load take action before the first slide:</h1>
-        <div id="CTIS-preStart"></div>
+        <ul id="CTIS-preStart" style="list-style-type: none; max-width: 30%; margin: 0 auto;"></ul>
       </div>
       <div id="mainImage-div" style="padding: 20px 0 0 0; text-align: center; display: none;">
         <img id="mainImage" style="max-height: 90vh; max-width: 90%;" />
@@ -316,6 +316,10 @@
 
       $(document).ready(_ => {
         mdc.autoInit()
+        var startCards = teaseSlave.preInit()
+        startCards.forEach((name) => {
+          $('#CTIS-preStart').append('<li>' + name + '</li>')
+        })
         let drawer = new mdc.drawer.MDCTemporaryDrawer($('.mdc-temporary-drawer')[0])
         $('#menu-btn').click(_ => { drawer.open = true })
         if (BrowserWindow && globalShortcut && teaseSlave) {}
