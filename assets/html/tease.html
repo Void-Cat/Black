@@ -171,152 +171,161 @@
         }
       })
 
-      // Tease Buttons
-      $('#exit-button').click(_ => {
-        teaseSlave.exit('user')
-      })
-
-      $('#pause-play').click(_ => {
-        teaseSlave.slideControl.pause()
-      })
-
-      $('#pause-play').change(_ => {
-        if (teaseSlave.slideControl.core.pause) {
-          $('#pause-play').text('play_arrow')
-        } else {
-          $('#pause-play').text('pause')
-        }
-      })
-
-      $('#next-button').click(_ => {
-        teaseSlave.slideControl.next()
-        if (teaseSlave.slideControl.core.current + 1 === teaseSlave.fileList.length) {
-          $('#next-button').prop('disabled', true)
-        } else {
-          $('#next-button').prop('disabled', false)
-        }
-      })
-
-      $('#previous-button').click(_ => {
-        teaseSlave.slideControl.previous()
-        if (teaseSlave.slideControl.core.current + 1 === 1) {
-          $('#previous-button').prop('disabled', true)
-        } else {
-          $('#previous-button').prop('disabled', false)
-        }
-      })
-
-      $('#strokeup-button').click(_ => {
-        teaseSlave.slideControl.core.strokes++
-        $('#strokeCountDisplay').trigger('change')
-      })
-
-      $('#strokedown-button').click(_ => {
-        if (teaseSlave.slideControl.core.strokes > 0) teaseSlave.slideControl.core.strokes--
-        $('#strokeCountDisplay').trigger('change')
-        if (teaseSlave.slideControl.core.strokes <= 0) {
-          $('#strokedown-button').prop('disabled', true)
-        } else {
-          $('#strokedown-button').prop('disabled', false)
-        }
-      })
-
-      $('#timeup-button').click(_ => {
-        teaseSlave.slideControl.core.time += 1000
-        $('#slideTimeDisplay').trigger('change')
-      })
-
-      $('#timedown-button').click(_ => {
-        if (teaseSlave.slideControl.core.time > 1000) teaseSlave.slideControl.core.time -= 1000
-        $('#slideTimeDisplay').trigger('change')
-        if (teaseSlave.slideControl.core.time <= 1000) {
-          $('#timedown-button').prop('disabled', true)
-        } else {
-          $('#timedown-button').prop('disabled', false)
-        }
-      })
-
-      $('#full-button').click(_ => {
-        teaseSlave.cumControl.update('full')
-      })
-
-      $('#ruin-button').click(_ => {
-        teaseSlave.cumControl.update('ruin')
-      })
-
-      $('#edge-button').click(_ => {
-        teaseSlave.cumControl.update('edge')
-      })
-
-      $('#keyDisplay').click((e) => {
-        if (teaseSlave.itemControl.keys > 0) {
-          if ($('#keyDisplay').hasClass('keySel')) {
-            $('#keyDisplay').removeClass('keySel')
-            $('.ctisitem').removeClass('keR')
-          } else {
-            $('#keyDisplay').addClass('keySel')
-            $('.ctisitem').addClass('keR')
-          }
-        }
-      })
-
-      $('#keyDisplay').on('unlock', (e, item) => {
-        if ($('#keyDisplay').hasClass('keySel') && teaseSlave.itemControl.keys > 0) {
-          teaseSlave.slideControl.heraut(teaseSlave.slideControl.core.current, 'key')
-          teaseSlave.itemControl.useKey(item)
-        }
-        $('#keyDisplay.keySel').removeClass('keySel')
-        $('.ctisitem.keR').removeClass('keR')
-      })
-
-      $('#strokeCountDisplay').change(_ => {
-        if ($('#strokeCountDisplay').text().indexOf('(') !== -1) {
-          let old = $('#strokeCountDisplay').text().split('(')[1].split(')')[0]
-          $('#strokeCountDisplay').text(teaseSlave.slideControl.core.strokes + ' (' + old + ')')
-        } else {
-          let old = $('#strokeCountDisplay').text()
-          $('#strokeCountDisplay').text(teaseSlave.slideControl.core.strokes + ' (' + old + ')')
-        }
-      })
-
-      $('#slideTimeDisplay').change(_ => {
-        if ($('#slideTimeDisplay').text().indexOf('(') !== -1) {
-          let old = $('#slideTimeDisplay').text().split('(')[1].split('s)')[0]
-          $('#slideTimeDisplay').text(teaseSlave.slideControl.core.time / 1000 + 's (' + old + 's)')
-        } else {
-          let old = $('#slideTimeDisplay').text()
-          $('#slideTimeDisplay').text(teaseSlave.slideControl.core.time / 1000 + 's (' + old + 's)')
-        }
-      })
-
-      $('#startTease').click(_ => {
-        $('#pre-start').fadeOut(100, _ => {
-          teaseSlave.init()
-          teaseSlave.slideControl.set(0)
-          $('#mainImage-div').fadeIn(100)
-        })
-      })
-
-      $('#mainImage').change(_ => {
-        // console.debug('<tease.html / [#mainImage]> #mainImage changed setting strokeCountDisplay, slideTimeDisplay and slideNumberDisplay')
-        $('#strokeCountDisplay').text(teaseSlave.slideControl.core.strokes)
-        $('#slideTimeDisplay').text((teaseSlave.slideControl.core.time / 1000) + 's')
-        $('#slideNumberDisplay').text((teaseSlave.slideControl.core.current + 1) + ' / ' + teaseSlave.fileList.length)
-        if (teaseSlave.slideControl.core.current + 1 === 1) {
-          $('#previous-button').prop('disabled', true)
-        } else {
-          $('#previous-button').prop('disabled', false)
-        }
-        if (teaseSlave.slideControl.core.current + 1 === teaseSlave.fileList.length) {
-          $('#next-button').prop('disabled', true)
-        } else {
-          $('#next-button').prop('disabled', false)
-        }
-      })
-
       $(document).ready(_ => {
+        // Tease Buttons
+        $('#exit-button').click(_ => {
+          teaseSlave.exit('user')
+        })
+
+        $('#pause-play').click(_ => {
+          teaseSlave.slideControl.pause()
+        })
+
+        $('#pause-play').change(_ => {
+          if (teaseSlave.slideControl.core.pause) {
+            $('#pause-play').text('play_arrow')
+          } else {
+            $('#pause-play').text('pause')
+          }
+        })
+
+        $('#next-button').click(_ => {
+          teaseSlave.slideControl.next()
+          if (teaseSlave.slideControl.core.current + 1 === teaseSlave.fileList.length) {
+            $('#next-button').prop('disabled', true)
+          } else {
+            $('#next-button').prop('disabled', false)
+          }
+        })
+
+        $('#previous-button').click(_ => {
+          teaseSlave.slideControl.previous()
+          if (teaseSlave.slideControl.core.current + 1 === 1) {
+            $('#previous-button').prop('disabled', true)
+          } else {
+            $('#previous-button').prop('disabled', false)
+          }
+        })
+
+        $('#strokeup-button').click(_ => {
+          teaseSlave.slideControl.core.strokes++
+          $('#strokeCountDisplay').trigger('change')
+        })
+
+        $('#strokedown-button').click(_ => {
+          if (teaseSlave.slideControl.core.strokes > 0) teaseSlave.slideControl.core.strokes--
+          $('#strokeCountDisplay').trigger('change')
+          if (teaseSlave.slideControl.core.strokes <= 0) {
+            $('#strokedown-button').prop('disabled', true)
+          } else {
+            $('#strokedown-button').prop('disabled', false)
+          }
+        })
+
+        $('#timeup-button').click(_ => {
+          teaseSlave.slideControl.core.time += 1000
+          $('#slideTimeDisplay').trigger('change')
+        })
+
+        $('#timedown-button').click(_ => {
+          if (teaseSlave.slideControl.core.time > 1000) teaseSlave.slideControl.core.time -= 1000
+          $('#slideTimeDisplay').trigger('change')
+          if (teaseSlave.slideControl.core.time <= 1000) {
+            $('#timedown-button').prop('disabled', true)
+          } else {
+            $('#timedown-button').prop('disabled', false)
+          }
+        })
+
+        $('#full-button').click(_ => {
+          teaseSlave.cumControl.update('full')
+        })
+
+        $('#ruin-button').click(_ => {
+          teaseSlave.cumControl.update('ruin')
+        })
+
+        $('#edge-button').click(_ => {
+          teaseSlave.cumControl.update('edge')
+        })
+
+        $('#keyDisplay').click((e) => {
+          if (teaseSlave.itemControl.keys > 0) {
+            if ($('#keyDisplay').hasClass('keySel')) {
+              $('#keyDisplay').removeClass('keySel')
+              $('.ctisitem').removeClass('keR')
+            } else {
+              $('#keyDisplay').addClass('keySel')
+              $('.ctisitem').addClass('keR')
+            }
+          }
+        })
+
+        $('#keyDisplay').on('unlock', (e, item) => {
+          if ($('#keyDisplay').hasClass('keySel') && teaseSlave.itemControl.keys > 0) {
+            teaseSlave.slideControl.heraut(teaseSlave.slideControl.core.current, 'key')
+            teaseSlave.itemControl.useKey(item)
+          }
+          $('#keyDisplay.keySel').removeClass('keySel')
+          $('.ctisitem.keR').removeClass('keR')
+        })
+
+        $('#strokeCountDisplay').change(_ => {
+          if ($('#strokeCountDisplay').text().indexOf('(') !== -1) {
+            let old = $('#strokeCountDisplay').text().split('(')[1].split(')')[0]
+            if (parseInt(old, 10) === teaseSlave.slideControl.core.strokes) {
+              $('#strokeCountDisplay').text(teaseSlave.slideControl.core.strokes)
+            } else {
+              $('#strokeCountDisplay').text(teaseSlave.slideControl.core.strokes + ' (' + old + ')')
+            }
+          } else {
+            let old = $('#strokeCountDisplay').text()
+            $('#strokeCountDisplay').text(teaseSlave.slideControl.core.strokes + ' (' + old + ')')
+          }
+        })
+
+        $('#slideTimeDisplay').change(_ => {
+          if ($('#slideTimeDisplay').text().indexOf('(') !== -1) {
+            let old = $('#slideTimeDisplay').text().split('(')[1].split('s)')[0]
+            if (parseInt(old, 10) === teaseSlave.slideControl.core.time / 1000) {
+              $('#slideTimeDisplay').text(teaseSlave.slideControl.core.time / 1000 + 's')
+            } else {
+              $('#slideTimeDisplay').text(teaseSlave.slideControl.core.time / 1000 + 's (' + old + 's)')
+            }
+          } else {
+            let old = $('#slideTimeDisplay').text().split('s')[0]
+            $('#slideTimeDisplay').text(teaseSlave.slideControl.core.time / 1000 + 's (' + old + 's)')
+          }
+        })
+
+        $('#startTease').click(_ => {
+          $('#pre-start').fadeOut(100, _ => {
+            console.log('<tease.html / [#startTease]>\nTease starting.')
+            teaseSlave.init()
+            $('#mainImage-div').fadeIn(100)
+          })
+        })
+
+        $('#mainImage').change(_ => {
+          // console.debug('<tease.html / [#mainImage]> #mainImage changed setting strokeCountDisplay, slideTimeDisplay and slideNumberDisplay')
+          $('#strokeCountDisplay').text(teaseSlave.slideControl.core.strokes)
+          $('#slideTimeDisplay').text((teaseSlave.slideControl.core.time / 1000) + 's')
+          $('#slideNumberDisplay').text((teaseSlave.slideControl.core.current + 1) + ' / ' + teaseSlave.fileList.length)
+          if (teaseSlave.slideControl.core.current + 1 === 1) {
+            $('#previous-button').prop('disabled', true)
+          } else {
+            $('#previous-button').prop('disabled', false)
+          }
+          if (teaseSlave.slideControl.core.current + 1 === teaseSlave.fileList.length) {
+            $('#next-button').prop('disabled', true)
+          } else {
+            $('#next-button').prop('disabled', false)
+          }
+        })
+
         mdc.autoInit()
-        var startCards = teaseSlave.preInit()
+
+        let startCards = teaseSlave.preInit()
         startCards.forEach((name) => {
           $('#CTIS-preStart').append('<li>' + name + '</li>')
         })

@@ -235,11 +235,9 @@ function TeaseSlave (options) {
     // console.debug('<tease.js / TeaseSlave> Reading CTIS card: ', JSON.parse(fs.readFileSync(this.ctisList[ccard], {encoding: 'utf8'})))
     this.ctisCards[ccard] = new CTISCard(JSON.parse(fs.readFileSync(this.ctisList[ccard], {encoding: 'utf8'})), parseInt(ccard, 10), this.ctisList[ccard].split('\\').pop())
   })
-  this.ctisCards.forEach((ccard) => {
-    ccard.init()
-  })
   this.teaseParams = options.teaseParams
   this.ctc = false
+  this.onStart = []
 
   // Slide Control
   this.slideControl = {
@@ -288,7 +286,7 @@ function TeaseSlave (options) {
     },
     set: (slide) => {
       if (typeof slide !== 'number') slide = parseInt(slide, 10)
-      if (isNaN(slide)) console.error('<tease.js / TeaseSlave> Set called but slide value is NaN, namely:', slide)
+      if (isNaN(slide)) console.error('<tease.js / TeaseSlave / SlideControl>\nSet called but slide value is NaN, namely:', slide)
       if (this.slideControl.core.current !== slide) this.slideControl.core.current = slide
       clearTimeout(this.slideControl.core.backup)
       if (slide >= this.fileList.length) this.exit('end')
@@ -382,7 +380,6 @@ function TeaseSlave (options) {
         adjustment = '=' + adjustment
       }
       let factor = parseInt(adjustment.slice(1), 10)
-      if (coreboy === 'time') factor *= 1000
       console.debug('<tease.js / TeaseSlave> Adjust called currently timer is:', timer + ',', 'modifier is:', modifier, 'and adjustment is:', adjustment)
       if (isNaN(factor)) return false
       if (modifier === '+') {
@@ -509,27 +506,38 @@ function TeaseSlave (options) {
   }
 
   this.init = _ => {
+    let start = []
+    Object.keys(this.ctisCards).forEach((key, i) => {
+      let card = this.ctisCards[key]
+      card.instruction.actions.forEach((instruction, index) => {
+        if (instruction.start === 'start') start.push(card.instruction.actions.splice(index, 1)[0])
+      })
+    })
+    if (start.length > 0) {
+      start.forEach((instruction) => {
+        this.onStart.push(new CTISAction(instruction.start, instruction.delay, instruction.type, instruction.fors, instruction.conditional, instruction.action, instruction.until, instruction.after, 0))
+      })
+      this.onStart.forEach((action) => {
+        this.actionControl.add(action)
+      })
+    }
+    this.slideControl.core.ticker.init()
     this.slideControl.core.ticker.muted = !this.teaseParams.timing.ticker
+    this.ctisCards.forEach((ccard) => {
+      ccard.init()
+    })
     this.slideControl.interval.run = setInterval(this.slideControl.run, 500)
     this.slideControl.next()
-    this.actionControl.run({index: -1, type: 'teasestart'})
   }
 
   this.preInit = _ => {
-    let start = []
     let names = []
     Object.keys(this.ctisCards).forEach((key, i) => {
       let card = this.ctisCards[key]
       card.instruction.actions.forEach((instruction, index) => {
-        if (instruction.start === 'start') {
-          card.actions.splice(index, 1)
-          start.push(card.instruction.actions[index])
-          names.push(card.name)
-        }
+        if (instruction.start === 'start' && names.indexOf(card.name) === -1) names.push(card.name)
       })
     })
-    this.ctisCards.push(new CTISCard({actions: start}, -1))
-    this.ctisCards[this.ctisCards.length - 1].init()
     return names
   }
 
@@ -621,7 +629,7 @@ function TeaseSlave (options) {
     run: (p, idx) => {
       console.debug('<tease.js / TeaseSlave / actionControl>\nRun called with arguments:', {p: p, idx: idx})
       if (idx === undefined) {
-        if (p.type.split(':')[0] === 'instruction' || p.type === 'teasestart') {
+        if (p.type.split(':')[0] === 'instruction') {
           this.ctisCards.forEach((card) => {
             let check = card.check(p.index)
             if (check !== false) {
@@ -631,22 +639,20 @@ function TeaseSlave (options) {
             }
           })
         }
-        if (p.type !== 'teasestart') {
-          Object.keys(this.actionControl.core.active).forEach((idf) => {
-            let rv = this.actionControl.core.active[idf].run(p.type, p.index)
-            console.debug('<tease.js / TeaseSlave / actionControl> Run returned', rv, 'on action', idf)
-            if (rv === 'remove') {
-              let after = this.actionControl.core.active[idf].afterAct()
-              if (after !== undefined) {
-                after.forEach((a) => {
-                  let ida = this.actionControl.add(a)
-                  this.actionControl.run({type: 'firstrun', index: p.index}, ida)
-                })
-              }
-              this.actionControl.remove(idf)
+        Object.keys(this.actionControl.core.active).forEach((idf) => {
+          let rv = this.actionControl.core.active[idf].run(p.type, p.index)
+          console.debug('<tease.js / TeaseSlave / actionControl> Run returned', rv, 'on action', idf)
+          if (rv === 'remove') {
+            let after = this.actionControl.core.active[idf].afterAct()
+            if (after !== undefined) {
+              after.forEach((a) => {
+                let ida = this.actionControl.add(a)
+                this.actionControl.run({type: 'firstrun', index: p.index}, ida)
+              })
             }
-          })
-        }
+            this.actionControl.remove(idf)
+          }
+        })
       } else {
         if (this.actionControl.core.active[idx] !== undefined) {
           let rv = this.actionControl.core.active[idx].run(p.type, p.index)
@@ -856,9 +862,14 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
     // Delay
     if (this.parameters.delay > 0) {
       if (slide >= this.index) {
-        if (type.indexOf('instruction') >= 0 || type.indexOf('picture') >= 0) this.parameters.delay--
+        if (type.indexOf('instruction') !== -1 || type.indexOf('picture') !== -1) {
+          this.parameters.delay--
+          return 'delay-taken'
+        } else {
+          return 'delay-ignored'
+        }
       }
-      return 'fail'
+      return 'delay-index'
     }
     // Until (before)
     if (this.until(type, 'before') && this.parameters.type !== 'on') {
@@ -1044,15 +1055,17 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
 }
 
 function CTISCard (instruction, index, name) {
-  console.debug('<tease.js / CTISCard> Card initialized. With parameters:', {instruction: instruction, index: index, name: name})
+  console.log('<tease.js / CTISCard>\nCard \'' + name + '\' created for index ' + index + '.')
   this.instruction = instruction
   this.name = name || 'Unknown Name'
   this.index = index
   this.actions = []
   this.check = (slide) => {
     if (slide === this.index) {
+      console.debug(`<tease.js / CTISCard>\nCheck called for slide ${slide} with index ${this.index}.\n Returning`, this.actions)
       return this.actions
     } else {
+      console.debug(`<tease.js / CTISCard>\nCheck called for slide ${slide} with index ${this.index}.\n Returning`, false)
       return false
     }
   }
