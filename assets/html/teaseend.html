@@ -29,7 +29,7 @@
   </div>
   <br>
   <div>
-    <button type="button" id="home-btn" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="swapper.swap('home')">Return Home</button>
+    <button type="button" id="homs-btn" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="swapper.swap('home')">Return Home</button>
     &nbsp;&nbsp;
     <button type="button" id="rete-btn" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="swapper.swap('setup')">Go to Tease Dashboard</button>
   </div>
@@ -80,7 +80,7 @@
       $('#punishment-group').slideDown(200)
     }
   } else {
-    $('#home-btn').addClass('mdc-button--primary')
+    $('#homs-btn').addClass('mdc-button--primary')
     $('#rete-btn').addClass('mdc-button--accent')
   }
 
@@ -117,7 +117,7 @@
       $('.punishment').text(punish)
       if (punish === 0) {
         $('#punishmentButton').removeClass('mdc-button--primary')
-        $('#home-btn').addClass('mdc-button--primary')
+        $('#homs-btn').addClass('mdc-button--primary')
         $('#rete-btn').addClass('mdc-button--accent')
       }
     }
