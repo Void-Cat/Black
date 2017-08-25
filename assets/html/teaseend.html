@@ -73,6 +73,8 @@
     $('.cum-allowed-line').slideDown(200)
   }
   if (punish > 0) {
+    if (config.get('stats.total.punishments.deserved') === undefined) config.set('stats.total.punishments.deserved', 0)
+    config.set('stats.total.punishments.deserved', config.get('stats.total.punishments.deserved') + punish)
     if (config.get('profile.punishment') === undefined) {
       $('#punishment-notset').slideDown(200)
     } else {
@@ -104,12 +106,14 @@
     let path = config.get('profile.punishment')[0]
     let fold = fs.readdirSync(path)
     let pick = []
+    if (config.get('stats.total.punishments.drawn') === undefined) config.set('stats.total.punishments.drawn', 0)
     fold.forEach((item) => {
       if (item.lastIndexOf('.') > 0) pick.push(item)
     })
     if (pick.length === 0) {
       $('#noPunishments').slideDown(200)
     } else {
+      config.set('stats.total.punishments', config.get('stats.total.punishments') + 1)
       let punishment = pick[Math.floor(Math.random() * pick.length)]
       $('#punishmentDisplay').prepend('<img src="' + path + '/' + punishment + '" class="punishment-card" />')
       $('#punishmentDisplay').slideDown(200)
