@@ -233,7 +233,7 @@ function TeaseSlave (options) {
   this.ctisCards = []
   Object.keys(this.ctisList).forEach((ccard) => {
     // console.debug('<tease.js / TeaseSlave> Reading CTIS card: ', JSON.parse(fs.readFileSync(this.ctisList[ccard], {encoding: 'utf8'})))
-    this.ctisCards[ccard] = new CTISCard(JSON.parse(fs.readFileSync(this.ctisList[ccard], {encoding: 'utf8'})), parseInt(ccard, 10), this.ctisList[ccard].split('\\').pop())
+    this.ctisCards[ccard] = new CTISCard(JSON.parse(fs.readFileSync(this.ctisList[ccard], {encoding: 'utf8'})), parseInt(ccard, 10), this.fileList[ccard])
   })
   this.teaseParams = options.teaseParams
   this.ctc = false
@@ -397,6 +397,13 @@ function TeaseSlave (options) {
         console.error('<tease.js / TeaseSlave> Adjust called with unrecognizable modifier:', modifier)
         return false
       }
+      if (coreboy === 'time' && this.slideControl.core.time < 1) {
+        this.slideControl.core.time = 1
+        console.warn('<tease.js / TeaseSlave / slideControl>\nAdjust defaulted to 1 on time, can\'t be lower.')
+      } else if (coreboy === 'strokes' && this.slideControl.core.strokes < 0) {
+        this.slideControl.core.strokes = 0
+        console.warn('<tease.js / TeaseSlave / slideControl>\nAdjust defaulted to 0 on strokes, can\'t be lower.')
+      }
       $('#' + timer + 'Display').trigger('change')
     },
     addInstruction: (id, instruction) => {
@@ -536,7 +543,7 @@ function TeaseSlave (options) {
     Object.keys(this.ctisCards).forEach((key, i) => {
       let card = this.ctisCards[key]
       card.instruction.actions.forEach((instruction, index) => {
-        if (instruction.start === 'start' && names.indexOf(card.name) === -1) names.push(card.name)
+        if (instruction.start === 'start') names.push(card.name)
       })
     })
     return names
@@ -610,7 +617,9 @@ function TeaseSlave (options) {
 
   this.actionControl = {
     core: {
-      active: {}
+      active: {},
+      priority: {},
+      lowPriority: {}
     },
     add: (action) => {
       let idf = Math.floor(Math.random() * 100000)
@@ -630,6 +639,7 @@ function TeaseSlave (options) {
     run: (p, idx) => {
       console.debug('<tease.js / TeaseSlave / actionControl>\nRun called with arguments:', {p: p, idx: idx})
       if (idx === undefined) {
+        // Card drawing/checking
         if (p.type.split(':')[0] === 'instruction') {
           this.ctisCards.forEach((card) => {
             let check = card.check(p.index)
@@ -640,9 +650,38 @@ function TeaseSlave (options) {
             }
           })
         }
+        // Priority Handeling
+        this.actionControl.core.priority = {}
+        Object.keys(this.actionControl.core.active).forEach((idf) => {
+          let priority = this.actionControl.core.active[idf].priority
+          if (priority !== 'none' && priority.indexOf(':') !== -1) {
+            let level = priority.split(':', 1)
+            priority = priority.split(':')
+            if (priority[1] === 'type') { priority = priority.splice(2).join(':') } else { priority = priority.splice(1).join(':') }
+            level = parseInt(level, 10)
+            if (priority.toLowerCase() === p.type) {
+              if (this.actionControl.core.priority[level] === undefined) this.actionControl.core.priority[level] = []
+              this.actionControl.core.priority[level].push(idf)
+            }
+          }
+        })
+        if (Object.keys(this.actionControl.core.priority).length > 1) {
+          let levels = Object.keys(this.actionControl.core.priority)
+          levels.forEach((v, i) => { levels[i] = parseInt(v, 10) })
+          levels.sort((a, b) => { return a - b })
+          levels.pop()
+          levels.forEach((level) => {
+            this.actionControl.core.priority[level].forEach((idf) => {
+              this.actionControl.core.lowPriority[idf] = this.actionControl.core.active[idf]
+              delete this.actionControl.core.active[idf]
+              console.log('<tease.js / TeaseSlave / ActionControl>\nIgnoring action', idf, 'because of low priority.')
+            })
+          })
+        }
+        // Run Handeling
         Object.keys(this.actionControl.core.active).forEach((idf) => {
           let rv = this.actionControl.core.active[idf].run(p.type, p.index)
-          console.debug('<tease.js / TeaseSlave / actionControl> Run returned', rv, 'on action', idf)
+          console.log('<tease.js / TeaseSlave / actionControl>\nRun returned', rv, 'on action', idf)
           if (rv === 'remove') {
             let after = this.actionControl.core.active[idf].afterAct()
             if (after !== undefined) {
@@ -654,10 +693,15 @@ function TeaseSlave (options) {
             this.actionControl.remove(idf)
           }
         })
+        // Priority backplacing
+        Object.keys(this.actionControl.core.lowPriority).forEach((idf) => {
+          this.actionControl.core.active[idf] = this.actionControl.core.lowPriority[idf]
+        })
+        this.actionControl.core.lowPriority = {}
       } else {
         if (this.actionControl.core.active[idx] !== undefined) {
           let rv = this.actionControl.core.active[idx].run(p.type, p.index)
-          console.debug('<tease.js / TeaseSlave / actionControl> Run returned', rv, 'on action', idx)
+          console.log('<tease.js / TeaseSlave / actionControl>\nRun returned', rv, 'on action', idx)
           if (rv === 'remove') {
             let after = this.actionControl.core.active[idx].afterAct()
             if (after !== undefined) {
@@ -668,6 +712,8 @@ function TeaseSlave (options) {
             }
             this.actionControl.remove(idx)
           }
+        } else {
+          console.error('<tease.js / TeaseSlave / actionControl>\nCalling on non-existent action', idx)
         }
       }
     }
@@ -720,7 +766,7 @@ function TeaseSlave (options) {
   }
 }
 
-function CTISAction (start, delay, type, fors, conditional, action, until, after, index) {
+function CTISAction (start, delay, type, fors, conditional, action, until, after, index, priority) {
   console.debug('<tease.js / CTISAction> Action initialized with parameters:', {start: start, type: type, fors: fors, conditional: conditional, action: action, until: until, index: index})
   if (delay === undefined) delay = 0
   this.parameters = {
@@ -733,6 +779,7 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
     until: until,
     after: after
   }
+  this.priority = priority || 'none'
   this.counter = 0
   this.index = index
   this.until = (type, loc) => {
@@ -1072,7 +1119,8 @@ function CTISCard (instruction, index, name) {
   }
   this.init = _ => {
     this.instruction.actions.forEach((act) => {
-      this.actions.push(new CTISAction(act.start, act.delay, act.type, act.fors, act.conditional, act.action, act.until, act.after, this.index))
+      if (act.fors !== 'instant') var priority = act.priority + ':' + act.fors
+      this.actions.push(new CTISAction(act.start, act.delay, act.type, act.fors, act.conditional, act.action, act.until, act.after, this.index, priority))
     })
   }
 }
