@@ -123,6 +123,8 @@
   <button type="button" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="resetVal('cumming')">Reset Cumming Statistics</button>
   <br><br>
   <button type="button" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="resetVal('teases')">Reset Tease Statistics</button>
+  <br><br>
+  <button type="button" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="resetVal('punishments')">Reset Punishment Statistics</button>
 </div>
 
 <div id="profile" class="mdc-elevation--z3 box">
@@ -192,6 +194,7 @@
     if (profiledata.indexOf(undefined) === -1) {
       config.set('stats.total.cumming', {full: 0, edge: 0, ruin: 0, nonAllowed: 0})
       config.set('stats.lastTease.cumming', {full: 0, edge: 0, ruin: 0, nonAllowed: 0})
+      config.set('stats.total.punishments', {drawn: 0, deserved: 0})
       config.set('stats.teases', {etes: 0, total: 0})
       config.set('profile.sublevel', 0)
       alert('Profile saved.')
@@ -297,6 +300,9 @@
     } else if (value === 'teases') {
       config.set('stats.teases', {etes: 0, total: 0})
       alert('Tease statistics have all been reset to 0.')
+    } else if (value === 'punishments') {
+      config.set('stats.total.punishments', {drawn: 0, deserved: 0})
+      alert('Punishment statistics have all been reset to 0.')
     } else {
       console.error('<profile.html / resetVal>\nValue', value, 'was not recognized.')
     }

@@ -204,3 +204,18 @@ hr {
   vertical-align: middle;
   display: inline;
 }
+
+#CTIS-preStart {
+  display: flex;
+  border-top: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-left: 5px solid transparent;
+  overflow-x: auto;
+}
+
+#CTIS-preStart > img {
+  margin: 0 2.5px;
+  max-height: 500px;
+  vertical-align: middle;
+  display: inline;
+}
