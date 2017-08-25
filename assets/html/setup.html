@@ -107,7 +107,7 @@
   <div class="box mdc-elevation--z3" style="width: 50%;">
     <h1 id="newTease-0" class="mdc-typography--title">Generating Tease</h1>
     <h1 id="newTease-1" class="mdc-typography--title" style="display: none;">Tease in progress!</h1>
-    <div role="progressbar" class="mdc-linear-progress" style="margin: 10px 0;">
+    <div role="progressbar" class="mdc-linear-progress mdc-linear-progress--indeterminate mdc-linear-progress--reversed" style="margin: 10px 0;">
       <div class="mdc-linear-progress__buffer" style="background-color: rgba(0, 0, 0, 0.2)"></div>
       <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
         <span class="mdc-linear-progress__bar-inner"></span>
@@ -331,22 +331,18 @@
   $('#startTease').click(_ => {
     $('#popover').fadeIn(100, _ => {
       // $('#newTease-1').slideDown(100)
-      genProgress.foundation_.setProgress(0)
       $.when(generateFileList(config.get('teaseParams.pictureFolder')[0], config.get('teaseParams.cardFolder')[0], config.get('teaseParams.categories'))).then((ret) => {
         let fileList = ret[0]
         let icl = ret[1]
         console.debug('<setup.html / [#startTease]> We got a filelist!')
         $('#newTease-1').css('color', 'lime')
         $('#newTease-2').slideDown(100)
-        genProgress.foundation_.setProgress(0.33)
         $.when(findCTIS(fileList)).then((ctisList) => {
           console.debug('<setup.html / [#startTease]> We got a ctisList!')
-          genProgress.foundation_.setProgress(0.67)
           tease = new TeaseMaster(config.get('teaseParams'), fileList, ctisList, icl)
-          genProgress.foundation_.setProgress(1)
           $('#newTease-0, #newTease-2').slideUp(100)
           $('#newTease-1').slideDown(100)
-          genProgress.foundation_.setDeterminate(false)
+          genProgress.foundation_.setReverse(false)
           if (tease) {}
         }, (err) => {
           if (err !== undefined) { console.error(err) }
