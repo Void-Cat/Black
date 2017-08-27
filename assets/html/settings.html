@@ -26,6 +26,24 @@
   </div>
 </div>
 <div class="mdc-elevation--z3 box">
+  <h1 class="mdc-typography--title">Tease End</h1>
+  <div class="mdc-form-field">
+    <label for="autoReport" class="mdc-switch-label" style="padding-left: 0;">Automaticaly save Tease reports</label>
+    &nbsp;&nbsp;
+    <div class="mdc-switch">
+      <input type="checkbox" id="autoReport" class="mdc-switch__native-control" />
+      <div class="mdc-switch__background">
+        <div class="mdc-switch__knob"></div>
+      </div>
+    </div>
+  </div>
+  <div id="autoReportPathDiv" style="display: none;">
+    <span class="mdc-typography--body1">Select a location to save reports:</span><br>
+    <button id="autoReportPathBtn" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
+    <label id="autoReportPathLabel" class="box" style="margin-left: 5px; background-color: rgba(0, 0, 0, 0.2); border-radius: 5px; display: none;"></label>
+  </div>
+</div>
+<div class="mdc-elevation--z3 box">
   <h1 class="mdc-typography--title">Danger Zone</h1>
   <div class="mdc-form-field">
     <p class="mdc-typography--body1">To delete all values (this cannot be undone), open the developer console with <span class="mdc-theme--accent">Ctrl + Shift + C</span>.<br>
@@ -38,7 +56,7 @@
 </div>
 
 <script type="text/javascript">
-  /* global $, mdc, config */
+  /* global $, mdc, config, dialog */
 
   if (typeof ratioslider !== 'undefined') {
     ratioslider = ratioslider.destroy()
@@ -52,6 +70,39 @@
     $('#ratioperc').text(`${ratioslider.value}%`)
     $('#notratioperc').text(`${100 - ratioslider.value}%`)
     config.set('settings.cardratio', ratioslider.value)
+  })
+
+  $('#autoReport').change(_ => {
+    let check = $('#autoReport').is(':checked')
+    if (check) {
+      config.set('settings.autoReport', true)
+      $('#autoReportPathDiv').slideDown(200)
+    } else {
+      config.set('settings.autoReport', false)
+      $('#autoReportPathDiv').slideUp(200)
+    }
+  })
+
+  if (config.get('settings.autoReport')) $('#autoReport').trigger('click')
+
+  if (config.get('settings.autoReportPath') !== undefined) {
+    $('#autoReportPathLabel').text(config.get('settings.autoReportPath'))
+    $('#autoReportPathLabel').fadeIn(100)
+  }
+
+  $('#autoReportPathBtn').click(_ => {
+    dialog.showOpenDialog({
+      title: 'Select location to save reports',
+      properties: ['openDirectory']
+    }, (path) => {
+      if (path !== '' && path !== undefined) {
+        config.set('settings.autoReportPath', path)
+        $('#autoReportPathLabel').text(path)
+        $('#autoReportPathLabel').fadeIn(200)
+      } else {
+        $('#autoReportPathLabel').fadeOut(200)
+      }
+    })
   })
 
   function resetAll () {

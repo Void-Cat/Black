@@ -32,11 +32,24 @@
     <button type="button" id="homs-btn" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="swapper.swap('home')">Return Home</button>
     &nbsp;&nbsp;
     <button type="button" id="rete-btn" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="swapper.swap('setup')">Go to Tease Dashboard</button>
+    <button type="button" id="repo-btn" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="generateReport()" style="float: right;">Generate Tease Report</button>
   </div>
 </div>
 
 <script type="text/javascript">
   /* global config, $, dialog, fs */
+  function hashCode (string) {
+    var hash = 0
+    var i, chr
+    if (string.length === 0) return hash
+    for (i = 0; i < string.length; i++) {
+      chr = string.charCodeAt(i)
+      hash = ((hash << 5) - hash) + chr
+      hash |= 0 // Convert to 32bit integer
+    }
+    return hash
+  }
+
   if (typeof teaseExit === 'undefined') {
     var teaseExit = config.get('teaseExit')
     var cumInfo = config.get('stats.lastTease.cumming')
@@ -59,6 +72,7 @@
     if (sublevel < 5) sublevel++
     $('.exit-end').slideDown(200)
   }
+  // $('#generateTeaseReport')
   $('.tease-total').text(teaseTotal)
   $('.cum-total').text(cumInfo.full + cumInfo.ruin)
   $('.cum-full').text(cumInfo.full)
@@ -84,6 +98,13 @@
   } else {
     $('#homs-btn').addClass('mdc-button--primary')
     $('#rete-btn').addClass('mdc-button--accent')
+  }
+
+  if (config.get('settings.autoReport')) {
+    if (typeof config.get('settings.autoReportPath')[0] === 'string') {
+      $('#repo-btn').hide()
+      generateReport(config.get('settings.autoReportPath')[0])
+    }
   }
 
   $('#punishmentSetButton').click(_ => {
@@ -126,4 +147,54 @@
       }
     }
   })
+
+  function generateReport (path) {
+    let date = new Date()
+    let token = hashCode(config.get('profile.name.real') + config.get('stats.lastTease.cumming.full') + config.get('stats.lastTease.cumming.edge') + config.get('stats.lastTease.cumming.ruin') + date.getDate())
+    if (token < 0) token *= -1
+    let report = [
+      'Black Tease Report - ' + date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate(),
+      'Name: ' + config.get('profile.name.real'),
+      '',
+      'Card information:',
+      '  Pictures: ' + config.get('teaseslave.teaseParams.pictureAmount'),
+      '  Cards: ' + Object.keys(config.get('teaseslave.icl')).length,
+      '',
+      'Cumming:',
+      '  Full: ' + config.get('stats.lastTease.cumming.full'),
+      '  Ruined: ' + config.get('stats.lastTease.cumming.ruin'),
+      '  Edges: ' + config.get('stats.lastTease.cumming.edge'),
+      '  Without Permission: ' + config.get('stats.lastTease.cumming.nonAllowed'),
+      '',
+      'You should be considered a ',
+      '',
+      token
+    ]
+    if (config.get('profile.sublevel') < -2) {
+      report[13] += 'bad '
+    } else if (config.get('profile.sublevel') > 2) {
+      report[13] += 'good '
+    } else {
+      report[13] += 'boring '
+    }
+    report[13] += config.get('profile.gender.nick')
+    if (path === undefined) {
+      dialog.showSaveDialog({
+        title: 'Save Tease Report',
+        defaultPath: config.get('profile.name.real') + ' Tease Report ' + date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + '.txt',
+        buttonLabel: 'Save Report'
+      }, (gPath) => {
+        if (gPath !== undefined) {
+          report = report.join('\r\n')
+          fs.writeFileSync(gPath, report)
+        } else {
+          console.error('<teaseend.html / generateReport>\nNo path specified. Report not saved.')
+        }
+      })
+    } else {
+      report = report.join('\r\n')
+      path += '\\' + config.get('profile.name.real') + ' Tease Report ' + date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + '.txt'
+      fs.writeFileSync(path, report)
+    }
+  }
 </script>
