@@ -206,11 +206,14 @@ hr {
 }
 
 #CTIS-preStart {
-  display: flex;
+  display: inline-flex;
   border-top: 5px solid transparent;
   border-right: 5px solid transparent;
   border-left: 5px solid transparent;
   overflow-x: auto;
+  max-width: 80%;
+  margin: 0 auto;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 #CTIS-preStart > img {
