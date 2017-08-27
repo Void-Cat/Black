@@ -150,10 +150,8 @@
 
   function generateReport (path) {
     let date = new Date()
-    let token = hashCode(config.get('profile.name.real') + config.get('stats.lastTease.cumming.full') + config.get('stats.lastTease.cumming.edge') + config.get('stats.lastTease.cumming.ruin') + date.getDate())
-    if (token < 0) token *= -1
     let report = [
-      'Black Tease Report - ' + date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate(),
+      'Black Tease Report - ' + date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes(),
       'Name: ' + config.get('profile.name.real'),
       '',
       'Card information:',
@@ -167,21 +165,22 @@
       '  Without Permission: ' + config.get('stats.lastTease.cumming.nonAllowed'),
       '',
       'You should be considered a ',
-      '',
-      token
+      ''
     ]
+    let token = hashCode(report.join('\r\n'))
+    report.push('Verification token: ' + token)
     if (config.get('profile.sublevel') < -2) {
-      report[13] += 'bad '
+      report[13] += (config.get('settings.subtags.bad') || 'bad') + ' '
     } else if (config.get('profile.sublevel') > 2) {
-      report[13] += 'good '
+      report[13] += (config.get('settings.subtags.good') || 'good') + ' '
     } else {
-      report[13] += 'boring '
+      report[13] += (config.get('settings.subtags.neutral') || 'boring') + ' '
     }
     report[13] += config.get('profile.gender.nick')
     if (path === undefined) {
       dialog.showSaveDialog({
         title: 'Save Tease Report',
-        defaultPath: config.get('profile.name.real') + ' Tease Report ' + date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + '.txt',
+        defaultPath: config.get('profile.name.real') + ' Tease Report ' + date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + '_' + date.getMinutes() + '.txt',
         buttonLabel: 'Save Report'
       }, (gPath) => {
         if (gPath !== undefined) {
@@ -193,7 +192,7 @@
       })
     } else {
       report = report.join('\r\n')
-      path += '\\' + config.get('profile.name.real') + ' Tease Report ' + date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + '.txt'
+      path += '\\' + config.get('profile.name.real') + ' Tease Report ' + date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + '_' + date.getMinutes() + '.txt'
       fs.writeFileSync(path, report)
     }
   }

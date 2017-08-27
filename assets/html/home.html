@@ -88,11 +88,11 @@
     ]
     $('.aboutusr-0').text(aboutusr[0])
     if (aboutusr[1] >= 3) {
-      $('.aboutusr-1').text('good')
+      $('.aboutusr-1').text(config.get('settings.subtags.good') || 'good')
     } else if (aboutusr[1] <= -2) {
-      $('.aboutusr-1').text('bad')
+      $('.aboutusr-1').text(config.get('settings.subtags.bad') || 'bad')
     } else {
-      $('.aboutusr-1').text('boring')
+      $('.aboutusr-1').text(config.get('settings.subtags.neutral') || 'boring')
     }
     if (config.get('profile.gender.nick') === undefined) {
       $('.aboutusr-1').text($('.aboutusr-1').text() + ' slave')

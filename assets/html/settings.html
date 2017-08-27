@@ -44,6 +44,29 @@
   </div>
 </div>
 <div class="mdc-elevation--z3 box">
+  <h1 class="mdc-typography--title">Sublevel tags</h1>
+  <p class="mdc-typography--body1">
+    How should we refer to your sublevel when it's low/neutral/high?<br>
+    Example: <i>You've been a <span id="subtagsExampleTagGood" class="mdc-theme--accent">good</span> / <span id="subtagsExampleTagNeutral" class="mdc-theme--accent">boring</span> / <span id="subtagsExampleTagBad" class="mdc-theme--accent">bad</span>&nbsp;<span id="subtagsExampleGenderNick">boy</span>.</i>
+  </p>
+  <div class="mdc-form-field" style="width: 100%;">
+    <div class="mdc-textfield" data-mdc-auto-init="MDCTextfield">
+      <input type="text" id="subtagsGood" class="mdc-textfield__input" value="good" />
+      <label for="subtagsGood" class="mdc-textfield__label">Obedient (high sublevel)</label>
+    </div>
+    &nbsp;
+    <div class="mdc-textfield" data-mdc-auto-init="MDCTextfield">
+      <input type="text" id="subtagsNeutral" class="mdc-textfield__input" value="boring" />
+      <label for="subtagsNeutral" class="mdc-textfield__label">Neutral</label>
+    </div>
+    &nbsp;
+    <div class="mdc-textfield" data-mdc-auto-init="MDCTextfield">
+      <input type="text" id="subtagsBad" class="mdc-textfield__input" value="bad" />
+      <label for="subtagsBad" class="mdc-textfield__label">Defiant (low sublevel)</label>
+    </div>
+  </div>
+</div>
+<div class="mdc-elevation--z3 box">
   <h1 class="mdc-typography--title">Danger Zone</h1>
   <div class="mdc-form-field">
     <p class="mdc-typography--body1">To delete all values (this cannot be undone), open the developer console with <span class="mdc-theme--accent">Ctrl + Shift + C</span>.<br>
@@ -71,6 +94,24 @@
     $('#notratioperc').text(`${100 - ratioslider.value}%`)
     config.set('settings.cardratio', ratioslider.value)
   })
+
+  $('#subtagsGood, #subtagsNeutral, #subtagsBad').change((data) => {
+    let val = $(data.target).val()
+    let gnb = $(data.target).attr('id').slice(7)
+    $('#subtagsExampleTag' + gnb).text(val)
+    config.set('settings.subtags.' + gnb.toLowerCase(), val)
+  })
+
+  if (config.get('settings.subtags') !== undefined) {
+    $('#subtagsGood').val(config.get('settings.subtags.good') || 'good')
+    $('#subtagsExampleTagGood').text(config.get('settings.subtags.good') || 'good')
+    $('#subtagsNeutral').val(config.get('settings.subtags.neutral') || 'boring')
+    $('#subtagsExampleTagNeutral').text(config.get('settings.subtags.neutral') || 'boring')
+    $('#subtagsBad').val(config.get('settings.subtags.bad') || 'bad')
+    $('#subtagsExampleTagBad').text(config.get('settings.subtags.bad') || 'bad')
+  }
+
+  if (config.get('profile.gender.nick') !== undefined) $('#subtagsExampleGenderNick').text(config.get('profile.gender.nick'))
 
   $('#autoReport').change(_ => {
     let check = $('#autoReport').is(':checked')
