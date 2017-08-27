@@ -1,7 +1,7 @@
 {
   "name": "black",
   "productName": "Black CTIS Viewer",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "An digital master/mistress",
   "main": "index.js",
   "scripts": {
