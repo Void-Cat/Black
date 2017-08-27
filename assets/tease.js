@@ -783,9 +783,8 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
   this.counter = 0
   this.index = index
   this.until = (type, loc) => {
-    type = type.toLowerCase().split(':')
     // Get times and/or delay
-    if (this.parameters.until === undefined) this.parameters.until = 'instant'
+    if (this.parameters.until === undefined) this.parameters.until = 'end'
     let until, times, delay
     if (this.parameters.until.indexOf('*') !== -1 || this.parameters.until.indexOf('+') !== -1) {
       if (this.parameters.until.indexOf('*') !== -1 && this.parameters.until.indexOf('+') !== -1) {
@@ -809,7 +808,7 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
       until = this.parameters.until.toLowerCase().split(':')
     }
     // Prepare
-    if (until[0] === 'type') until = until.splice(1, 2)
+    if (until[0] === 'type') until = until.splice(1)
     let fire = false
     switch (until[0]) {
       case 'cum':
@@ -904,7 +903,8 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
     } else { return undefined }
   }
   this.run = (type, slide) => {
-    type = type.toLowerCase()
+    type = type.toLowerCase().split(':')
+    if (type[0] === 'type') type = type.splice(1)
     // Drawing too early failsafe
     //   if (this.parameters.start === 'draw' && teaseSlave.slideControl.core.current < this.index) return 'fail'
     // Delay
@@ -912,12 +912,12 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
       if (slide >= this.index) {
         if (type.indexOf('instruction') !== -1 || type.indexOf('picture') !== -1) {
           this.parameters.delay--
-          return 'delay-taken'
+          return 'delay-counted'
         } else {
           return 'delay-ignored'
         }
       }
-      return 'delay-index'
+      return 'delay-too_early'
     }
     // Until (before)
     if (this.until(type, 'before') && this.parameters.type !== 'on') {
@@ -947,14 +947,35 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
       }
     }
     // Fors
-    if ((this.parameters.fors.split(':')[1] === 'any' && (type === 'picture' || type.split(':')[0] === 'instruction' || type.split(':') === 'cum')) ||
-        this.parameters.fors === 'instant' ||
-        (this.parameters.fors.split(':')[1] === 'picture' && type === 'picture') ||
-        (this.parameters.fors.split(':')[1] === 'instruction' && (this.parameters.fors.split(':')[2] === 'any' || this.parameters.fors.split(':')[2] === type.split(':')[1])) ||
-        (this.parameters.fors.split(':')[1] === 'instruction' && this.parameters.fors.split(':')[2] === 'mistress' && (type.split(':')[1].indexOf('mistress') !== -1 || type.split(':')[1].indexOf('master'))) ||
-        (this.parameters.fors.split(':')[1] === 'cum' && type.split(':')[0] === 'cum' && (this.parameters.fors.split(':')[2] === type.split(':')[1] || this.parameters.fors.split(':')[2] === 'any'))) {
-      console.debug('<tease.js / CTISAction> Action is qualified, action type:', this.parameters.type, ', action:', this.parameters.action)
-      if (this.parameters.fors === 'instant') this.parameters.fors = 'never'
+    let fors = this.parameters.fors.split(':')
+    let action = false
+    if (fors[0] === 'type') fors = this.parameters.fors.split(':').splice(1)
+    switch (fors[0]) {
+      case 'any':
+        if (type[0] === 'picture' || type[0] === 'instruction') action = true
+        break
+      case 'instant':
+        action = true
+        this.parameters.fors = 'never'
+        break
+      case 'picture':
+        if (type[0] === 'picture') action = true
+        break
+      case 'instruction':
+        if (type[0] === 'instruction') {
+          if (fors[1] === 'any' || type[1] === fors[1] || (fors[1] === 'mistress' && (type[1].indexOf('mistress') !== -1 || type[1].indexOf('master') !== -1))) action = true
+        }
+        break
+      case 'cum':
+        if (type[0] === 'cum') {
+          if (fors[1] === 'any' || type[1] === fors[1]) action = true
+        }
+        break
+      case 'key':
+        if (type[0] === 'key') action = true
+    }
+    if (action === true) {
+      console.debug('<tease.js / CTISAction>\nAction is qualified, action type:', this.parameters.type, ', action:', this.parameters.action)
       // Action
       if (this.parameters.type === 'strokecount' || this.parameters.type === 'slidetime') {
         if (this.parameters.action.indexOf('sw:') === -1) {
