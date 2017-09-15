@@ -350,7 +350,7 @@ function TeaseSlave (options) {
       })
       if (gi.length > 0) {
         gi.forEach((idx) => {
-          this.ctisList[idx].actions = [new CTISAction('draw', -1, 'contact', 'instant', undefined, 'yellow:You are to ignore this card.', 'instant', undefined, idx)]
+          this.ctisList[idx].actions = [new CTISAction({start: 'draw', delay: -1, type: 'contact', fors: 'instant', action: 'yellow:You are to ignore this card.', until: 'instant', index: idx})]
         })
       }
     },
@@ -436,12 +436,20 @@ function TeaseSlave (options) {
       $($('#itemlist > .ctisitem[name="' + name + '"]')[0]).remove()
     },
     useKey: (item) => {
-      if (this.itemControl.keys > 0) {
-        this.itemControl.remove(item)
-        if (item === 'Chastity') this.itemControl.chastity(false)
-        this.itemControl.keys--
-        $('#keyDisplay').text('Keys: ' + this.itemControl.keys)
-        if (this.itemControl.keys <= 0) $('#keyDisplay').prop('disabled', true)
+      if (typeof item === 'number') {
+        if (this.itemControl.keys - item >= 0) {
+          for (var i = 0; i < item; i++) {
+            this.itemControl.useKey('')
+          }
+        }
+      } else {
+        if (this.itemControl.keys > 0) {
+          this.itemControl.remove(item)
+          if (item === 'Chastity') this.itemControl.chastity(false)
+          this.itemControl.keys--
+          $('#keyDisplay').text('Keys: ' + this.itemControl.keys)
+          if (this.itemControl.keys <= 0) $('#keyDisplay').prop('disabled', true)
+        }
       }
     },
     addKey: (n) => {
@@ -523,7 +531,7 @@ function TeaseSlave (options) {
     })
     if (start.length > 0) {
       start.forEach((instruction) => {
-        this.onStart.push(new CTISAction(instruction.start, instruction.delay, instruction.type, instruction.fors, instruction.conditional, instruction.action, instruction.until, instruction.after, 0))
+        this.onStart.push(new CTISAction({start: instruction.start, delay: instruction.delay, type: instruction.type, fors: instruction.fors, conditional: instruction.conditional, action: instruction.action, until: instruction.until, clean: instruction.clean, after: instruction.after, index: 0}))
       })
       this.onStart.forEach((action) => {
         this.actionControl.add(action)
@@ -766,22 +774,23 @@ function TeaseSlave (options) {
   }
 }
 
-function CTISAction (start, delay, type, fors, conditional, action, until, after, index, priority) {
-  console.debug('<tease.js / CTISAction> Action initialized with parameters:', {start: start, type: type, fors: fors, conditional: conditional, action: action, until: until, index: index})
-  if (delay === undefined) delay = 0
+function CTISAction (options) {
+  console.debug('<tease.js / CTISAction> Action initialized with parameters:', options)
+  if (options.delay === undefined) options.delay = 0
   this.parameters = {
-    start: start || 'draw',
-    delay: parseInt(delay, 10),
-    type: type,
-    fors: fors,
-    conditional: conditional,
-    action: action,
-    until: until,
-    after: after
+    start: options.start || 'draw',
+    delay: parseInt(options.delay, 10),
+    type: options.type,
+    fors: options.fors,
+    conditional: options.conditional,
+    action: options.action,
+    until: options.until,
+    clean: options.clean,
+    after: options.after
   }
-  this.priority = priority || 'none'
+  this.priority = options.priority || 'none'
   this.counter = 0
-  this.index = index
+  this.index = options.index
   this.until = (type, loc) => {
     // Get times and/or delay
     if (this.parameters.until === undefined) this.parameters.until = 'end'
@@ -848,25 +857,30 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
         }
       }
       if (typeof delay !== 'undefined') {
-        if (typeof times === undefined || this.counter >= times) {
+        if (typeof times === 'undefined' || this.counter >= times) {
           this.parameters.until = 'type:delay:' + delay
           fire = false
         }
       }
     }
     if (fire) {
-      // this.parameters.untilAct
-      if (this.parameters.untilAct !== undefined) {
-        if (this.parameters.untilAct === 'unblockQuit') teaseSlave.blockExit = false
-        if (this.parameters.untilAct === 'disallowQuit') teaseSlave.allowExit = false
-        if (this.parameters.untilAct.indexOf('key:') !== -1) {
-          if (teaseSlave.itemControl.keys >= parseInt(this.parameters.untilAct.split(':')[1], 10)) teaseSlave.itemControl.useKey('')
+      // this.parameters.clean
+      if (this.parameters.clean !== undefined && this.parameters.clean !== 'false') {
+        if (this.parameters.clean === 'unblockQuit') teaseSlave.blockExit = false
+        if (this.parameters.clean === 'disallowQuit') teaseSlave.allowExit = false
+        if (this.parameters.clean.indexOf('key:') !== -1) {
+          if (teaseSlave.itemControl.keys >= parseInt(this.parameters.clean.split(':')[1], 10)) {
+            let n = parseInt(this.parameters.clean.split(':')[2], 10)
+            if (n > 0) {
+              for (var i = 0; i < n; i++) teaseSlave.itemControl.useKey(n)
+            }
+          }
         }
-        if (this.parameters.untilAct === 'ctc') {
+        if (this.parameters.clean === 'ctc') {
           teaseSlave.ctc = 'false'
           teaseSlave.slideControl.ctcUpdate()
         }
-        if (this.parameters.untilAct === 'ctc:force') {
+        if (this.parameters.clean === 'ctc:force') {
           let lastCum = teaseSlave.cumControl.core.cumControl.last.split(':')
           if (parseInt(lastCum[0], 10) > this.index && lastCum[1] === this.parameters.action) {
             let ol = 'came'
@@ -882,10 +896,10 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
           teaseSlave.ctc = 'false'
           teaseSlave.slideControl.ctcUpdate()
         }
-        if (this.parameters.untilAct === 'chastity') teaseSlave.itemControl.chastity(false)
-        if (this.parameters.untilAct.indexOf('item:') !== -1) teaseSlave.itemControl.remove(this.parameters.untilAct.split(':')[1])
-        if (this.parameters.untilAct.indexOf('instruction:') !== -1) teaseSlave.slideControl.removeInstruction(parseInt(this.parameters.untilAct.split(':')[1], 10))
-        if (this.parameters.untilAct.indexOf('position:') !== -1 && this.parameters.untilAct.split(':')[1] === $('#position').attr('pos')) teaseSlave.slideControl.position(0, 'Free')
+        if (this.parameters.clean === 'chastity') teaseSlave.itemControl.chastity(false)
+        if (this.parameters.clean.indexOf('item:') !== -1) teaseSlave.itemControl.remove(this.parameters.clean.split(':')[1])
+        if (this.parameters.clean.indexOf('instruction:') !== -1) teaseSlave.slideControl.removeInstruction(parseInt(this.parameters.clean.split(':')[1], 10))
+        if (this.parameters.clean.indexOf('position:') !== -1 && this.parameters.clean.split(':')[1] === $('#position').attr('pos')) teaseSlave.slideControl.position(0, 'Free')
       }
       return true
     } else {
@@ -896,7 +910,7 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
     if (this.parameters.after !== undefined) {
       let ret = []
       this.parameters.after.forEach((act) => {
-        ret.push(new CTISAction(act.start, act.delay, act.type, act.fors, act.conditional, act.action, act.until, act.after, teaseSlave.slideControl.core.current))
+        ret.push(new CTISAction({start: act.start, delay: act.delay, type: act.type, fors: act.fors, conditonal: act.conditional, action: act.action, until: act.until, clean: act.clean, after: act.after, index: teaseSlave.slideControl.core.current}))
       })
       // console.debug('<tease.js / CTISAction> After parameter found, returning actions:', ret)
       return ret
@@ -1006,13 +1020,13 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
         if (this.parameters.action === 'block') {
           if (this.parameters.until === 'end') this.parameters.until = 'instant'
           if (this.parameters.until !== undefined && this.paramters.until !== 'instant') {
-            this.parameters.untilAct = 'unblockQuit'
+            if (this.parameters.clean !== 'false') this.parameters.clean = 'unblockQuit'
           }
           teaseSlave.blockExit = true
         } else if (this.parameters.action === 'allow') {
           teaseSlave.allowExit = true
           if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant') {
-            this.parameters.untilAct = 'disallowQuit'
+            if (this.parameters.clean !== 'false') this.parameters.clean = 'disallowQuit'
           }
         } else {
           // console.debug('<tease.js / CTISAction> Should have quit now:', this.parameters)
@@ -1022,9 +1036,9 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
         if (teaseSlave.ctc !== this.parameters.action) teaseSlave.ctc = this.parameters.action
         teaseSlave.slideControl.ctcUpdate()
         if (this.parameters.type.indexOf(':force') !== -1) {
-          this.parameters.untilAct = 'ctc:force'
+          if (this.parameters.clean !== 'false') this.parameters.clean = 'ctc:force'
         } else {
-          this.parameters.untilAct = 'ctc'
+          if (this.parameters.clean !== 'false') this.parameters.clean = 'ctc'
         }
       } else if (this.parameters.type === 'chastity') {
         if (this.parameters.action === 'false' || this.parameters.action === false) {
@@ -1034,24 +1048,34 @@ function CTISAction (start, delay, type, fors, conditional, action, until, after
           if (teaseSlave.itemControl.active.indexOf('Chastity') === -1) teaseSlave.itemControl.add('Chastity')
           teaseSlave.itemControl.chastity(true)
         }
-        if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant' && this.parameters.action !== 'false') this.parameters.untilAct = 'chastity'
+        if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant' && this.parameters.action !== 'false') {
+          if (this.parameters.clean !== 'false') this.parameters.clean = 'chastity'
+        }
       } else if (this.parameters.type === 'item') {
         let item = this.parameters.action
-        if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant') this.parameters.untilAct = 'item:' + item
+        if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant') {
+          if (this.parameters.clean !== 'false') this.parameters.clean = 'item:' + item
+        }
         teaseSlave.itemControl.add(item)
       } else if (this.parameters.type === 'key') {
         let n = 1
         if (typeof parseInt(this.parameters.action, 10) === 'number') n = parseInt(this.parameters.action, 10)
         teaseSlave.itemControl.addKey(n)
-        if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant') this.parameters.untilAct = 'key:' + teaseSlave.itemControl.keys
+        if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant') {
+          if (this.parameters.clean !== 'false') this.parameters.clean = 'key:' + teaseSlave.itemControl.keys + ':' + n
+        }
       } else if (this.parameters.type === 'instruction') {
         let id = Math.floor(Math.random() * 10000)
         teaseSlave.slideControl.addInstruction(id, this.parameters.action)
-        if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant') this.parameters.untilAct = 'instruction:' + id
+        if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant') {
+          if (this.parameters.clean !== 'false') this.parameters.clean = 'instruction:' + id
+        }
       } else if (this.parameters.type === 'position') {
         let id = Math.floor(Math.random() * 10000)
         teaseSlave.slideControl.position(id, this.parameters.action)
-        if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant') this.parameters.untilAct = 'position:' + id
+        if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant') {
+          if (this.parameters.clean !== 'false') this.parameters.clean = 'position:' + id
+        }
       } else if (this.parameters.type === 'contact') {
         let color = this.parameters.action.split(':')[0]
         let message = this.parameters.action.split(':')[1]
@@ -1141,7 +1165,7 @@ function CTISCard (instruction, index, name) {
   this.init = _ => {
     this.instruction.actions.forEach((act) => {
       if (act.fors !== 'instant') var priority = act.priority + ':' + act.fors
-      this.actions.push(new CTISAction(act.start, act.delay, act.type, act.fors, act.conditional, act.action, act.until, act.after, this.index, priority))
+      this.actions.push(new CTISAction({start: act.start, delay: act.delay, type: act.type, fors: act.fors, conditional: act.conditional, action: act.action, until: act.until, clean: act.clean, after: act.after, index: this.index, priority: priority}))
     })
   }
 }
