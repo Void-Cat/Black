@@ -575,6 +575,7 @@ function TeaseSlave (options) {
       if (type === 'user') config.set('stats.teases.etes', (config.get('stats.teases.etes') || 0) + 1)
       config.set('teaseExit', type)
       if (type === 'end') alert('You\'ve reached the end of the tease. The tease will now close.')
+      if (type === 'card') alert('A card has ended the tease. The tease will now close.')
       close()
     }
   }
@@ -1030,7 +1031,13 @@ function CTISAction (options) {
           }
         } else {
           // console.debug('<tease.js / CTISAction> Should have quit now:', this.parameters)
-          teaseSlave.exit('card')
+          if (this.index !== slide) {
+            teaseSlave.exit('card')
+          } else {
+            teaseSlave.contact('The tease will end after this card.', 'red')
+            this.parameters.fors = 'type:any'
+            this.parameters.until = 'end'
+          }
         }
       } else if (this.parameters.type === 'ctc' || this.parameters.type.split(':')[0] === 'ctc') {
         if (teaseSlave.ctc !== this.parameters.action) teaseSlave.ctc = this.parameters.action
