@@ -14,7 +14,7 @@
     <label for="saveSettings">Save configuration for later use</label>
   </div>
   <h1 class="mdc-typography--subheading1">Step 1</h1>
-  <h1 class="mdc-typography--body1">Select a card type to create: (CTI S coming soon!)</h1>
+  <h1 class="mdc-typography--body1">Select a card type to create:</h1>
   <div class="mdc-form-field">
     <div class="mdc-radio">
       <input class="mdc-radio__native-control" type="radio" id="cardtype-cti1" name="cardtype">
@@ -224,7 +224,7 @@
       <button type="button" id="removeAction" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple">Remove Action</button>
       <button type="button" id="resetAction" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple">Clear All Actions</button>
     </div><br>
-    <p id="CTISwrong" style="color: red; display: none;">Something in this CTIS config is wrong.</p>
+    <p id="CTISWrong" style="color: red; display: none;">Something in this CTIS config is wrong.</p>
     <p>If you want to know what to put in those boxes, read <a onclick="shell.openExternal('https://github.com')">this</a>!</p>
   </div>
   <div id="action-advanced" style="display: none;">
@@ -400,6 +400,7 @@
     $('#author').val(settings.author)
     $('#deckName').val(settings.deckName)
     $('#cardtype-' + settings.type).trigger('click')
+    if (settings.type === 'ctis') $('#convert-cti1-field').slideDown(100)
     $('#convert-cti1').prop('checked', settings.convert)
     let dil = settings.deckImage
     settings.deckImage = new Image()
@@ -429,9 +430,11 @@
   $('#cardtype-cti1, #cardtype-ctis').click((event) => {
     if ($(event.target).attr('id') === 'cardtype-cti1') {
       settings.type = 'cti1'
+      $('#saveLocField').slideDown(200)
       $('#convert-cti1-field').slideUp(200)
     } else {
       settings.type = 'ctis'
+      if (settings.convert === true) $('#saveLocField').slideUp(200)
       $('#convert-cti1-field').slideDown(200)
     }
   })
@@ -564,13 +567,13 @@
   $('#step-1-prev').click(_ => setStep(0))
 
   $('#step-1-next').click(_ => {
-    if (settings.convert) {
+    if (settings.convert && settings.type === 'ctis') {
       setStep(3)
     } else {
       let uri = generateImage()
       setStep(2)
       let matches = uri.match(/^data:.+\/(.+);base64,(.*)$/)
-      pngImage = new Buffer(matches[2], 'base64')
+      pngImage = Buffer.alloc(matches[2].length, matches[2], 'base64')
     }
   })
 
@@ -628,7 +631,7 @@
   })
 
   $('#step-3-prev').click(_ => {
-    if (settings.convert) {
+    if (settings.convert && settings.type === 'ctis') {
       setStep(1)
     } else {
       setStep(2)
