@@ -127,7 +127,7 @@
 
     <!-- Scripts -->
     <script type="text/javascript">
-      /* global Image */
+      /* global Image, alert */
       const $ = require('../external/jquery/jquery.min.js')
       const mdc = require('../external/material-components-web/material-components-web.min.js')
       const Theme = require('../catworks/themer.js')
@@ -335,6 +335,13 @@
         startCardsImages.forEach((img) => {
           $('#CTIS-preStart').append(img)
         })
+
+        if (config.get('teaseParams.ditched').length > 0) {
+          let ditched = config.get('teaseParams.ditched')
+          let string = 'For the following categories no cards were found:\n'
+          for (var i = 0; i < ditched.length; i++) string += ' - ' + ditched[i] + '\n'
+          setTimeout(_ => alert(string), 500)
+        }
 
         let drawer = new mdc.drawer.MDCTemporaryDrawer($('.mdc-temporary-drawer')[0])
         $('#menu-btn').click(_ => { drawer.open = true })
