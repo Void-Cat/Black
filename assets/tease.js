@@ -26,11 +26,11 @@ const path = require('path')
 const Mousetrap = require('mousetrap')
 
 function getPictures (path, recursive) {
-  console.debug('<tease.js / getPictures> Function called with arguments: ', {path: path, recursive: recursive})
   recursive = recursive || false
   let rtv = []
   if (typeof path !== 'string') {
     console.error('Path is not defined!')
+    return false
   }
   let files = fs.readdirSync(path)
   if (files.length > 0) {
@@ -51,15 +51,16 @@ function getPictures (path, recursive) {
 }
 
 function generateFileList (picturePath, cardPath, categories) {
-  console.debug('<tease.js / generateFileList> Function called with arguments: ', {picturePath: picturePath, cardPath: cardPath, categories: categories})
+  console.debug('<tease.js / generateFileList>\nFunction called with arguments: ', {picturePath: picturePath, cardPath: cardPath, categories: categories})
   // Setup
   var dfd = $.Deferred()
   var raw = {}
   var fin = []
   var icl = {}
+  var order = config.get('teaseParams.order') || {enabled: false}
 
   // Catch fail because of arguments.
-  if (categories === undefined) {
+  if (typeof categories === 'undefined') {
     dfd.reject('Not enough arguments.')
   }
 
@@ -67,7 +68,6 @@ function generateFileList (picturePath, cardPath, categories) {
   Object.keys(categories).forEach((cat) => {
     if (categories[cat].amount < 1) delete categories[cat]
   })
-  console.debug('Trimmed categories to:', categories)
 
   // Read directory files
   let pictures = getPictures(picturePath, true)
@@ -75,6 +75,8 @@ function generateFileList (picturePath, cardPath, categories) {
   raw.pictures = pictures
   raw.cards = {}
 
+  let ditched = []
+  // Sort categories
   Object.keys(categories).forEach((cat) => {
     raw.cards[cat] = []
     cards.forEach((c) => {
@@ -84,10 +86,12 @@ function generateFileList (picturePath, cardPath, categories) {
     })
     // Trim categories again
     if (raw.cards[cat].length <= 0) {
+      ditched.push(categories[cat].name)
       delete raw.cards[cat]
       delete categories[cat]
     }
   })
+  config.set('teaseParams.ditched', ditched)
 
   // Double check any double cards (expirimental)
   var mfd = []
@@ -122,6 +126,119 @@ function generateFileList (picturePath, cardPath, categories) {
     raw.cards[tdp[0]] = shrink(raw.cards[tdp[0]])
   })
 
+  // Order cards
+  let biglist = []
+  let trimBiglist = {}
+  if (order.enabled === true) {
+    console.debug('<tease.js / generateFileList>\nEntered order section.')
+    // Populate biglist
+    Object.keys(raw.cards).forEach((key) => {
+      raw.cards[key].forEach((card) => {
+        biglist.push(key + ':=:' + card)
+      })
+    })
+    Object.keys(categories).forEach((cat) => {
+      trimBiglist[cat] = categories[cat].amount
+    })
+    // Sort by filename
+    if (order.type === 'filename') {
+      let dl = []
+      biglist.forEach((name, i) => {
+        let na = []
+        name.split('.').forEach((f) => { if (!isNaN(parseInt(f, 10))) na.push(parseInt(f, 10)) })
+        if (na.length > 1) na = na[na.length - 1]
+        if (na.length <= 0 || na < 0) dl.push(i)
+      })
+      dl.sort().reverse()
+      dl.forEach((i) => {
+        delete biglist[i]
+      })
+      console.debug('<tease.js / generateFileList>\n' + dl.length, 'cards were found unsortable:\n', dl)
+      biglist.sort((a, b) => {
+        let aa = []
+        let ba = []
+        a.split('.').forEach((f) => { if (!isNaN(parseInt(f, 10))) aa.push(parseInt(f, 10)) })
+        b.split('.').forEach((f) => { if (!isNaN(parseInt(f, 10))) ba.push(parseInt(f, 10)) })
+        aa = aa[aa.length - 1]
+        ba = ba[ba.length - 1]
+        return aa - ba
+      })
+      if (order.not === 'random') {
+        dl.forEach((d) => {
+          biglist.splice(Math.floor(Math.random() * biglist.length), 0, d)
+        })
+      } else if (order.not === 'end') {
+        let lower = biglist.length - 1
+        dl.forEach((d) => {
+          let space = biglist.length - lower
+          biglist.splice(lower + Math.floor(Math.random() * space + 1), 0, d)
+        })
+      }
+    } else if (order.type === 'property') {
+      // Sort by ORDER property
+      console.debug('<tease.js / generateFileList>\nEntered order-property section.')
+      let dl = []
+      let sort = {}
+      biglist.forEach((card, i) => {
+        let path = card.split(':=:')[1].split('.').splice(0, card.split(':=:')[1].split('.').length - 1).concat('ctis').join('.')
+        console.debug('<tease.js / generateFileList>\nChecking order info on path', path)
+        if (fs.existsSync(path)) {
+          let json = JSON.parse(fs.readFileSync(path), {encoding: 'utf8'})
+          if (isNaN(json.order)) {
+            dl.push(card)
+          } else {
+            if (sort[json.order] === undefined) sort[json.order] = []
+            sort[json.order].push(card)
+          }
+        }
+      })
+      biglist = []
+      Object.keys(sort).forEach((key) => {
+        while (sort[key].length > 0) {
+          let pick = Math.floor(Math.random() * sort[key].length)
+          console.debug('<tease.js / TeaseParams>\nPushing card ' + sort[key][pick] + ' to biglist.')
+          biglist.push(sort[key][pick])
+          sort[key].splice(pick, 1)
+        }
+      })
+      if (order.not === 'random') {
+        dl.forEach((d) => {
+          biglist.splice(Math.floor(Math.random() * biglist.length), 0, d)
+        })
+      } else if (order.not === 'end') {
+        let lower = biglist.length - 1
+        dl.forEach((d) => {
+          let space = biglist.length - lower
+          biglist.splice(lower + Math.floor(Math.random() * space + 1), 0, d)
+        })
+      }
+    }
+    // Trim biglist
+    console.debug('<tease.js / generateFileList>\nGoing into biglist trimming with:', {trimBiglist: trimBiglist})
+    let ga = {}
+    Object.keys(trimBiglist).forEach((cat) => {
+      let amount = trimBiglist[cat]
+      let trim = []
+      biglist.forEach((card, i) => {
+        let cardcat = card.split(':=:')[0]
+        if (cardcat === cat) {
+          if (amount > 0) {
+            amount--
+          } else {
+            trim.push(i)
+            amount--
+          }
+        }
+      })
+      ga[cat] = amount
+      trim.sort().reverse()
+      trim.forEach((i) => {
+        biglist.splice(i, 1)
+      })
+    })
+    console.debug('<tease.js / generateFileList>\nCards sorted and trimmed.\n', ga)
+  }
+
   // Get the ratio of pictures to cards
   let pictureAmount = config.get('teaseParams.pictureAmount')
   let gameCards = 1
@@ -129,32 +246,41 @@ function generateFileList (picturePath, cardPath, categories) {
   Object.keys(categories).forEach((gcKey) => {
     gameCards += categories[gcKey].amount
     eM[gcKey] = categories[gcKey].amount
-    // console.debug('<tease.js / generateFileList> Going through amounts for eM, on categorie:', gcKey, 'amount is', categories[gcKey].amount, 'eM is now', eM)
   })
-  // console.debug(eM)
   let ratio = (pictureAmount + gameCards) / gameCards
   ratio = [ratio, ratio]
   gameCards--
-  let oL = {}
+  var oL = {}
   Object.keys(raw.cards).forEach((key) => {
     oL[key] = raw.cards[key].length
   })
   oL['pictures'] = raw.pictures.length
+
   // Get Schwifty
-  console.debug('<tease.js / generateFileList> Going into swifty mode with the following data:', {eM: eM, raw: raw, ratio: ratio, gameCards: gameCards, oL: oL, icl: icl})
+  console.debug('<tease.js / generateFileList> Going into swifty mode with the following data:', {eM: eM, raw: raw, ratio: ratio, gameCards: gameCards, oL: oL, icl: icl, biglist: biglist})
   for (var n = 0; n < (pictureAmount + gameCards); n++) {
     if (n + 1 > ratio[0] && n !== 0 && Object.keys(raw.cards).length > 0) {
       ratio[0] += ratio[1]
-      let pcat = Object.keys(raw.cards)[Math.floor(Math.random() * Object.keys(raw.cards).length)]
-      // console.debug('Selected categorie', pcat, 'is:', categories[pcat])
-      if (oL[pcat] < categories[pcat].amount) {
-        fin.push(raw.cards[pcat][Math.floor(Math.random() * raw.cards[pcat].length)])
+      var pcat
+      if (order.enabled !== true) {
+        pcat = Object.keys(raw.cards)[Math.floor(Math.random() * Object.keys(raw.cards).length)]
+        // console.debug('Selected categorie', pcat, 'is:', categories[pcat])
+        if (oL[pcat] < categories[pcat].amount) {
+          fin.push(raw.cards[pcat][Math.floor(Math.random() * raw.cards[pcat].length)])
+        } else {
+          fin.push(raw.cards[pcat].splice(Math.floor(Math.random() * raw.cards[pcat].length), 1)[0])
+        }
+        eM[pcat]--
+        if (eM[pcat] === 0) {
+          delete raw.cards[pcat]
+        }
       } else {
-        fin.push(raw.cards[pcat].splice(Math.floor(Math.random() * raw.cards[pcat].length), 1)[0])
-      }
-      eM[pcat]--
-      if (eM[pcat] === 0) {
-        delete raw.cards[pcat]
+        let num = Math.floor((ratio[0] - ratio[1]) / ratio[1]) - 1
+        let card = biglist[num]
+        console.debug('Currently at num ' + num + ' (' + ratio[0] + '). We got this card here ' + biglist[num])
+        card = card.split(':=:')
+        pcat = card[0]
+        fin.push(card[1])
       }
       icl[fin.length - 1] = categories[pcat].name
     } else {
@@ -165,6 +291,7 @@ function generateFileList (picturePath, cardPath, categories) {
       }
     }
   }
+  // console.debug('<tease.js / generateFileList>\nCould not fill all categories:', eM)
   fin = clean(fin, undefined)
   fin.forEach((r, i) => {
     // console.debug('<tease.js / generateFileList> Fin replace with r:', r, 'and i:', i)
@@ -299,11 +426,12 @@ function TeaseSlave (options) {
       this.slideControl.heraut(slide)
       this.slideControl.core.backup = setTimeout(this.slideControl.ticker(), 500)
     },
-    pause: _ => {
-      if (this.slideControl.core.pause) {
+    pause: (bool) => {
+      if (typeof bool === 'undefined' || typeof bool !== 'boolean') bool = !this.slideControl.core.pause
+      if (bool === false) {
         this.slideControl.core.pause = false
         this.slideControl.core.ticker.volume(1)
-      } else {
+      } else if (bool === true) {
         this.slideControl.core.pause = true
         this.slideControl.core.ticker.volume(0)
       }
@@ -320,6 +448,7 @@ function TeaseSlave (options) {
     },
     ticker: _ => {
       if ((this.teaseParams.timing.announce === 'card' || this.teaseParams.timing.announce === 'picture' || this.teaseParams.timing.announce === 'both') && this.slideControl.core.run === 0) {
+        if (this.slideControl.core.run === 0) this.slideControl.core.run = 1
         if (this.icl[this.slideControl.core.current] !== undefined && (this.teaseParams.timing.announce === 'card' || this.teaseParams.timing.announce === 'both')) {
           this.slideControl.core.announce.card.play()
         } else if (this.icl[this.slideControl.core.current] === undefined && (this.teaseParams.timing.announce === 'picture' || this.teaseParams.timing.announce === 'both')) {
@@ -350,7 +479,19 @@ function TeaseSlave (options) {
       })
       if (gi.length > 0) {
         gi.forEach((idx) => {
-          this.ctisList[idx].actions = [new CTISAction({start: 'draw', delay: -1, type: 'contact', fors: 'instant', action: 'yellow:You are to ignore this card.', until: 'instant', index: idx})]
+          this.ctisList[idx].actions = [new CTISAction({
+            start: 'draw',
+            delay: -1,
+            type: 'contact',
+            fors: 'instant',
+            action: {
+              type: 'message',
+              text: 'You are to ignore this card.',
+              color: 'yellow'
+            },
+            until: 'instant',
+            index: idx
+          })]
         })
       }
     },
@@ -425,31 +566,64 @@ function TeaseSlave (options) {
   }
 
   this.itemControl = {
-    active: [],
-    keys: 0,
-    add: (name) => {
-      this.itemControl.active.push(name.toLowerCase())
-      $('#itemlist').prepend('<div class="ctisitem" name="' + name + '" onclick="$(\'#keyDisplay\').trigger(\'unlock\', \'' + name + '\')">' + name.charAt(0).toUpperCase() + name.slice(1) + '</div>')
+    core: {
+      active: {},
+      categories: {},
+      chastity: false,
+      genID: _ => {
+        let iid = Math.floor(Math.random() * 100000)
+        while (Object.keys(this.itemControl.list).indexOf(iid) !== -1) {
+          iid++
+          if (iid > 100000) iid = 0
+        }
+        return iid
+      },
+      keys: {}
     },
-    remove: (name) => {
-      this.itemControl.active.splice(this.itemControl.active.indexOf(name.toLowerCase()), 1)
-      $($('#itemlist > .ctisitem[name="' + name + '"]')[0]).remove()
-    },
-    useKey: (item) => {
-      if (typeof item === 'number') {
-        if (this.itemControl.keys - item >= 0) {
-          for (var i = 0; i < item; i++) {
-            this.itemControl.useKey('')
-          }
+    add: (item) => {
+      if (item[0] === 'unlock') {
+        if (item[1] === 'nocat') {
+          this.itemControl.core.categories.nocat.forEach((iid) => {
+            this.itemControl.remove(iid)
+          })
+        } else {
+          let iid = this.itemControl.core.categories[item[1]]
+          this.itemControl.remove(iid)
         }
       } else {
-        if (this.itemControl.keys > 0) {
-          this.itemControl.remove(item)
-          if (item === 'Chastity') this.itemControl.chastity(false)
-          this.itemControl.keys--
-          $('#keyDisplay').text('Keys: ' + this.itemControl.keys)
-          if (this.itemControl.keys <= 0) $('#keyDisplay').prop('disabled', true)
+        let iid = this.itemControl.core.genID()
+        if (typeof item === 'string') {
+          this.itemControl.core.active[iid] = [item, 'nocat']
+          if (this.itemControl.core.categories.nocat === undefined) this.itemControl.core.categories.nocat = []
+          this.itemControl.core.categories.nocat.push(iid)
         }
+        $('#itemlist').prepend('<div class="ctisitem" name="' + iid + '" onclick="$(\'#keyDisplay\').trigger(\'unlock\', \'' + iid + '\')">' + item + '</div>')
+      }
+    },
+    remove: (iid) => {
+      let item = this.itemControl.active[iid]
+      if (item === 'undefined') {
+        console.error('<tease.js / TeaseSlave / itemControl>\nCould not find item to remove with iid', iid)
+        return false
+      } else {
+        if (item[1] === 'nocat') {
+          let index = this.itemControl.core.categories.nocat.indexOf(iid)
+          this.itemControl.core.categories.nocat.splice(index, 1)
+        } else {
+          this.itemControl.core.categories[item[1]] = false
+          delete this.itemControl.core.list[iid]
+        }
+        $('#itemlist > .ctisitem[name="' + iid + '"]').remove()
+        return true
+      }
+    },
+    useKey: (iid) => {
+      if (this.itemControl.keys > 0) {
+        if (this.itemControl.core.active[iid][1] === 'chastity') this.itemControl.chastity(false)
+        this.itemControl.remove(iid)
+        this.itemControl.keys--
+        $('#keyDisplay').text('Keys: ' + this.itemControl.keys)
+        if (this.itemControl.keys <= 0) $('#keyDisplay').prop('disabled', true)
       }
     },
     addKey: (n) => {
@@ -457,10 +631,10 @@ function TeaseSlave (options) {
       this.itemControl.keys += n
       if (this.itemControl.keys < 0) this.itemControl.keys = 0
       $('#keyDisplay').text('Keys: ' + this.itemControl.keys)
-      if ($('#keyDisplay').is(':disabled')) $('#keyDisplay').prop('disabled', false)
+      $('#keyDisplay:disabled').prop('disabled', false)
     },
     chastity: (bool) => {
-      console.debug('<tease.js / TeaseSlave> ItemControl>Chastity Called. With argument \'bool\' being:', bool)
+      this.itemControl.core.chastity = bool
       if (bool === true || bool === undefined) {
         $('#chastityDisplay').fadeIn(100)
       } else if (bool === false) {
@@ -482,7 +656,11 @@ function TeaseSlave (options) {
       this.cumControl.last = this.slideControl.core.current + ':' + type
       this.cumControl.total[type]++
       if ((this.ctc === 'ruin' && type === 'full') || (this.ctc === 'edge' && (type === 'ruin' || type === 'full')) || ((this.ctc === false || this.ctc === 'false') && type !== 'edge')) {
-        this.contact('You came without Mistress\'s permission, and she\'s displeased with you.', 'red')
+        this.contact({
+          type: 'message',
+          text: 'You came without Mistress\'s permission, and she\'s displeased with you.',
+          color: 'red'
+        })
         this.subControl.mood.bad()
         if (this.subControl.core.sublevel > -5) this.subControl.core.sublevel--
         this.cumControl.nonAllowed++
@@ -616,12 +794,99 @@ function TeaseSlave (options) {
     }
   }
 
-  this.contact = (msg, color) => {
-    if (color === undefined || (color !== 'red' && color !== 'blue' && color !== 'green' && color !== 'yellow')) color = 'blue'
+  this.contact = (options) => {
+    let contactDeferral = $.Deferred()
+    // Make sure color is correct
+    if (['red', 'blue', 'yellow', 'green'].indexOf(options.color.toLowerCase()) === -1) {
+      options.color = 'blue'
+    } else {
+      options.color = options.color.toLowerCase()
+    }
+    // Make sure pause is correct
+    if (options.pause === 'true') {
+      options.pause = true
+    } else if (options.pause === 'false') {
+      options.pause = false
+    } else {
+      if (options.type === 'message') {
+        options.pause = false
+      } else {
+        options.pause = true
+      }
+    }
+    // Make sure time is correct
+    if (isNaN(parseInt(options.timelimit, 10))) {
+      if (options.time === 'false') {
+        options.time = false
+      } else {
+        options.type === 'message' ? options.time = 4100 : options.time = false
+      }
+    } else {
+      options.time = parseInt(options.time, 10)
+    }
+    // Generate an unique contact id
+    var idn = Math.floor(Math.random() * 100000)
+    var id = 'contact-' + idn
+    while ($('#' + id).length > 0) {
+      idn++
+      if (idn > 999999) idn = 0
+      id = 'contact-' + idn
+    }
+    // Timeout
+    if (options.time > 0) {
+      setTimeout(_ => {
+        $('#' + id).fadeOut(100, function () { $(this).remove() })
+        if (options.pause) this.slideControl.pause(false)
+        if (options.type === 'message') {
+          contactDeferral.resolve()
+        } else if (options.type === 'prompt') {
+          $('#' + id + '-submit').off()
+        } else if (options.type === 'options') {
+          $('#' + id + '-field > button').off()
+        }
+        contactDeferral.reject('timelimit')
+      }, options.time)
+    }
+    // Message
+    if (options.type === 'message') {
+      if (options.pause) this.slideControl.pause(true)
+      $('#contact').prepend('<div id="' + id + '" class="mdc-typography--body1 msgbox msgbox-' + options.color + '" style="display: none;">' + options.text + '</div>')
+      $('#' + id).fadeIn(100)
+    } else if (options.type === 'prompt') {
+      if (options.pause === true) this.slideControl.pause(true)
+      $('#contact').prepend('<div id="' + id + '" class="mdc-typography--body1 msgbox msgbox-' + options.color + '" style="display: none;">' + options.text + '<br><div class="mdc-form-field"><input id="' + id + '-input" type="text" class="msgbox-input" /><button id="' + id + '-submit" type="button" class="mdc-button mdc-button-raised">Submit</button></div></div>')
+      $('#' + id + '-submit').click(_ => {
+        $('#' + id + '-submit').off()
+        $('#' + id).fadeOut(100, function () { $(this).remove() })
+        if (options.pause) this.slideControl.pause(false)
+        contactDeferral.resolve($('#' + id + '-input').val())
+      })
+      $('#' + id).fadeIn(100)
+    } else if (options.type === 'options') {
+      if (options.pause === true) this.slideControl.pause(true)
+      let opts = []
+      Object.keys(options.options).forEach((key) => {
+        opts.push(key)
+      })
+      $('#contact').append('<div id="' + id + '" class="mdc-typography--body1 msgbox msgbox-' + options.color + '" style="display: none;">' + options.text + '<br><div id="' + id + '-field" class="mdc-form-field"></div></div>')
+      for (var o = 0; o < opts.length; o++) {
+        $('#' + id + '-field').append('<button type="button" option="' + opts[o] + '" class="mdc-button mdc-button--raised">' + opts[o] + '</button>')
+      }
+      $('#' + id + '-field > button').click((e) => {
+        let val = $(e.target).attr('option')
+        $('#' + id + 'field > button').off()
+        $('#' + id).fadeOut(100, function () { $(this).remove() })
+        if (options.pause) this.slideControl.pause(false)
+        contactDeferral.resolve(val)
+      })
+      $('#' + id).fadeIn(100)
+    }
+    return contactDeferral.promise()
+    /* if (color === undefined || (color !== 'red' && color !== 'blue' && color !== 'green' && color !== 'yellow')) color = 'blue'
     let id = 'contact-' + Math.floor(Math.random() * 10000)
     $('#contact').prepend('<div id="' + id + '" class="msgbox msgbox-' + color + ' mdc-typography--body1" style="display: none;">' + msg + '</div>')
     $('#' + id).fadeIn(100)
-    setTimeout(_ => { $('#contact > #' + id).fadeOut(100, _ => { $('#contact > #' + id).remove() }) }, 4100)
+    setTimeout(_ => { $('#contact > #' + id).fadeOut(100, _ => { $('#contact > #' + id).remove() }) }, 4100) */
   }
 
   this.actionControl = {
@@ -886,12 +1151,20 @@ function CTISAction (options) {
           if (parseInt(lastCum[0], 10) > this.index && lastCum[1] === this.parameters.action) {
             let ol = 'came'
             if (lastCum[1] === 'edge') ol = 'edged'
-            teaseSlave.contact('You ' + ol + ' in time and Mistress is pleased.', 'green')
+            teaseSlave.contact({
+              type: 'message',
+              text: 'You ' + ol + ' in time and Mistress is pleased.',
+              color: 'green'
+            })
             teaseSlave.subControl.mood.good()
           } else {
             let ol = 'cum'
             if (lastCum[1] === 'edge') ol = 'edge'
-            teaseSlave.contact('You didn\'t ' + ol + ' in time and Mistress is displeased.', 'red')
+            teaseSlave.contact({
+              type: 'message',
+              text: 'You didn\'t ' + ol + ' in time and Mistress is displeased.',
+              color: 'red'
+            })
             teaseSlave.subControl.mood.bad()
           }
           teaseSlave.ctc = 'false'
@@ -943,20 +1216,63 @@ function CTISAction (options) {
       let conditional = this.parameters.conditional.split(':')
       if (conditional[0] === 'mood') {
         if (conditional[1] !== teaseSlave.subControl.core.mood) {
-          if (conditional[2] === 'force') {
-            return 'remove'
-          }
+          if (conditional[2] === 'force') return 'remove'
           return 'fail'
         }
       } else if (conditional[0] === 'sublevel') {
-        let comparator = this.parameters.conditional.split(':')[1]
-        let factor = this.parameters.conditional.split(':')[2]
+        let comparator = conditional[1]
+        let factor = conditional[2]
         if ((comparator === '==' && teaseSlave.subControl.core.sublevel !== parseInt(factor, 10)) ||
            (comparator === '>=' && teaseSlave.subControl.core.sublevel < parseInt(factor, 10)) ||
            (comparator === '<=' && teaseSlave.subControl.core.sublevel > parseInt(factor, 10)) ||
            (comparator === '>' && teaseSlave.subControl.core.sublevel <= parseInt(factor, 10)) ||
            (comparator === '<' && teaseSlave.subControl.core.sublevel >= parseInt(factor, 10)) ||
            (comparator === '!=' && teaseSlave.subControl.core.sublevel === parseInt(factor, 10))) {
+          if (conditional[3] === 'force') return 'remove'
+          return 'fail'
+        }
+      } else if (conditional[0] === 'strokecount' || conditional[0] === 'slidetime') {
+        let current = conditional[0] === 'strokecount' ? teaseSlave.slideControl.core.strokes : (teaseSlave.slideControl.core.time / 1000)
+        let comparator = conditional[1]
+        let factor = conditional[2]
+        if ((comparator === '==' && current !== parseInt(factor, 10)) ||
+            (comparator === '>=' && current < parseInt(factor, 10)) ||
+            (comparator === '<=' && current > parseInt(factor, 10)) ||
+            (comparator === '>' && current <= parseInt(factor, 10)) ||
+            (comparator === '<' && current >= parseInt(factor, 10)) ||
+            (comparator === '!=' && current === parseInt(factor, 10))) {
+          if (conditional[3] === 'force') return 'remove'
+          return 'fail'
+        }
+      } else if (conditional[0] === 'chastity') {
+        let current = teaseSlave.itemControl.core.chastity
+        let factor = (conditional[1] === 'true')
+        if (current !== factor) {
+          if (conditional[2] === 'force') return 'remove'
+          return 'fail'
+        }
+      } else if (conditional[0] === 'lastinstruction') {
+        let last
+        for (var l = teaseSlave.slideControl.core.current - 1; l > 0; l--) {
+          if (typeof teaseSlave.icl[l] !== 'undefined' && typeof last === 'undefined') {
+            last = teaseSlave.icl[l]
+            break
+          }
+        }
+        if (last !== conditional[1] || (conditional[1] === 'mistress' && (last.indexOf('mistress') !== -1 || last.indexOf('master') !== -1))) {
+          if (conditional[2] === 'force') return 'remove'
+          return 'fail'
+        }
+      } else if (conditional[0] === 'nextinstruction') {
+        let next
+        for (var n = teaseSlave.slideControl.core.current + 1; n < parseInt(Object.keys(teaseSlave.icl)[Object.keys(teaseSlave.icl).length - 1], 10); n++) {
+          if (typeof teaseSlave.icl[n] !== 'undefined' && typeof next === 'undefined') {
+            next = teaseSlave.icl[n]
+            break
+          }
+        }
+        if (next !== conditional[1] && (conditional[1] === 'mistress' && (next.indexOf('mistress') === -1 && next.indexOf('master') === -1))) {
+          if (conditional[2] === 'force') return 'remove'
           return 'fail'
         }
       }
@@ -1034,7 +1350,11 @@ function CTISAction (options) {
           if (this.index !== slide) {
             teaseSlave.exit('card')
           } else {
-            teaseSlave.contact('The tease will end after this card.', 'red')
+            teaseSlave.contact({
+              type: 'message',
+              text: 'The tease will end after this card.',
+              color: 'red'
+            })
             this.parameters.fors = 'type:any'
             this.parameters.until = 'end'
           }
@@ -1060,10 +1380,16 @@ function CTISAction (options) {
         }
       } else if (this.parameters.type === 'item') {
         let item = this.parameters.action
-        if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant') {
-          if (this.parameters.clean !== 'false') this.parameters.clean = 'item:' + item
+        if (typeof item === 'string') {
+          let iid = teaseSlave.itemControl.add(item)
+          if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant') {
+            if (this.parameters.clean !== 'false') this.parameters.clean = 'item:' + iid
+          }
+        } else if (typeof item === 'object' && item[0] !== undefined) {
+          if (this.parameters.until !== undefined && this.parameters.until !== 'end' && this.parameters.until !== 'instant') {
+            if (this.parameters.clean !== 'false') this.parameters.clean = 'item:' + item
+          }
         }
-        teaseSlave.itemControl.add(item)
       } else if (this.parameters.type === 'key') {
         let n = 1
         if (typeof parseInt(this.parameters.action, 10) === 'number') n = parseInt(this.parameters.action, 10)
@@ -1084,9 +1410,65 @@ function CTISAction (options) {
           if (this.parameters.clean !== 'false') this.parameters.clean = 'position:' + id
         }
       } else if (this.parameters.type === 'contact') {
-        let color = this.parameters.action.split(':')[0]
-        let message = this.parameters.action.split(':')[1]
-        teaseSlave.contact(message, color)
+        // Action: Contact
+        if (typeof this.parameters.action === 'string') {
+          let color = this.parameters.action.split(':')[0]
+          let message = this.parameters.action.split(':')[1]
+          teaseSlave.contact({
+            type: 'message',
+            text: message,
+            color: color
+          })
+        } else {
+          let action = this.parameters.action
+          $.when(teaseSlave.contact(action)).then((ret) => {
+            if (action.type === 'prompt') {
+              if (action.answer === undefined) console.error('<tease.js / CTISAction>\nContact if parameter is undefined.')
+              let acts = []
+              Object.keys(action.answer).forEach((answer) => {
+                if (answer === 'carry' || answer === 'else') acts.push(answer)
+                if (answer.indexOf('prompt:') !== -1) {
+                  if (answer.split('prompt:')[1].toLowerCase() === ret.toLowerCase()) acts.push(answer)
+                }
+              })
+              if (acts.length > 1 && acts.indexOf('else') !== -1) {
+                acts.splice(acts.indexOf('else'), 1)
+              }
+              if (acts.indexOf('carry') !== -1) {
+                let act = action.answer.carry
+                act.index = this.index
+                if (typeof act.action === 'string' && act.action.indexOf('//carry//') !== -1) act.action = act.action.replace('//carry//', ret)
+                let idf = teaseSlave.actionControl.add(new CTISAction({start: act.start, delay: act.delay, type: act.type, fors: act.fors, conditonal: act.conditional, action: act.action, until: act.until, clean: act.clean, after: act.after, index: teaseSlave.slideControl.core.current}))
+                teaseSlave.actionControl.run({index: teaseSlave.slideControl.core.current, type: 'firstrun'}, idf)
+              }
+              acts.forEach((actz) => {
+                if (actz !== 'carry') {
+                  let act = action.answer[actz]
+                  let idf = teaseSlave.actionControl.add(new CTISAction({start: act.start, delay: act.delay, type: act.type, fors: act.fors, conditonal: act.conditional, action: act.action, until: act.until, clean: act.clean, after: act.after, index: teaseSlave.slideControl.core.current}))
+                  teaseSlave.actionControl.run({index: teaseSlave.slideControl.core.current, type: 'firstrun'}, idf)
+                }
+              })
+            } else if (action.type === 'options') {
+              Object.keys(action.options).forEach((option) => {
+                let act = action.options[option]
+                if (ret.toLowerCase() === option.toLowerCase()) {
+                  var idf = teaseSlave.actionControl.add(new CTISAction({start: act.start, delay: act.delay, type: act.type, fors: act.fors, conditonal: act.conditional, action: act.action, until: act.until, clean: act.clean, after: act.after, index: teaseSlave.slideControl.core.current}))
+                  teaseSlave.actionControl.run({index: teaseSlave.slideControl.core.current, type: 'firstrun'}, idf)
+                }
+              })
+            }
+          }, (err) => {
+            if (err === 'timelimit') {
+              if (this.parameters.action.timelimit !== undefined) {
+                let act = this.parameters.action.timelimit
+                let idf = teaseSlave.actionControl.add(new CTISAction({start: act.start, delay: act.delay, type: act.type, fors: act.fors, conditonal: act.conditional, action: act.action, until: act.until, clean: act.clean, after: act.after, index: teaseSlave.slideControl.core.current}))
+                teaseSlave.actionControl.run({index: teaseSlave.slideControl.core.current, type: 'firstrun'}, idf)
+              }
+            } else {
+              console.error('<tease.js / CTISAction>\nAn error occured whilst running contact. This was it:\n', err)
+            }
+          })
+        }
       } else if (this.parameters.type === 'on') {
         if (this.parameters.after === undefined) this.parameters.after = []
         this.parameters.after = this.parameters.after.concat(this.parameters.action)
@@ -1139,10 +1521,18 @@ function CTISAction (options) {
           }
         }
         if (goal !== undefined) {
-          teaseSlave.contact('A card skipped you to slide ' + (goal + 1) + '.', 'green')
+          teaseSlave.contact({
+            type: 'message',
+            text: 'A card skipped you to slide ' + (goal + 1) + '.',
+            color: 'green'
+          })
           teaseSlave.slideControl.set(goal)
         } else {
-          teaseSlave.contact('No applicable ' + goalType + ' card was found.', 'yellow')
+          teaseSlave.contact({
+            type: 'message',
+            text: 'No applicable ' + goalType + ' card was found.',
+            color: 'yellow'
+          })
         }
       }
     }
