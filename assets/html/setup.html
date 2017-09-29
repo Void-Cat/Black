@@ -97,6 +97,42 @@
       </div>
     </div>
   </div><br><br>
+
+  <h1 class="mdc-typography--subheading1">Sorting</h1>
+  <div class="mdc-form-field">
+    <label for="sort-do">Sort cards&nbsp;&nbsp;</label>
+    <div class="mdc-switch">
+      <input type="checkbox" id="sort-do" class="mdc-switch__native-control" />
+      <div class="mdc-switch__background">
+        <div class="mdc-switch__knob"></div>
+      </div>
+    </div>
+  </div><br>
+  <div class="mdc-form-field">
+    <label for="sort-type">Sort cards by&nbsp;&nbsp;</label>
+    <div class="mdc-select" id="sort-type" role="listbox" tabindex="0">
+      <span class="mdc-select__selected-text">filename</span>
+      <div class="mdc-simple-menu mdc-select__menu">
+        <ul class="mdc-list mdc-simple-menu__items">
+          <li class="mdc-list-item" role="option" aria-selected id="sort-filename" tabindex="0">filename</li>
+          <li class="mdc-list-item" role="option" id="sort-order" tabindex="0">ORDER property</li>
+        </ul>
+      </div>
+    </div>
+  </div><br>
+  <div class="mdc-form-field">
+    <label for="sort-not">Unsortable cards should be&nbsp;&nbsp;</label>
+    <div class="mdc-select" id="sort-not" role="listbox" tabindex="0">
+      <span class="mdc-select__selected-text">filename</span>
+      <div class="mdc-simple-menu mdc-select__menu">
+        <ul class="mdc-list mdc-simple-menu__items">
+          <li class="mdc-list-item" role="option" aria-selected id="sort-random" tabindex="0">sorted randomly</li>
+          <li class="mdc-list-item" role="option" id="sort-end" tabindex="0">sorted at the end</li>
+          <li class="mdc-list-item" role="option" id="sort-omit" tabindex="0">omitted</li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </div>
 
 <button id="startTease" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" style="display: block; padding: 0 16px; width: calc(90% + 20px); margin: 0 auto;">Generate &amp; Tease</button>
@@ -221,6 +257,8 @@
   })
 
   var tickerSelect = new mdc.select.MDCSelect($('#ticker-sound')[0])
+  var sortTypeSelect = new mdc.select.MDCSelect($('#sort-type')[0])
+  var sortNotSelect = new mdc.select.MDCSelect($('#sort-not')[0])
 
   if (config.get('teaseParams.loadSetup')) {
     $('#saveSetup').prop('checked', true)
@@ -244,6 +282,13 @@
     }
     if (config.get('teaseParams.timing.tickersrc') === undefined) config.set('teaseParams.timing.tickersrc', '../audio/ticker.ogg')
     tickerSelect.selectedIndex = config.get('teaseParams.timing.tickersrc').indexOf('ticker.ogg') >= 0 ? 0 : 1
+    if (config.get('teaseParams.order') === undefined) config.set('teaseParams.order', {enabled: false, type: 'filename', not: 'random'})
+    $('#sort-do').prop('checked', config.get('teaseParams.order.enabled') || false)
+    sortTypeSelect.selectedIndex = config.get('teaseParams.order.type').indexOf('filename') >= 0 ? 0 : 1
+    let sortNot = config.get('teaseParams.order.not')
+    if (sortNot === 'random') sortNotSelect.selectedIndex = 0
+    if (sortNot === 'end') sortNotSelect.selectedIndex = 1
+    if (sortNot === 'omit') sortNotSelect.selectedIndex = 2
   }
 
   $('#saveSetup').on('change', _ => {
@@ -323,6 +368,28 @@
       config.set('teaseParams.timing.tickersrc', '../audio/metronome.ogg')
     } else {
       config.set('teaseParams.timing.tickersrc', '../audio/ticker.ogg')
+    }
+  })
+
+  $('#sort-do').on('change', _ => {
+    config.set('teaseParams.order.enabled', $('#sort-do').is(':checked'))
+  })
+
+  sortTypeSelect.listen('MDCSelect:change', _ => {
+    if (sortTypeSelect.selectedIndex === 1) {
+      config.set('teaseParams.order.type', 'property')
+    } else {
+      config.set('teaseParams.order.type', 'filename')
+    }
+  })
+
+  sortNotSelect.listen('MDCSelect:change', _ => {
+    if (sortNotSelect.selectedIndex === 1) {
+      config.set('teaseParams.order.not', 'end')
+    } else if (sortNotSelect.selectedIndex === 2) {
+      config.set('teaseParams.order.not', 'omit')
+    } else {
+      config.set('teaseParams.order.not', 'random')
     }
   })
 
