@@ -815,7 +815,7 @@ function TeaseSlave (options) {
       }
     }
     // Make sure time is correct
-    if (isNaN(parseInt(options.timelimit, 10))) {
+    if (isNaN(parseInt(options.time, 10))) {
       if (options.time === 'false') {
         options.time = false
       } else {
@@ -835,6 +835,7 @@ function TeaseSlave (options) {
     // Timeout
     if (options.time > 0) {
       setTimeout(_ => {
+        console.debug('<tease.js / teaseSlave>\nWe hit the timelimit boys!')
         $('#' + id).fadeOut(100, function () { $(this).remove() })
         if (options.pause) this.slideControl.pause(false)
         if (options.type === 'message') {
@@ -1112,9 +1113,11 @@ function CTISAction (options) {
       case 'delay':
         if (parseInt(until[1], 10) > 1) {
           this.parameters.until = 'type:delay:' + (parseInt(until[1], 10) - 1)
+        } else {
+          fire = true
         }
     }
-    console.debug('<tease.js / CTISAction> Until after switch, with fire', fire, 'for type', type.join(':'))
+    console.debug('<tease.js / CTISAction>\nUntil after switch, with fire', fire, 'for type', type.join(':'))
     if (fire === true && !(this.parameters.type === 'on' && loc === 'before')) {
       if (typeof times !== 'undefined') {
         if (this.counter < times) {
@@ -1130,7 +1133,7 @@ function CTISAction (options) {
       }
     }
     if (fire) {
-      // this.parameters.clean
+      // Resolve Cleaning
       if (this.parameters.clean !== undefined && this.parameters.clean !== 'false') {
         if (this.parameters.clean === 'unblockQuit') teaseSlave.blockExit = false
         if (this.parameters.clean === 'disallowQuit') teaseSlave.allowExit = false
@@ -1307,7 +1310,7 @@ function CTISAction (options) {
     }
     if (action === true) {
       console.debug('<tease.js / CTISAction>\nAction is qualified, action type:', this.parameters.type, ', action:', this.parameters.action)
-      // Action
+      // Action: strokecount & slidetime
       if (this.parameters.type === 'strokecount' || this.parameters.type === 'slidetime') {
         if (this.parameters.action.indexOf('sw:') === -1) {
           teaseSlave.slideControl.adjust(this.parameters.type, this.parameters.action)
@@ -1318,6 +1321,7 @@ function CTISAction (options) {
           this.parameters.memory++
           if (this.parameters.memory >= types.length) this.parameters.memory = 0
         }
+      // Action: setslide
       } else if (this.parameters.type === 'setslide') {
         let modifier = this.parameters.action.split('', 1)
         let coreboy = slide
@@ -1346,7 +1350,6 @@ function CTISAction (options) {
             if (this.parameters.clean !== 'false') this.parameters.clean = 'disallowQuit'
           }
         } else {
-          // console.debug('<tease.js / CTISAction> Should have quit now:', this.parameters)
           if (this.index !== slide) {
             teaseSlave.exit('card')
           } else {
@@ -1423,7 +1426,7 @@ function CTISAction (options) {
           let action = this.parameters.action
           $.when(teaseSlave.contact(action)).then((ret) => {
             if (action.type === 'prompt') {
-              if (action.answer === undefined) console.error('<tease.js / CTISAction>\nContact if parameter is undefined.')
+              if (action.answer === undefined) console.error('<tease.js / CTISAction>\nContact \'answer\' parameter is undefined.')
               let acts = []
               Object.keys(action.answer).forEach((answer) => {
                 if (answer === 'carry' || answer === 'else') acts.push(answer)
@@ -1438,11 +1441,14 @@ function CTISAction (options) {
                 let act = action.answer.carry
                 act.index = this.index
                 if (typeof act.action === 'string' && act.action.indexOf('//carry//') !== -1) act.action = act.action.replace('//carry//', ret)
-                let idf = teaseSlave.actionControl.add(new CTISAction({start: act.start, delay: act.delay, type: act.type, fors: act.fors, conditonal: act.conditional, action: act.action, until: act.until, clean: act.clean, after: act.after, index: teaseSlave.slideControl.core.current}))
-                teaseSlave.actionControl.run({index: teaseSlave.slideControl.core.current, type: 'firstrun'}, idf)
               }
               acts.forEach((actz) => {
-                if (actz !== 'carry') {
+                if (typeof action.answer[actz].shift === 'function') {
+                  action.answer[actz].forEach((act) => {
+                    let idf = teaseSlave.actionControl.add(new CTISAction({start: act.start, delay: act.delay, type: act.type, fors: act.fors, conditonal: act.conditional, action: act.action, until: act.until, clean: act.clean, after: act.after, index: teaseSlave.slideControl.core.current}))
+                    teaseSlave.actionControl.run({index: teaseSlave.slideControl.core.current, type: 'firstrun'}, idf)
+                  })
+                } else {
                   let act = action.answer[actz]
                   let idf = teaseSlave.actionControl.add(new CTISAction({start: act.start, delay: act.delay, type: act.type, fors: act.fors, conditonal: act.conditional, action: act.action, until: act.until, clean: act.clean, after: act.after, index: teaseSlave.slideControl.core.current}))
                   teaseSlave.actionControl.run({index: teaseSlave.slideControl.core.current, type: 'firstrun'}, idf)
@@ -1451,18 +1457,32 @@ function CTISAction (options) {
             } else if (action.type === 'options') {
               Object.keys(action.options).forEach((option) => {
                 let act = action.options[option]
-                if (ret.toLowerCase() === option.toLowerCase()) {
-                  var idf = teaseSlave.actionControl.add(new CTISAction({start: act.start, delay: act.delay, type: act.type, fors: act.fors, conditonal: act.conditional, action: act.action, until: act.until, clean: act.clean, after: act.after, index: teaseSlave.slideControl.core.current}))
-                  teaseSlave.actionControl.run({index: teaseSlave.slideControl.core.current, type: 'firstrun'}, idf)
+                if (typeof action.options[option].shift === 'function') {
+                  action.options[option].forEach((nact) => {
+                    var idf = teaseSlave.actionControl.add(new CTISAction({start: nact.start, delay: nact.delay, type: nact.type, fors: nact.fors, conditonal: nact.conditional, action: nact.action, until: nact.until, clean: nact.clean, after: nact.after, index: teaseSlave.slideControl.core.current}))
+                    teaseSlave.actionControl.run({index: teaseSlave.slideControl.core.current, type: 'firstrun'}, idf)
+                  })
+                } else {
+                  if (ret.toLowerCase() === option.toLowerCase()) {
+                    var idf = teaseSlave.actionControl.add(new CTISAction({start: act.start, delay: act.delay, type: act.type, fors: act.fors, conditonal: act.conditional, action: act.action, until: act.until, clean: act.clean, after: act.after, index: teaseSlave.slideControl.core.current}))
+                    teaseSlave.actionControl.run({index: teaseSlave.slideControl.core.current, type: 'firstrun'}, idf)
+                  }
                 }
               })
             }
           }, (err) => {
             if (err === 'timelimit') {
               if (this.parameters.action.timelimit !== undefined) {
-                let act = this.parameters.action.timelimit
-                let idf = teaseSlave.actionControl.add(new CTISAction({start: act.start, delay: act.delay, type: act.type, fors: act.fors, conditonal: act.conditional, action: act.action, until: act.until, clean: act.clean, after: act.after, index: teaseSlave.slideControl.core.current}))
-                teaseSlave.actionControl.run({index: teaseSlave.slideControl.core.current, type: 'firstrun'}, idf)
+                if (typeof this.parameters.action.timelimit.shift === 'function') {
+                  this.parameters.action.timelimit.forEach((act) => {
+                    let idf = teaseSlave.actionControl.add(new CTISAction({start: act.start, delay: act.delay, type: act.type, fors: act.fors, conditonal: act.conditional, action: act.action, until: act.until, clean: act.clean, after: act.after, index: teaseSlave.slideControl.core.current}))
+                    teaseSlave.actionControl.run({index: teaseSlave.slideControl.core.current, type: 'firstrun'}, idf)
+                  })
+                } else {
+                  let act = this.parameters.action.timelimit
+                  let idf = teaseSlave.actionControl.add(new CTISAction({start: act.start, delay: act.delay, type: act.type, fors: act.fors, conditonal: act.conditional, action: act.action, until: act.until, clean: act.clean, after: act.after, index: teaseSlave.slideControl.core.current}))
+                  teaseSlave.actionControl.run({index: teaseSlave.slideControl.core.current, type: 'firstrun'}, idf)
+                }
               }
             } else {
               console.error('<tease.js / CTISAction>\nAn error occured whilst running contact. This was it:\n', err)
