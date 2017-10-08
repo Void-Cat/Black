@@ -2,7 +2,7 @@
  *  Requires jQuery.
 */
 
-const jquerypath = '../external/jquery/jquery.min.js'
+const jquerypath = 'jquery'
 const $ = require(jquerypath)
 const Config = require('electron-config')
 
