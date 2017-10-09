@@ -220,3 +220,5 @@ pip-log.txt
 #############
 
 releases/
+assets/themes/*.scss
+koala-config.json
