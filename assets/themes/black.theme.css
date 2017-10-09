@@ -1,41 +1,41 @@
 :root {
-  --mdc-theme-primary: #FFEB3B;
-  --mdc-theme-primary-light: #fff282;
-  --mdc-theme-primary-dark: #f3da00;
-  --mdc-theme-secondary: #9C27B0;
-  --mdc-theme-secondary-light: #d582e3;
-  --mdc-theme-secondary-dark: #c248d6;
+  --mdc-theme-primary: black;
+  --mdc-theme-primary-light: #474747;
+  --mdc-theme-primary-dark: #242424;
+  --mdc-theme-secondary: white;
+  --mdc-theme-secondary-light: #dbdbdb;
+  --mdc-theme-secondary-dark: #b8b8b8;
   --mdc-theme-background: #FAFAFA;
-  --mdc-theme-text-primary-on-primary: rgba(0, 0, 0, 0.87);
-  --mdc-theme-text-secondary-on-primary: rgba(0, 0, 0, 0.54);
-  --mdc-theme-text-hint-on-primary: rgba(0, 0, 0, 0.38);
-  --mdc-theme-text-disabled-on-primary: rgba(0, 0, 0, 0.38);
-  --mdc-theme-text-icon-on-primary: rgba(0, 0, 0, 0.38);
-  --mdc-theme-text-primary-on-primary-light: rgba(0, 0, 0, 0.87);
-  --mdc-theme-text-secondary-on-primary-light: rgba(0, 0, 0, 0.54);
-  --mdc-theme-text-hint-on-primary-light: rgba(0, 0, 0, 0.38);
-  --mdc-theme-text-disabled-on-primary-light: rgba(0, 0, 0, 0.38);
-  --mdc-theme-text-icon-on-primary-light: rgba(0, 0, 0, 0.38);
-  --mdc-theme-text-primary-on-primary-dark: rgba(0, 0, 0, 0.87);
-  --mdc-theme-text-secondary-on-primary-dark: rgba(0, 0, 0, 0.54);
-  --mdc-theme-text-hint-on-primary-dark: rgba(0, 0, 0, 0.38);
-  --mdc-theme-text-disabled-on-primary-dark: rgba(0, 0, 0, 0.38);
-  --mdc-theme-text-icon-on-primary-dark: rgba(0, 0, 0, 0.38);
-  --mdc-theme-text-primary-on-secondary: white;
-  --mdc-theme-text-secondary-on-secondary: rgba(255, 255, 255, 0.7);
-  --mdc-theme-text-hint-on-secondary: rgba(255, 255, 255, 0.5);
-  --mdc-theme-text-disabled-on-secondary: rgba(255, 255, 255, 0.5);
-  --mdc-theme-text-icon-on-secondary: rgba(255, 255, 255, 0.5);
+  --mdc-theme-text-primary-on-primary: white;
+  --mdc-theme-text-secondary-on-primary: rgba(255, 255, 255, 0.7);
+  --mdc-theme-text-hint-on-primary: rgba(255, 255, 255, 0.5);
+  --mdc-theme-text-disabled-on-primary: rgba(255, 255, 255, 0.5);
+  --mdc-theme-text-icon-on-primary: rgba(255, 255, 255, 0.5);
+  --mdc-theme-text-primary-on-primary-light: white;
+  --mdc-theme-text-secondary-on-primary-light: rgba(255, 255, 255, 0.7);
+  --mdc-theme-text-hint-on-primary-light: rgba(255, 255, 255, 0.5);
+  --mdc-theme-text-disabled-on-primary-light: rgba(255, 255, 255, 0.5);
+  --mdc-theme-text-icon-on-primary-light: rgba(255, 255, 255, 0.5);
+  --mdc-theme-text-primary-on-primary-dark: white;
+  --mdc-theme-text-secondary-on-primary-dark: rgba(255, 255, 255, 0.7);
+  --mdc-theme-text-hint-on-primary-dark: rgba(255, 255, 255, 0.5);
+  --mdc-theme-text-disabled-on-primary-dark: rgba(255, 255, 255, 0.5);
+  --mdc-theme-text-icon-on-primary-dark: rgba(255, 255, 255, 0.5);
+  --mdc-theme-text-primary-on-secondary: rgba(0, 0, 0, 0.87);
+  --mdc-theme-text-secondary-on-secondary: rgba(0, 0, 0, 0.54);
+  --mdc-theme-text-hint-on-secondary: rgba(0, 0, 0, 0.38);
+  --mdc-theme-text-disabled-on-secondary: rgba(0, 0, 0, 0.38);
+  --mdc-theme-text-icon-on-secondary: rgba(0, 0, 0, 0.38);
   --mdc-theme-text-primary-on-secondary-light: rgba(0, 0, 0, 0.87);
   --mdc-theme-text-secondary-on-secondary-light: rgba(0, 0, 0, 0.54);
   --mdc-theme-text-hint-on-secondary-light: rgba(0, 0, 0, 0.38);
   --mdc-theme-text-disabled-on-secondary-light: rgba(0, 0, 0, 0.38);
   --mdc-theme-text-icon-on-secondary-light: rgba(0, 0, 0, 0.38);
-  --mdc-theme-text-primary-on-secondary-dark: white;
-  --mdc-theme-text-secondary-on-secondary-dark: rgba(255, 255, 255, 0.7);
-  --mdc-theme-text-hint-on-secondary-dark: rgba(255, 255, 255, 0.5);
-  --mdc-theme-text-disabled-on-secondary-dark: rgba(255, 255, 255, 0.5);
-  --mdc-theme-text-icon-on-secondary-dark: rgba(255, 255, 255, 0.5);
+  --mdc-theme-text-primary-on-secondary-dark: rgba(0, 0, 0, 0.87);
+  --mdc-theme-text-secondary-on-secondary-dark: rgba(0, 0, 0, 0.54);
+  --mdc-theme-text-hint-on-secondary-dark: rgba(0, 0, 0, 0.38);
+  --mdc-theme-text-disabled-on-secondary-dark: rgba(0, 0, 0, 0.38);
+  --mdc-theme-text-icon-on-secondary-dark: rgba(0, 0, 0, 0.38);
   --mdc-theme-text-primary-on-background: rgba(0, 0, 0, 0.87);
   --mdc-theme-text-secondary-on-background: rgba(0, 0, 0, 0.54);
   --mdc-theme-text-hint-on-background: rgba(0, 0, 0, 0.38);
@@ -59,133 +59,133 @@
 
 .mdc-theme--primary {
   /* @alternate */
-  color: #FFEB3B !important;
-  color: var(--mdc-theme-primary, #FFEB3B) !important; }
+  color: black !important;
+  color: var(--mdc-theme-primary, black) !important; }
 
 .mdc-theme--primary-light {
   /* @alternate */
-  color: #fff282 !important;
-  color: var(--mdc-theme-primary-light, #fff282) !important; }
+  color: #474747 !important;
+  color: var(--mdc-theme-primary-light, #474747) !important; }
 
 .mdc-theme--primary-dark {
   /* @alternate */
-  color: #f3da00 !important;
-  color: var(--mdc-theme-primary-dark, #f3da00) !important; }
+  color: #242424 !important;
+  color: var(--mdc-theme-primary-dark, #242424) !important; }
 
 .mdc-theme--secondary {
   /* @alternate */
-  color: #9C27B0 !important;
-  color: var(--mdc-theme-secondary, #9C27B0) !important; }
+  color: white !important;
+  color: var(--mdc-theme-secondary, white) !important; }
 
 .mdc-theme--secondary-light {
   /* @alternate */
-  color: #d582e3 !important;
-  color: var(--mdc-theme-secondary-light, #d582e3) !important; }
+  color: #dbdbdb !important;
+  color: var(--mdc-theme-secondary-light, #dbdbdb) !important; }
 
 .mdc-theme--secondary-dark {
   /* @alternate */
-  color: #c248d6 !important;
-  color: var(--mdc-theme-secondary-dark, #c248d6) !important; }
+  color: #b8b8b8 !important;
+  color: var(--mdc-theme-secondary-dark, #b8b8b8) !important; }
 
 .mdc-theme--text-primary-on-primary {
   /* @alternate */
-  color: rgba(0, 0, 0, 0.87) !important;
-  color: var(--mdc-theme-text-primary-on-primary, rgba(0, 0, 0, 0.87)) !important; }
+  color: white !important;
+  color: var(--mdc-theme-text-primary-on-primary, white) !important; }
 
 .mdc-theme--text-secondary-on-primary {
   /* @alternate */
-  color: rgba(0, 0, 0, 0.54) !important;
-  color: var(--mdc-theme-text-secondary-on-primary, rgba(0, 0, 0, 0.54)) !important; }
+  color: rgba(255, 255, 255, 0.7) !important;
+  color: var(--mdc-theme-text-secondary-on-primary, rgba(255, 255, 255, 0.7)) !important; }
 
 .mdc-theme--text-hint-on-primary {
   /* @alternate */
-  color: rgba(0, 0, 0, 0.38) !important;
-  color: var(--mdc-theme-text-hint-on-primary, rgba(0, 0, 0, 0.38)) !important; }
+  color: rgba(255, 255, 255, 0.5) !important;
+  color: var(--mdc-theme-text-hint-on-primary, rgba(255, 255, 255, 0.5)) !important; }
 
 .mdc-theme--text-disabled-on-primary {
   /* @alternate */
-  color: rgba(0, 0, 0, 0.38) !important;
-  color: var(--mdc-theme-text-disabled-on-primary, rgba(0, 0, 0, 0.38)) !important; }
+  color: rgba(255, 255, 255, 0.5) !important;
+  color: var(--mdc-theme-text-disabled-on-primary, rgba(255, 255, 255, 0.5)) !important; }
 
 .mdc-theme--text-icon-on-primary {
   /* @alternate */
-  color: rgba(0, 0, 0, 0.38) !important;
-  color: var(--mdc-theme-text-icon-on-primary, rgba(0, 0, 0, 0.38)) !important; }
+  color: rgba(255, 255, 255, 0.5) !important;
+  color: var(--mdc-theme-text-icon-on-primary, rgba(255, 255, 255, 0.5)) !important; }
 
 .mdc-theme--text-primary-on-primary-light {
   /* @alternate */
-  color: rgba(0, 0, 0, 0.87) !important;
-  color: var(--mdc-theme-text-primary-on-primary-light, rgba(0, 0, 0, 0.87)) !important; }
+  color: white !important;
+  color: var(--mdc-theme-text-primary-on-primary-light, white) !important; }
 
 .mdc-theme--text-secondary-on-primary-light {
   /* @alternate */
-  color: rgba(0, 0, 0, 0.54) !important;
-  color: var(--mdc-theme-text-secondary-on-primary-light, rgba(0, 0, 0, 0.54)) !important; }
+  color: rgba(255, 255, 255, 0.7) !important;
+  color: var(--mdc-theme-text-secondary-on-primary-light, rgba(255, 255, 255, 0.7)) !important; }
 
 .mdc-theme--text-hint-on-primary-light {
   /* @alternate */
-  color: rgba(0, 0, 0, 0.38) !important;
-  color: var(--mdc-theme-text-hint-on-primary-light, rgba(0, 0, 0, 0.38)) !important; }
+  color: rgba(255, 255, 255, 0.5) !important;
+  color: var(--mdc-theme-text-hint-on-primary-light, rgba(255, 255, 255, 0.5)) !important; }
 
 .mdc-theme--text-disabled-on-primary-light {
   /* @alternate */
-  color: rgba(0, 0, 0, 0.38) !important;
-  color: var(--mdc-theme-text-disabled-on-primary-light, rgba(0, 0, 0, 0.38)) !important; }
+  color: rgba(255, 255, 255, 0.5) !important;
+  color: var(--mdc-theme-text-disabled-on-primary-light, rgba(255, 255, 255, 0.5)) !important; }
 
 .mdc-theme--text-icon-on-primary-light {
   /* @alternate */
-  color: rgba(0, 0, 0, 0.38) !important;
-  color: var(--mdc-theme-text-icon-on-primary-light, rgba(0, 0, 0, 0.38)) !important; }
+  color: rgba(255, 255, 255, 0.5) !important;
+  color: var(--mdc-theme-text-icon-on-primary-light, rgba(255, 255, 255, 0.5)) !important; }
 
 .mdc-theme--text-primary-on-primary-dark {
   /* @alternate */
-  color: rgba(0, 0, 0, 0.87) !important;
-  color: var(--mdc-theme-text-primary-on-primary-dark, rgba(0, 0, 0, 0.87)) !important; }
+  color: white !important;
+  color: var(--mdc-theme-text-primary-on-primary-dark, white) !important; }
 
 .mdc-theme--text-secondary-on-primary-dark {
   /* @alternate */
-  color: rgba(0, 0, 0, 0.54) !important;
-  color: var(--mdc-theme-text-secondary-on-primary-dark, rgba(0, 0, 0, 0.54)) !important; }
+  color: rgba(255, 255, 255, 0.7) !important;
+  color: var(--mdc-theme-text-secondary-on-primary-dark, rgba(255, 255, 255, 0.7)) !important; }
 
 .mdc-theme--text-hint-on-primary-dark {
   /* @alternate */
-  color: rgba(0, 0, 0, 0.38) !important;
-  color: var(--mdc-theme-text-hint-on-primary-dark, rgba(0, 0, 0, 0.38)) !important; }
+  color: rgba(255, 255, 255, 0.5) !important;
+  color: var(--mdc-theme-text-hint-on-primary-dark, rgba(255, 255, 255, 0.5)) !important; }
 
 .mdc-theme--text-disabled-on-primary-dark {
   /* @alternate */
-  color: rgba(0, 0, 0, 0.38) !important;
-  color: var(--mdc-theme-text-disabled-on-primary-dark, rgba(0, 0, 0, 0.38)) !important; }
+  color: rgba(255, 255, 255, 0.5) !important;
+  color: var(--mdc-theme-text-disabled-on-primary-dark, rgba(255, 255, 255, 0.5)) !important; }
 
 .mdc-theme--text-icon-on-primary-dark {
   /* @alternate */
-  color: rgba(0, 0, 0, 0.38) !important;
-  color: var(--mdc-theme-text-icon-on-primary-dark, rgba(0, 0, 0, 0.38)) !important; }
+  color: rgba(255, 255, 255, 0.5) !important;
+  color: var(--mdc-theme-text-icon-on-primary-dark, rgba(255, 255, 255, 0.5)) !important; }
 
 .mdc-theme--text-primary-on-secondary {
   /* @alternate */
-  color: white !important;
-  color: var(--mdc-theme-text-primary-on-secondary, white) !important; }
+  color: rgba(0, 0, 0, 0.87) !important;
+  color: var(--mdc-theme-text-primary-on-secondary, rgba(0, 0, 0, 0.87)) !important; }
 
 .mdc-theme--text-secondary-on-secondary {
   /* @alternate */
-  color: rgba(255, 255, 255, 0.7) !important;
-  color: var(--mdc-theme-text-secondary-on-secondary, rgba(255, 255, 255, 0.7)) !important; }
+  color: rgba(0, 0, 0, 0.54) !important;
+  color: var(--mdc-theme-text-secondary-on-secondary, rgba(0, 0, 0, 0.54)) !important; }
 
 .mdc-theme--text-hint-on-secondary {
   /* @alternate */
-  color: rgba(255, 255, 255, 0.5) !important;
-  color: var(--mdc-theme-text-hint-on-secondary, rgba(255, 255, 255, 0.5)) !important; }
+  color: rgba(0, 0, 0, 0.38) !important;
+  color: var(--mdc-theme-text-hint-on-secondary, rgba(0, 0, 0, 0.38)) !important; }
 
 .mdc-theme--text-disabled-on-secondary {
   /* @alternate */
-  color: rgba(255, 255, 255, 0.5) !important;
-  color: var(--mdc-theme-text-disabled-on-secondary, rgba(255, 255, 255, 0.5)) !important; }
+  color: rgba(0, 0, 0, 0.38) !important;
+  color: var(--mdc-theme-text-disabled-on-secondary, rgba(0, 0, 0, 0.38)) !important; }
 
 .mdc-theme--text-icon-on-secondary {
   /* @alternate */
-  color: rgba(255, 255, 255, 0.5) !important;
-  color: var(--mdc-theme-text-icon-on-secondary, rgba(255, 255, 255, 0.5)) !important; }
+  color: rgba(0, 0, 0, 0.38) !important;
+  color: var(--mdc-theme-text-icon-on-secondary, rgba(0, 0, 0, 0.38)) !important; }
 
 .mdc-theme--text-primary-on-secondary-light {
   /* @alternate */
@@ -214,28 +214,28 @@
 
 .mdc-theme--text-primary-on-secondary-dark {
   /* @alternate */
-  color: white !important;
-  color: var(--mdc-theme-text-primary-on-secondary-dark, white) !important; }
+  color: rgba(0, 0, 0, 0.87) !important;
+  color: var(--mdc-theme-text-primary-on-secondary-dark, rgba(0, 0, 0, 0.87)) !important; }
 
 .mdc-theme--text-secondary-on-secondary-dark {
   /* @alternate */
-  color: rgba(255, 255, 255, 0.7) !important;
-  color: var(--mdc-theme-text-secondary-on-secondary-dark, rgba(255, 255, 255, 0.7)) !important; }
+  color: rgba(0, 0, 0, 0.54) !important;
+  color: var(--mdc-theme-text-secondary-on-secondary-dark, rgba(0, 0, 0, 0.54)) !important; }
 
 .mdc-theme--text-hint-on-secondary-dark {
   /* @alternate */
-  color: rgba(255, 255, 255, 0.5) !important;
-  color: var(--mdc-theme-text-hint-on-secondary-dark, rgba(255, 255, 255, 0.5)) !important; }
+  color: rgba(0, 0, 0, 0.38) !important;
+  color: var(--mdc-theme-text-hint-on-secondary-dark, rgba(0, 0, 0, 0.38)) !important; }
 
 .mdc-theme--text-disabled-on-secondary-dark {
   /* @alternate */
-  color: rgba(255, 255, 255, 0.5) !important;
-  color: var(--mdc-theme-text-disabled-on-secondary-dark, rgba(255, 255, 255, 0.5)) !important; }
+  color: rgba(0, 0, 0, 0.38) !important;
+  color: var(--mdc-theme-text-disabled-on-secondary-dark, rgba(0, 0, 0, 0.38)) !important; }
 
 .mdc-theme--text-icon-on-secondary-dark {
   /* @alternate */
-  color: rgba(255, 255, 255, 0.5) !important;
-  color: var(--mdc-theme-text-icon-on-secondary-dark, rgba(255, 255, 255, 0.5)) !important; }
+  color: rgba(0, 0, 0, 0.38) !important;
+  color: var(--mdc-theme-text-icon-on-secondary-dark, rgba(0, 0, 0, 0.38)) !important; }
 
 .mdc-theme--text-primary-on-background {
   /* @alternate */
@@ -314,33 +314,33 @@
 
 .mdc-theme--primary-bg {
   /* @alternate */
-  background-color: #FFEB3B !important;
-  background-color: var(--mdc-theme-primary, #FFEB3B) !important; }
+  background-color: black !important;
+  background-color: var(--mdc-theme-primary, black) !important; }
 
 .mdc-theme--primary-light-bg {
   /* @alternate */
-  background-color: #fff282 !important;
-  background-color: var(--mdc-theme-primary-light, #fff282) !important; }
+  background-color: #474747 !important;
+  background-color: var(--mdc-theme-primary-light, #474747) !important; }
 
 .mdc-theme--primary-dark-bg {
   /* @alternate */
-  background-color: #f3da00 !important;
-  background-color: var(--mdc-theme-primary-dark, #f3da00) !important; }
+  background-color: #242424 !important;
+  background-color: var(--mdc-theme-primary-dark, #242424) !important; }
 
 .mdc-theme--secondary-bg {
   /* @alternate */
-  background-color: #9C27B0 !important;
-  background-color: var(--mdc-theme-secondary, #9C27B0) !important; }
+  background-color: white !important;
+  background-color: var(--mdc-theme-secondary, white) !important; }
 
 .mdc-theme--secondary-light-bg {
   /* @alternate */
-  background-color: #d582e3 !important;
-  background-color: var(--mdc-theme-secondary-light, #d582e3) !important; }
+  background-color: #dbdbdb !important;
+  background-color: var(--mdc-theme-secondary-light, #dbdbdb) !important; }
 
 .mdc-theme--secondary-dark-bg {
   /* @alternate */
-  background-color: #c248d6 !important;
-  background-color: var(--mdc-theme-secondary-dark, #c248d6) !important; }
+  background-color: #b8b8b8 !important;
+  background-color: var(--mdc-theme-secondary-dark, #b8b8b8) !important; }
 
 #appheader {
   -webkit-app-region: drag;
@@ -378,10 +378,10 @@ body {
     font-size: 36px; }
 
 .frame {
-  background-color: #ffe822;
+  background-color: black;
   color: var(--mdc-theme-text-primary-on-primary-dark); }
   .frame :window-inactive {
-    background-color: #ffee55; }
+    background-color: #0d0d0d; }
 
 .native-btn {
   cursor: pointer; }
@@ -399,7 +399,7 @@ main {
   width: 5px; }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #FFEB3B;
+  background-color: black;
   border-radius: 2px;
   -webkit-border-radius: 2px;
   -webkit-box-shadow: inset 0 0 2.5px rgba(0, 0, 0, 0.5); }

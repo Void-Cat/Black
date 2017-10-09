@@ -5,7 +5,7 @@
     <title>Black Tease</title>
     <link rel="stylesheet" href="../css/material-components-web.min.css">
     <link rel="stylesheet" href="../external/material-design-icons/material-icons.css">
-    <link rel="stylesheet" href="../css/black.css?v=1">
+    <!-- <link rel="stylesheet" href="../css/black.css?v=1"> -->
     <link rel="stylesheet" id="theme">
   </head>
   <body class="mdc-typography mdc-theme--dark">
@@ -46,7 +46,7 @@
 
     <aside class="mdc-temporary-drawer">
       <nav class="mdc-temporary-drawer__drawer">
-        <header class="mdc-temporary-drawer__header">
+        <header class="mdc-temporary-drawer__header frame">
           <div class="mdc-temporary-drawer__header-content">
             Black Tease
           </div>
@@ -102,7 +102,7 @@
       </div>
     </main>
 
-    <footer id="controlbar" style="padding-bottom: 8px; width: 100%; display: flex; font-size: 35px;">
+    <footer id="controlbar" class="frame" style="padding-bottom: 8px; width: 100%; display: flex; font-size: 35px;">
       <section style="flex: 1; text-align: center;">
         <button id="previous-button" type="button" class="mdc-button mdc-button--raised mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">skip_previous</button>
         <button id="pause-play" type="button" class="mdc-button mdc-button--raised mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">pause</button>
@@ -152,8 +152,9 @@
           'green.dark',
           // 'yellow',
           'yellow.dark',
-          // 'purp',
-          'purp.dark',
+          // 'purple',
+          'purple.dark',
+          // 'black',
           'black.dark'
         ],
         active: config.get('theme.index'),

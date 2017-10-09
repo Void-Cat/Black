@@ -3,14 +3,14 @@
   <head>
     <meta charset="utf-8">
     <title>Black CTIS Viewer</title>
-    <link rel="stylesheet" href="./external/material-components-web/material-components-web.min.css">
+    <link rel="stylesheet" href="./css/material-components-web.min.css">
     <link rel="stylesheet" href="./external/material-design-icons/material-icons.css">
-    <link rel="stylesheet" href="./css/black.css?v=1">
+    <!-- <link rel="stylesheet" href="./css/black.css?v=1"> -->
     <link rel="stylesheet" id="theme">
   </head>
   <body class="mdc-typography mdc-theme--dark">
 
-    <header style="text-align: center;">
+    <header id="appheader" class="frame" style="text-align: center;">
       <div style="float: left">
         <i id="menu-btn" class="native-btn material-icons" style="display: inline;">menu</i>
         <i id="home-btn" class="native-btn material-icons" onclick="swapper.swap('home')" style="display: inline;">home</i>
@@ -26,7 +26,7 @@
 
     <aside class="mdc-temporary-drawer">
       <nav class="mdc-temporary-drawer__drawer">
-        <header class="mdc-temporary-drawer__header">
+        <header class="mdc-temporary-drawer__header frame">
           <div class="mdc-temporary-drawer__header-content">
             Black CTIS
           </div>
@@ -53,6 +53,9 @@
           <a class="mdc-list-item" onclick="swapper.swap('settings')">
             <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">settings</i>Settings
           </a>
+          <a class="mdc-list-item" onclick="swapper.swap('feedback')">
+            <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">feedback</i>Feedback
+          </a>
           <!--<a class="mdc-list-item" onclick="swapper.swap('about')">
             <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">info</i>About
           </a>-->
@@ -69,8 +72,8 @@
     <script src="./catworks/native.js"></script>
     <script type="text/javascript">
       const Theme = require('./catworks/themer.js')
-      const $ = require('./external/jquery/jquery.min.js')
-      const mdc = require('./external/material-components-web/material-components-web.min.js')
+      const $ = require('jquery')
+      const mdc = require('material-components-web/dist/material-components-web.min.js')
       const Swapper = require('./catworks/swapper.js')
       const Config = require('electron-config')
       const {dialog, BrowserWindow, globalShortcut, shell, app} = require('electron').remote
@@ -91,8 +94,9 @@
           'green.dark',
           // 'yellow',
           'yellow.dark',
-          // 'purp',
-          'purp.dark',
+          // 'purple',
+          'purple.dark',
+          // 'dark',
           'black.dark'
         ],
         active: config.get('theme.index')
