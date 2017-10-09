@@ -16,8 +16,7 @@
     "electron-config": "^1.0.0",
     "jquery": "^3.2.1",
     "material-components-web": "^0.22.0",
-    "mousetrap": "^1.6.1",
-    "node-sass": "^4.5.3"
+    "mousetrap": "^1.6.1"
   },
   "devDependencies": {
     "electron": "^1.7.8"
