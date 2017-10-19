@@ -35,14 +35,14 @@ function getPictures (path, recursive) {
   let files = fs.readdirSync(path)
   if (files.length > 0) {
     files.forEach((f) => {
-      let stat = fs.lstatSync(path + '\\' + f)
+      let stat = fs.lstatSync(path + '/' + f)
       if (stat.isDirectory() || stat.isSymbolicLink()) {
         if (recursive && f !== 'deleted') {
-          rtv = rtv.concat(getPictures(path + '\\' + f, true))
+          rtv = rtv.concat(getPictures(path + '/' + f, true))
         }
       } else if (stat.isFile()) {
         if (f.indexOf('.jpg') !== -1 || f.indexOf('.jpeg') !== -1 || f.indexOf('.gif') !== -1 || f.indexOf('.png') !== -1) {
-          rtv.push(path + '\\' + f)
+          rtv.push(path + '/' + f)
         }
       }
     })
@@ -103,11 +103,11 @@ function generateFileList (picturePath, cardPath, categories) {
         let cat1name = categories[cat1].name.toLowerCase()
         if (cat1 !== cat) {
           if (check.lastIndexOf(cat1name) !== -1) {
-            if (check.indexOf('\\' + cat1name + '\\') !== -1) {
+            if (check.indexOf('/' + cat1name + '/') !== -1) {
               mfd.push(cat + ':::' + i)
             } else if (check.lastIndexOf(cat1name) > check.lastIndexOf(catname)) {
               mfd.push(cat + ':::' + i)
-            } else if (check.split(catname).length <= 2 && check.indexOf('\\' + catname + '\\') === -1) {
+            } else if (check.split(catname).length <= 2 && check.indexOf('/' + catname + '/') === -1) {
               mfd.push(cat + ':::' + i)
             }
           }
@@ -295,7 +295,7 @@ function generateFileList (picturePath, cardPath, categories) {
   fin = clean(fin, undefined)
   fin.forEach((r, i) => {
     // console.debug('<tease.js / generateFileList> Fin replace with r:', r, 'and i:', i)
-    if (r !== undefined) fin[i] = r.replace(/\\/g, '\\\\')
+    if (r !== undefined) fin[i] = r.replace(/\\/g, '/')
   })
   dfd.resolve([fin, icl])
   return dfd.promise()
