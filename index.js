@@ -4,6 +4,10 @@ const url = require('url')
 const Config = require('electron-config')
 const config = new Config()
 
+if (config.get('settings.disableHardwareAcceleration') === true) {
+  app.disableHardwareAcceleration()
+}
+
 let win
 
 function createWindow () {
