@@ -10,38 +10,37 @@
   </head>
   <body class="mdc-typography mdc-theme--dark">
 
-    <header style="background-color: initial; -webkit-app-region: no-drag; position: absolute; z-index: 3; max-width: 15%;">
+    <header style="background-color: initial; -webkit-app-region: no-drag;">
       <div style="background-color: rgba(0, 0, 0, 0.3); border-radius: 0.5rem; padding-right: 5px;">
         <i id="menu-btn" class="native-btn material-icons" style="display: inline;">menu</i>
         &nbsp;
         <h1 class="mdc-typography--subheading1 slideInfo" style="margin: 0; display: inline; vertical-align: top; cursor: default;">Black</h1>
       </div><br>
-      <div id="slideInfo" style="float: left;">
-        <h1 class="mdc-typography--subheading1" style="margin: 0; cursor: default; background-color: rgba(0, 0, 0, 0.3); padding: 5px; border-radius: 0.5rem;">
+    </header>
+
+    <div id="contact" style="position: absolute; padding: 10px 20%; top: 24px; width: 60%; z-index: 2;"></div>
+
+    <div id="leftPanel" style="position: fixed; top: 24px; background-color: rgba(0, 0, 0, 0.3); padding: 10px; border-bottom-right-radius: 0.25rem;">
+      <div id="slideInfo">
+        <h1 class="mdc-typography--subheading1" style="margin: 0; cursor: default;">
           Strokecount:&nbsp;<span id="strokeCountDisplay"></span><span id="chastityDisplay" style="color: red; display: none;">&nbsp;In Chastity</span><br>
           Slidetime:&nbsp;<span id="slideTimeDisplay"></span><br>
           Slide&nbsp;<span id="slideNumberDisplay"></span><br>
-        </h1><br>
-        <h1 class="mdc-typography--subheading1" style="margin: 0; cursor: default; background-color: rgba(0, 0, 0, 0.3); padding: 5px; border-radius: 0.5rem;">
-          Mistress Mood:&nbsp;<span id="moodDisplay" class="material-icons">thumbs_up_down</span>
         </h1>
-      </div><br>
-      <div id="instructionDisplay" style="background-color: rgba(0, 0, 0, 0.3); border-radius: 0.5rem; float: left;">
+        <h1 class="mdc-typography--subheading1" style="margin: 0; cursor: default;">
+          Mistress Mood:&nbsp;<span id="moodDisplay" class="material-icons" style="vertical-align: middle;">thumbs_up_down</span>
+        </h1>
+      </div>
+      <div id="instructionDisplay" style="cursor: default;">
         <h1 id="instructionHead" class="mdc-typography--subheading1">Instructions:</h1>
         <h1 class="mdc-typography--body2">Position:&nbsp;<span id="position" class="mdc-typography--body1">Free</span></h1>
       </div>
-    </header>
-
-    <div id="contact" style="position: absolute; padding: 5px 20%; top: 5px; width: 60%; z-index: 2;">
-
     </div>
 
-    <div id="itemlist" style="background-color: rgba(0, 0, 0, 0.3); float: right; color: white; padding: 5px; border-radius: 0.5rem; position: absolute; right: 5px; top: 5px; z-index: 1;">
-
-      <button id="keyDisplay" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" disabled>Keys: 0</button>
-    </div>
-    <div style="float: right; color: white; padding: 5px; border-radius: 0.5rem; margin: 5px;">
-
+    <div id="rightPanel" style="position: fixed; right: 0px; top: 24px; background-color: rgba(0, 0, 0, 0.3); padding: 10px; border-bottom-left-radius: 0.25rem; z-index: 1;">
+      <div id="itemlist">
+        <button id="keyDisplay" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" disabled>Keys: 0</button>
+      </div>
     </div>
 
     <aside class="mdc-temporary-drawer">
@@ -104,22 +103,22 @@
 
     <footer id="controlbar" class="frame" style="padding-bottom: 8px; width: 100%; display: flex; font-size: 35px;">
       <section style="flex: 1; text-align: center;">
-        <button id="previous-button" type="button" class="mdc-button mdc-button--raised mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">skip_previous</button>
-        <button id="pause-play" type="button" class="mdc-button mdc-button--raised mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">pause</button>
-        <button id="next-button" type="button" class="mdc-button mdc-button--raised mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">skip_next</button>
+        <button id="previous-button" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">skip_previous</button>
+        <button id="pause-play" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">pause</button>
+        <button id="next-button" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">skip_next</button>
       </section>
       <section style="flex: 3; text-align: center;">
-        <button id="strokedown-button" type="button" class="mdc-button mdc-button--raised mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">arrow_downward</button>
+        <button id="strokedown-button" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">arrow_downward</button>
         &nbsp;<i class="material-icons">pan_tool</i>&nbsp;
-        <button id="strokeup-button" type="button" class="mdc-button mdc-button--raised mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">arrow_upward</button>
+        <button id="strokeup-button" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">arrow_upward</button>
         &nbsp;&nbsp;<b>|</b>&nbsp;&nbsp;
-        <button id="timedown-button" type="button" class="mdc-button mdc-button--raised mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">arrow_downward</button>
+        <button id="timedown-button" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">arrow_downward</button>
         &nbsp;<i class="material-icons">access_time</i>&nbsp;
-        <button id="timeup-button" type="button" class="mdc-button mdc-button--raised mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">arrow_upward</button>
+        <button id="timeup-button" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">arrow_upward</button>
         &nbsp;&nbsp;<b>|</b>&nbsp;&nbsp;
-        <button id="full-button" type="button" class="mdc-button mdc-button--raised mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">flare</button>
-        &nbsp;<button id="edge-button" type="button" class="mdc-button mdc-button--raised mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">format_color_reset</button>
-        &nbsp;<button id="ruin-button" type="button" class="mdc-button mdc-button--raised mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">bubble_chart</button>
+        <button id="full-button" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">flare</button>
+        &nbsp;<button id="edge-button" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">format_color_reset</button>
+        &nbsp;<button id="ruin-button" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">bubble_chart</button>
       </section>
     </footer>
 
