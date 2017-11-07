@@ -395,6 +395,14 @@ main {
   background-color: #FAFAFA;
   color: var(--mdc-theme-text-primary-on-background); }
 
+.mdc-button--primary:not([disabled]) {
+  background-color: #FFEB3B;
+  color: var(--mdc-theme-text-primary-on-primary); }
+
+.mdc-button--secondary:not([disabled]) {
+  background-color: #9C27B0;
+  color: var(--mdc-theme-text-primary-on-secondary); }
+
 ::-webkit-scrollbar {
   width: 5px; }
 
