@@ -364,6 +364,12 @@ body {
   padding: 5px 10px;
   width: 90%; }
 
+.path-box {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 1px;
+  margin: 0 10px;
+  padding: 8px; }
+
 #controlbar {
   bottom: 0;
   display: block;
