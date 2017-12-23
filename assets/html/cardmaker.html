@@ -51,11 +51,12 @@
   <div id="saveLocField">
     <span class="mdc-typography--body1">Select a location to save the card</span><br>
     <button id="saveLocBtn" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
-    <label id="saveLocLabel" class="box" style="margin-left: 5px; background-color: rgba(0, 0, 0, 0.2); border-radius: 5px; display: none;"></label>
+    <label id="saveLocLabel" class="path-box" style="display: none;"></label>
   </div>
   <br>
-  <div style="width: 90%; margin: 0 auto; height: 40px;">
+  <div style="display: flex;">
     <button id="step-0-prev" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" style="float: left;" disabled>Previous</button>
+    <button id="switchBatch" type="button" class="mdc-button mdc-button--raised mdc-button--secondary mdc-ripple" data-mdc-auto-init="MDCRipple" style="margin: 0 auto;" onclick="swapper.swap('batch')">Batch Creator</button>
     <button id="step-0-next" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" style="float: right;">Next</button>
   </div>
 </div>
@@ -66,7 +67,7 @@
   <div>
     <span class="mdc-typography--body1">Select an image: (or if you're converting, the original card)</span><br>
     <button id="browsePictureBtn" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
-    <label id="browsePictureLabel" class="box" style="margin-left: 5px; background-color: rgba(0, 0, 0, 0.2); border-radius: 5px; display: none;"></label>
+    <label id="browsePictureLabel" class="path-box" style="display: none;"></label>
   </div>
   <br>
   <div id="cardInfo" style="display: none;">
@@ -129,7 +130,7 @@
     <div>
       <span class="mdc-typography--body1">Select a deck image. (Will automatically fade and resize. Square images work best.)</span><br>
       <button id="deckImageBtn" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
-      <label id="deckImageLabel" class="box" style="margin-left: 5px; background-color: rgba(0, 0, 0, 0.2); border-radius: 5px; display: none;"></label>
+      <label id="deckImageLabel" class="path-box" style="display: none;"></label>
     </div>
     <br><br>
   </div>
