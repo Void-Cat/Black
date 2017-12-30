@@ -370,6 +370,11 @@ body {
   margin: 0 10px;
   padding: 8px; }
 
+.external-link {
+  color: #9C27B0;
+  cursor: pointer;
+  text-decoration: underline; }
+
 #controlbar {
   bottom: 0;
   display: block;
