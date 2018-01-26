@@ -15,7 +15,7 @@
   "dependencies": {
     "electron-config": "^1.0.0",
     "jquery": "^3.2.1",
-    "material-components-web": "^0.27.0",
+    "material-components-web": "^0.28.0",
     "mousetrap": "^1.6.1"
   },
   "devDependencies": {
