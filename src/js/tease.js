@@ -719,7 +719,7 @@ function TeaseSlave (options) {
       })
     }
     this.slideControl.core.ticker.init()
-    this.slideControl.core.ticker.muted = !this.teaseParams.timing.ticker
+    this.slideControl.core.ticker.muted = (this.teaseParams.timing.ticker !== false)
     this.ctisCards.forEach((ccard) => {
       ccard.init()
     })
