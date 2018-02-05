@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<div id="bcc-0" class="mdc-elevation--z3 box">
+  <h1 class="mdc-typography--title">Batch Card Maker</h1>
+  <h1 class="mdc-typography--subheading2">Create multiple cards at once.</h1>
+  <div class="mdc-form-field">
+    <div class="mdc-checkbox">
+      <input id="bcc-save" type="checkbox" class="mdc-checkbox__native-control" />
+      <div class="mdc-checkbox__background">
+        <svg class="mdc-checkbox__checkmark" viewbox="0 0 24 24">
+          <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
+        </svg>
+        <div class="mdc-checkbox__mixedmark"></div>
+      </div>
+    </div>
+    <label for="bcc-save">Save settings for later use</label>
+  </div>
+  <hr>
+
+  <h1 class="mdc-typography--subheading1">Card Type</h1>
+  <div class="mdc-form-field">
+    <div class="mdc-radio">
+      <input class="mdc-radio__native-control" type="radio" id="bcc-type-1" name="bcc-type" />
+      <div class="mdc-radio__background">
+        <div class="mdc-radio__outer-circle"></div>
+        <div class="mdc-radio__inner-circle"></div>
+      </div>
+    </div>
+    <label for="bcc-type-1">CTI 1 Cards</label>
+  </div>
+  <br>
+  <div class="mdc-form-field">
+    <div class="mdc-radio">
+      <input class="mdc-radio__native-control" type="radio" id="bcc-type-s" name="bcc-type" />
+      <div class="mdc-radio__background">
+        <div class="mdc-radio__outer-circle"></div>
+        <div class="mdc-radio__inner-circle"></div>
+      </div>
+    </div>
+    <label for="bcc-type-s">CTI S (script) Cards</label>
+  </div>
+  <br>
+  <div class="mdc-form-field" style="display: none;">
+    <div class="mdc-checkbox">
+      <input id="bcc-convert" type="checkbox" class="mdc-checkbox__native-control" />
+      <div class="mdc-checkbox__background">
+        <svg class="mdc-checkbox__checkmark" viewbox="0 0 24 24">
+          <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
+        </svg>
+        <div class="mdc-checkbox__mixedmark"></div>
+      </div>
+    </div>
+    <label for="bcc-convert">Convert CTI 1 cards to CTI S</label>
+  </div>
+  <br>
+
+  <h1 class="mdc-typography--subheading1">Image Folder</h1>
+  <div class="mdc-form-field">
+    <button type="button" class="mdc-button mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" id="bcc-image-folder">Select Folder</button>
+    <label id="bcc-image-folder-label" class="path-box" style="display: none;"></label>
+  </div><br>
+  <div class="mdc-form-field">
+    <div class="mdc-checkbox">
+      <input id="bcc-image-folder-recursive" type="checkbox" class="mdc-checkbox__native-control">
+      <div class="mdc-checkbox__background">
+        <svg class="mdc-checkbox__checkmark" viewbox="0 0 24 24">
+          <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
+        </svg>
+        <div class="mdc-checkbox__mixedmark"></div>
+      </div>
+    </div>
+    <label for="bcc-image-folder-recursive">Recurse into image folder</label>
+  </div>
+  <h1 class="mdc-typography--subheading1">Image Selection</h1>
+  <div class="mdc-form-field">
+    <div class="mdc-radio">
+      <input class="mdc-radio__native-control" type="radio" id="bcc-image-select-order" name="bcc-image-select" />
+      <div class="mdc-radio__background">
+        <div class="mdc-radio__outer-circle"></div>
+        <div class="mdc-radio__inner-circle"></div>
+      </div>
+    </div>
+    <label for="bcc-image-select-order">In Order</label>
+  </div>
+  <br>
+  <div class="mdc-form-field">
+    <div class="mdc-radio">
+      <input class="mdc-radio__native-control" type="radio" id="bcc-image-select-manual" name="bcc-image-select" />
+      <div class="mdc-radio__background">
+        <div class="mdc-radio__outer-circle"></div>
+        <div class="mdc-radio__inner-circle"></div>
+      </div>
+    </div>
+    <label for="bcc-image-select-manual">Manual</label>
+  </div>
+  <br>
+  <div class="mdc-form-field">
+    <div class="mdc-radio">
+      <input class="mdc-radio__native-control" type="radio" id="bcc-image-select-random" name="bcc-image-select" />
+      <div class="mdc-radio__background">
+        <div class="mdc-radio__outer-circle"></div>
+        <div class="mdc-radio__inner-circle"></div>
+      </div>
+    </div>
+    <label for="bcc-image-select-random">Random</label>
+  </div>
+  <br>
+  <br>
+
+  <h1 class="mdc-typography--subheading1">Save Location</h1>
+  <div class="mdc-form-field">
+    <button type="button" class="mdc-button mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" id="bcc-save-folder">Select Folder</button>
+    <label id="bcc-save-folder-label" class="path-box" style="display: none;"></label>
+  </div>
+  <br>
+  <div class="mdc-form-field">
+    <div class="mdc-checkbox">
+      <input id="bcc-save-folder-sort" type="checkbox" class="mdc-checkbox__native-control" />
+      <div class="mdc-checkbox__background">
+        <svg class="mdc-checkbox__checkmark" viewbox="0 0 24 24">
+          <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
+        </svg>
+        <div class="mdc-checkbox__mixedmark"></div>
+      </div>
+    </div>
+    <label for="bcc-save-folder-sort">Sort images by type in subfolders</label>
+  </div>
+  <br>
+
+  <hr>
+  <div style="display: flex;">
+    <button type="button" class="mdc-button mdc-button--secondary mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="swapper.swap('cardmaker')">Regular Card Maker</button>
+    <button type="button" class="mdc-button mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" id="bcc-0-next" style="margin: 0 0 0 auto;" disabled>Next</button>
+  </div>
+</div>
+
+<div id="bcc-1" class="mdc-elevation--z3 box" style="display: none;">
+  <h1 class="mdc-typography--title">Batch Card Maker</h1>
+  <h1 class="mdc-typography--subheading2">General Card Information</h1>
+  <hr>
+  <div class="mdc-text-field" data-mdc-auto-init="MDCTextField">
+    <input type="text" id="bcc-author" class="mdc-text-field__input" />
+    <label for="bcc-author" class="mdc-text-field__label">Author</label>
+  </div>
+  <br>
+  <div class="mdc-text-field" data-mdc-auto-init="MDCTextField">
+    <input type="text" id="bcc-deck-name" class="mdc-text-field__input" />
+    <label for="bcc-deck-name" class="mdc-text-field__label">Deck Name</label>
+  </div>
+  <br>
+  <h1 class="mdc-typography--subheading1">Deck Image</h1>
+  <div class="mdc-form-field">
+    <button type="button" id="bcc-deck-image" class="mdc-button mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Select Image</button>
+    <label id="bcc-deck-image-label" class="path-box" style="display: none;"></label>
+  </div>
+
+  <hr>
+  <div style="display: flex;">
+    <button type="button" class="mdc-button mdc-ripple" data-mdc-auto-init="MDCRipple" id="bcc-1-previous">Previous</button>
+    <button type="button" class="mdc-button mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" id="bcc-1-next" style="margin: 0 0 0 auto;">Next</button>
+  </div>
+</div>
+
+<div id="bcc-2" class="mdc-elevation--z3 box" style="display: none;">
+  <h1 class="mdc-typography--title">Batch Card Maker</h1>
+  <h1 class="mdc-typography--subheading2">Card Overview</h1>
+  <hr>
+  <table style="width: 100%;">
+    <thead>
+      <th>Type</th><th>Image</th><th>Edit</th><th>Preview</th><th>Delete</th>
+    </thead>
+    <tbody id="bcc-cardList">
+
+    </tbody>
+  </table>
+  <style media="screen">
+    #bcc-cardList i {
+      cursor: pointer;
+    } #bcc-cardList td, #bcc-4-list td {
+      text-align: center;
+    }
+  </style>
+  <div id="bcc-imageLoad">
+    <br>
+    <p class="mdc-typography--subheading1">Loading images, please wait...</p>
+    <div role="progressbar" class="mdc-linear-progress mdc-linear-progress--indeterminate mdc-linear-progress--reversed" style="background-color: rgba(0, 0, 0, 0.2);">
+      <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
+        <span class="mdc-linear-progress__bar-inner"></span>
+      </div>
+      <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">
+        <span class="mdc-linear-progress__bar-inner"></span>
+      </div>
+    </div>
+    <br>
+  </div>
+  <br>
+  <button type="button" id="bcc-card-add" class="mdc-button mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="$('#bcc-new').trigger('openup')"><i class="material-icons mdc-button__icon">add</i>Add Card</button>
+  <button type="button" id="bcc-card-clear" class="mdc-button mdc-ripple" data-mdc-auto-init="MDCRipple"><i class="material-icons mdc-button__icon">delete_sweep</i>Delete All</button>
+
+  <hr>
+  <div style="display: flex;">
+    <button type="button" class="mdc-button mdc-ripple" data-mdc-auto-init="MDCRipple" id="bcc-2-previous">Previous</button>
+    <button type="button" class="mdc-button mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" id="bcc-2-next" style="margin: 0 0 0 auto;" disabled>Next</button>
+  </div>
+</div>
+
+<div id="bcc-new" style="width: 100vw; height: calc(100vh - 24px); z-index: 2; background-color: rgba(0, 0, 0, 0.2); position: fixed; top: 24px; display: none;">
+  <div class="mdc-elevation--z3 box" style="max-width: 600px;">
+    <h1 class="mdc-typography--subheading2">New Card<span id="bcc-new-cancel" class="material-icons" style="cursor: pointer; float: right;">close</span></h1>
+    <hr>
+    <div class="mdc-text-field" data-mdc-auto-init="MDCTextField">
+      <input type="text" id="bcc-new-type" class="mdc-text-field__input" />
+      <label for="bcc-new-type" class="mdc-text-field__label">Card Type</label>
+    </div>
+    <br>
+    <div class="mdc-text-field mdc-text-field--textarea" data-mdc-auto-init="MDCTextField">
+      <textarea id="bcc-new-text" class="mdc-text-field__input" rows="8" cols="40"></textarea>
+      <label for="bcc-new-text" class="mdc-text-field__label" style="background-color: rgba(0, 0, 0, 0);">Card Text</label>
+    </div>
+    <br>
+    <div id="bcc-new-gender" class="mdc-select" role="listbox">
+      <div class="mdc-select__surface" tabindex="0">
+        <div class="mdc-select__label mdc-select__label--float-above">Gender</div>
+        <div class="mdc-select__selected-text"></div>
+        <div class="mdc-select__bottom-line"></div>
+      </div>
+      <div class="mdc-simple-menu mdc-select__menu">
+        <ul class="mdc-list mdc-simple-menu__items">
+          <li class="mdc-list-item" role="option" id="bcc-new-gender-neutral" aria-selected tabindex="0">Neutral</li>
+          <li class="mdc-list-item" role="option" id="bcc-new-gender-male" tabindex="0">Male</li>
+          <li class="mdc-list-item" role="option" id="bcc-new-gender-female" tabindex="0">Female</li>
+          <li class="mdc-list-item" role="option" id="bcc-new-gender-transsexual" tabindex="0">Transsexual</li>
+          <li class="mdc-list-item" role="option" id="bcc-new-gender-straightcouple" tabindex="0">Straight Couple</li>
+          <li class="mdc-list-item" role="option" id="bcc-new-gender-gaycouple" tabindex="0">Gay Couple</li>
+          <li class="mdc-list-item" role="option" id="bcc-new-gender-lesbiancouple" tabindex="0">Lesbian Couple</li>
+        </ul>
+      </div>
+    </div>
+    <br>
+    <h1 class="mdc-typography--subheading1">Card Image<span id="bcc-new-image-sort" class="mdc-theme--secondary"></span></h1>
+    <div class="mdc-form-field">
+      <button type="button" id="bcc-new-image" class="mdc-button mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Select Image</button>
+      <label id="bcc-new-image-label" class="path-box" style="display: none;"></label>
+    </div>
+    <br>
+    <div class="mdc-form-field">
+      <div class="mdc-checkbox">
+        <input type="checkbox" class="mdc-checkbox__native-control" id="bcc-new-special" />
+        <div class="mdc-checkbox__background">
+          <svg class="mdc-checkbox__checkmark" viewbox="0 0 24 24">
+            <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
+          </svg>
+          <div class="mdc-checkbox__mixedmark"></div>
+        </div>
+      </div>
+      <label for="bcc-new-special">This is a special card (white background, black text)</label>
+    </div>
+    <br>
+
+    <hr>
+    <div style="display: flex;">
+      <button type="button" class="mdc-button mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" id="bcc-new-add" style="margin: 0 0 0 auto;" disabled>Add</button>
+    </div>
+  </div>
+</div>
+
+<div id="bcc-preview" style="width: 100vw; height: calc(100vh - 24px); z-index: 2; background-color: rgba(0, 0, 0, 0.2); position: fixed; top: 24px; display: none;">
+  <div class="mdc-elevation--z3 box">
+    <h1 class="mdc-typography--title">Preview<span id="bcc-preview-close" class="material-icons" style="cursor: pointer; float: right;">close</span></h1>
+    <hr>
+    <div role="progressbar" class="mdc-linear-progress mdc-linear-progress--indeterminate mdc-linear-progress--reversed" style="background-color: rgba(0, 0, 0, 0.2);">
+      <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
+        <span class="mdc-linear-progress__bar-inner"></span>
+      </div>
+      <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">
+        <span class="mdc-linear-progress__bar-inner"></span>
+      </div>
+    </div>
+    <img id="bcc-preview-image" />
+  </div>
+</div>
+
+<div id="bcc-ctis" style="width: 100vw; height: calc(100vh - 24px); z-index: 2; background-color: rgba(0, 0, 0, 0.2); position: fixed; top: 24px; display: none;">
+  <div class="mdc-elevation--z3 box" style="max-width: 600px;">
+    <h1 class="mdc-typography--title">Edit CTIS<span id="bcc-ctis-close" class="material-icons" style="cursor: pointer; float: right;">close</span></h1>
+    <div class="mdc-text-field mdc-text-field--disabled" data-mdc-auto-init="MDCTextField">
+      <input type="text" disabled id="bcc-ctis-type" class="mdc-text-field__input">
+      <label for="bcc-ctis-type" class="mdc-text-field__label mdc-text-field__label--float-above">Card Type</label>
+    </div><br>
+    <div class="mdc-text-field mdc-text-field--textarea mdc-text-field--disabled" data-mdc-auto-init="MDCTextField">
+      <textarea id="bcc-ctis-text" disabled rows="4" cols="80" class="mdc-text-field__input"></textarea>
+      <label for="bcc-ctis-text" class="mdc-text-field__label mdc-text-field__label--float-above">Card Text</label>
+    </div>
+    <hr>
+    <div class="mdc-text-field mdc-text-field--textarea" data-mdc-auto-init="MDCTextField">
+      <textarea id="bcc-ctis-edit" class="mdc-text-field__input" rows="10" cols="80" style="font-family: monospace;"></textarea>
+      <label for="bcc-ctis-edit" class="mdc-text-field__label">CTIS Code:</label>
+    </div>
+    <hr>
+    <div style="display: flow-root;">
+      <button type="button" id="bcc-ctis-save" class="mdc-button mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" style="float: right;">Save</button>
+    </div>
+  </div>
+</div>
+
+<div id="bcc-3" class="mdc-elevation--z3 box" style="display: none;">
+  <h1 class="mdc-typography--title">Batch Card Maker</h1>
+  <h1 class="mdc-typography--subheading2">Generating Cards...</h1>
+  <hr>
+  <div id="bcc-3-progress" role="progressbar" class="mdc-linear-progress" style="background-color: rgba(0, 0, 0, 0.2);">
+    <!-- <div class="mdc-linear-progress__buffering-dots"></div> -->
+    <div class="mdc-linear-progress__buffer mdc-theme--primary-dark-bg"></div>
+    <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
+      <span class="mdc-linear-progress__bar-inner"></span>
+    </div>
+    <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">
+      <span class="mdc-linear-progress__bar-inner"></span>
+    </div>
+  </div>
+</div>
+
+<div id="bcc-4" class="mdc-eleavtion--z3 box" style="display: none;">
+  <h1 class="mdc-typography--title">Batch Card Maker</h1>
+  <h1 class="mdc-typography--subheading2">Add CTIS behaviour</h1>
+  <hr>
+  <table style="width: 100%;">
+    <thead>
+      <th>Type</th><th>Image</th><th>CTIS</th>
+    </thead>
+    <tbody id="bcc-4-list">
+
+    </tbody>
+  </table>
+  <hr>
+  <div style="display: flex;">
+    <button type="button" class="mdc-button mdc-ripple" data-mdc-auto-init="MDCRipple" id="bcc-4-previous">Previous</button>
+    <button type="button" class="mdc-button mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" id="bcc-4-next" style="margin: 0 0 0 auto;">Next</button>
+  </div>
+</div>
+
+<div id="bcc-5" class="mdc-elevation--z3 box" style="display: none;">
+  <h1 class="mdc-typography--title">Batch Card Maker</h1>
+  <h1 class="mdc-typography--subheading2">Generating Cards...</h1>
+  <hr>
+  <div id="bcc-5-progress" role="progressbar" class="mdc-linear-progress" style="background-color: rgba(0, 0, 0, 0.2);">
+    <!-- <div class="mdc-linear-progress__buffering-dots"></div> -->
+    <div class="mdc-linear-progress__buffer mdc-theme--primary-dark-bg"></div>
+    <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
+      <span class="mdc-linear-progress__bar-inner"></span>
+    </div>
+    <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">
+      <span class="mdc-linear-progress__bar-inner"></span>
+    </div>
+  </div>
+</div>
+
+<div id="bcc-6" class="mdc-elevation--z3 box" style="display: none;">
+  <h1 class="mdc-typography--title">Batch Card Maker</h1>
+  <h1 class="mdc-typography--subheading2">Cards generated!</h1>
+  <hr>
+  <h1 class="mdc-typography--body2">Saved your cards to:</h1><br>
+  <label id="bcc-saveLoc" class="path-box"></label>
+  <button type="button" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="shell.showItemInFolder(settings('saveFolder') + '/.')">Open Folder</button>
+  <hr>
+  <div style="display: flex;">
+    <button type="button" class="mdc-button mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="swapper.swap('batch')">Create more cards</button>
+    &nbsp;
+    <button type="button" class="mdc-button mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="swapper.swap('home')">Back to Home</button>
+  </div>
+</div>
+
+<script src="./js/batch.js" charset="utf-8"></script>

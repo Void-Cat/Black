@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<div class="mdc-elevation--z3 box">
+  <h1 class="mdc-typography--title">End of tease</h1>
+  <p>
+    <span class="exit-user" style="color: red; display: none;">So you decided to quit the tease on your own?<br></span>
+    <span class="exit-end" style="color: lime; display: none;">You finished a complete tease!<br></span>
+    You've teased <span class="tease-total"></span> times now.<br>
+    Let's see how you did.<br>
+    You came <span class="cum-total"></span> times.<br>
+    <span class="cum-full"></span> of which were full orgasms and you ruined <span class="cum-ruin"></span> of them.<br>
+    You edged <span class="cum-edge"></span> times.<br>
+    <span class="cum-nonAllowed-line" style="color: red; display: none;">I see that you came <span class="cum-nonAllowed"></span> without permission! Bad boy.</span>
+    <span class="cum-allowed-line" style="color: lime; display: none;">And you didn't cum without permission.</span>
+  </p>
+  <br>
+  <div id="punishment-notset" style="display: none;">
+    <span>Your punishment card folder hasn't been set.</span>
+    <button id="punishmentSetButton" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
+  </div>
+  <div id="punishment-group" style="display: none;">
+    <span>You still have <span class="punishment"></span> punishments to draw.</span>
+    &nbsp;&nbsp;
+    <button id="punishmentButton" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Draw a punishment card</button>
+    <br>
+    <span id="noPunishments" style="color: red; display: none;">No punishments were found!</span>
+    <br>
+    <div id="punishmentDisplay" style="background-color: rgba(0, 0, 0, 0.2); padding: 5px; overflow-x: auto; display: flex;"></div>
+    <br>
+  </div>
+  <br>
+  <div>
+    <button type="button" id="homs-btn" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="swapper.swap('home')">Return Home</button>
+    &nbsp;&nbsp;
+    <button type="button" id="rete-btn" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="swapper.swap('setup')">Go to Tease Dashboard</button>
+    <button type="button" id="repo-btn" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="generateReport()" style="float: right;">Generate Tease Report</button>
+  </div>
+</div>
+
+<script src="./js/teaseend.js" charset="utf-8"></script>
