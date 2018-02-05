@@ -1,6 +1,6 @@
 {
   "name": "black",
-  "productName": "black",
+  "productName": "Black",
   "version": "1.6.0",
   "description": "A digital master/mistress",
   "main": "src/index.js",
@@ -32,17 +32,18 @@
         "packageManager": "npm"
       },
       "electronWinstallerConfig": {
-        "name": "black"
+        "name": "black",
+        "icon": "./src/icons/win/black-icon.ico"
       },
       "electronInstallerDebian": {},
       "electronInstallerRedhat": {},
       "github_repository": {
         "owner": "Void-Cat",
-        "name": "black"
+        "name": "Black"
       },
       "windowsStoreConfig": {
-        "packageName": "",
-        "name": "black"
+        "packageName": "Black",
+        "name": "Black"
       }
     }
   },
