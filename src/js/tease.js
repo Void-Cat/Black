@@ -420,8 +420,8 @@ function TeaseSlave (options) {
       if (this.slideControl.core.current !== slide) this.slideControl.core.current = slide
       clearTimeout(this.slideControl.core.backup)
       if (slide >= this.fileList.length) this.exit('end')
-      $('#mainImage').attr('src', this.fileList[slide])
-      $('#preload').attr('src', this.fileList[slide + 1])
+      $('#mainImage').attr('src', 'atom:///' + this.fileList[slide])
+      $('#preload').attr('src', 'atom:///' + this.fileList[slide + 1])
       clearInterval(this.slideControl.interval.ticker)
       if (this.slideControl.core.strokes > 0) this.slideControl.interval.ticker = setInterval(this.slideControl.ticker, Math.floor(this.slideControl.core.time / this.slideControl.core.strokes))
       this.slideControl.core.run = 0

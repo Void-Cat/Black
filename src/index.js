@@ -1,6 +1,7 @@
-import { app, BrowserWindow, globalShortcut } from 'electron'
+import { app, BrowserWindow, protocol, globalShortcut } from 'electron'
 import Store from 'electron-store'
 
+const path = require('path')
 let storage = new Store()
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -51,6 +52,13 @@ const createWindow = () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
+  protocol.registerFileProtocol('atom', (request, callback) => {
+    let url = path.normalize(request.url.substring(8))
+    callback({path: url})
+  }, (err) => {
+    if (err) console.error(err)
+  })
+
   createWindow()
 
   // Register globalShortcut for reload and devTools
