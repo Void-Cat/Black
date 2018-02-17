@@ -385,7 +385,7 @@ function TeaseSlave (options) {
             this.slideControl.core.ticker.robin.push(this.slideControl.core.ticker.robin.shift())
           }
         },
-        robin: [new Audio(this.teaseParams.timing.tickersrc || '../audio/ticker.ogg')],
+        robin: [new Audio(this.teaseParams.timing.tickersrc || `atom:///${__dirname}/../audio/ticker.ogg`)],
         init: _ => {
           for (var n = 0; n < 5; n++) {
             this.slideControl.core.ticker.robin.push(this.slideControl.core.ticker.robin[0].cloneNode())
@@ -398,8 +398,8 @@ function TeaseSlave (options) {
         }
       },
       announce: {
-        picture: new Audio('../audio/slidechange.ogg'),
-        card: new Audio('../audio/card.ogg')
+        picture: new Audio(`atom:///${__dirname}/../audio/slidechange.ogg`),
+        card: new Audio(`atom:///${__dirname}/../audio/card.ogg`)
       }
     },
     next: _ => {
@@ -719,7 +719,7 @@ function TeaseSlave (options) {
       })
     }
     this.slideControl.core.ticker.init()
-    this.slideControl.core.ticker.muted = (this.teaseParams.timing.ticker !== false)
+    this.slideControl.core.ticker.muted = !this.teaseParams.timing.ticker
     this.ctisCards.forEach((ccard) => {
       ccard.init()
     })

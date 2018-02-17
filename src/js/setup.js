@@ -121,7 +121,7 @@ if (storage.get('teaseParams.loadSetup')) {
   if (storage.get('teaseParams.timing.announce') === 'picture' || storage.get('teaseParams.timing.announce') === 'both') {
     $('#announce-picture').prop('checked', true)
   }
-  if (storage.get('teaseParams.timing.tickersrc') === undefined) storage.set('teaseParams.timing.tickersrc', '../audio/ticker.ogg')
+  if (storage.get('teaseParams.timing.tickersrc') === undefined) storage.set('teaseParams.timing.tickersrc', `atom:///${__dirname}/../audio/ticker.ogg`)
   tickerSelect.selectedIndex = storage.get('teaseParams.timing.tickersrc').indexOf('ticker.ogg') >= 0 ? 0 : 1
   if (storage.get('teaseParams.order') === undefined) storage.set('teaseParams.order', {enabled: false, type: 'filename', not: 'random'})
   $('#sort-do').prop('checked', storage.get('teaseParams.order.enabled') || false)
@@ -206,9 +206,9 @@ $('#announce-card, #announce-picture').click(_ => {
 
 tickerSelect.listen('MDCSelect:change', _ => {
   if (tickerSelect.selectedIndex === 1) {
-    storage.set('teaseParams.timing.tickersrc', '../audio/metronome.ogg')
+    storage.set('teaseParams.timing.tickersrc', `atom:///${__dirname}/audio/metronome.ogg`)
   } else {
-    storage.set('teaseParams.timing.tickersrc', '../audio/ticker.ogg')
+    storage.set('teaseParams.timing.tickersrc', `atom:///${__dirname}/audio/ticker.ogg`)
   }
 })
 
