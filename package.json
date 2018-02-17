@@ -29,7 +29,8 @@
         ]
       },
       "electronPackagerConfig": {
-        "packageManager": "npm"
+        "packageManager": "npm",
+        "icon": "./src/icons/win/black-icon.ico"
       },
       "electronWinstallerConfig": {
         "name": "black",
