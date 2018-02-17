@@ -12,7 +12,7 @@
     "lint": "eslint src --color"
   },
   "keywords": [],
-  "author": "Simon",
+  "author": "Catworks",
   "license": "GPL-3.0",
   "config": {
     "forge": {
