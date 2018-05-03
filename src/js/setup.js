@@ -279,11 +279,6 @@ function clean (arr, deleteValue) {
   return arr
 }
 
-const fs = require('fs')
-const url = require('url')
-const path = require('path')
-const Mousetrap = require('mousetrap')
-
 function getPictures (path, recursive) {
   recursive = recursive || false
   let rtv = []
