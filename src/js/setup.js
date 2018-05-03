@@ -331,14 +331,14 @@ function TeaseMaster (teaseParams, fileList, ctisList, icl) {
     frame: false,
     backgroundColor: '#000000'
   })
-  this.window.loadURL(`file://${__dirname}/../html/tease.html`)
+  this.window.loadURL(`file://${__dirname}/html/tease.html`)
   console.debug('<tease.js / TeaseMaster> Window URL set to:', `${__dirname}`)
   this.window.setFullScreen(true)
   this.devTools = globalShortcut.register('CommandOrControl+Shift+Y', () => {
     this.window.webContents.toggleDevTools()
   })
-  this.window.webContents.executeJavaScript('var teaseSlave = new TeaseSlave(storage.get(\'teaseslave\'))')
-  if (teaseParams.timing.ticker === undefined) teaseParams.timing.ticker = true
+  // this.window.webContents.executeJavaScript('var teaseSlave = new TeaseSlave(storage.get(\'teaseslave\'))')
+  // if (teaseParams.timing.ticker === undefined) teaseParams.timing.ticker = true
   this.window.once('ready-to-show', _ => {
     this.window.show()
   })
