@@ -7,7 +7,6 @@ import Theme from './js/catworks/themer.js'
 
 const $ = require('jquery')
 const {app, BrowserWindow, dialog, globalShortcut, shell} = require('electron').remote
-const { TeaseMaster, generateFileList, findCTIS } = require('./js/tease.js')
 const fs = require('fs')
 
 const currentVersion = app.getVersion()

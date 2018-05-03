@@ -259,6 +259,311 @@ $('#startTease').click(_ => {
   })
 })
 
+function shrink (arr) {
+  let retarr = []
+  arr.forEach((val) => {
+    if (val !== undefined) retarr.push(val)
+  })
+  return retarr
+}
+
+function clean (arr, deleteValue) {
+  let mod = 0
+  arr.forEach((val, i) => {
+    if (arr[i - mod] === deleteValue) {
+      arr.splice(i - mod, 1)
+      mod++
+    }
+  })
+  shrink(arr)
+  return arr
+}
+
+const fs = require('fs')
+const url = require('url')
+const path = require('path')
+const Mousetrap = require('mousetrap')
+
+function getPictures (path, recursive) {
+  recursive = recursive || false
+  let rtv = []
+  if (typeof path !== 'string') {
+    console.error('Path is not defined!')
+    return false
+  }
+  let files = fs.readdirSync(path)
+  if (files.length > 0) {
+    files.forEach((f) => {
+      let stat = fs.lstatSync(path + '/' + f)
+      if (stat.isDirectory() || stat.isSymbolicLink()) {
+        if (recursive && f !== 'deleted') {
+          rtv = rtv.concat(getPictures(path + '/' + f, true))
+        }
+      } else if (stat.isFile()) {
+        if (f.indexOf('.jpg') !== -1 || f.indexOf('.jpeg') !== -1 || f.indexOf('.gif') !== -1 || f.indexOf('.png') !== -1) {
+          rtv.push(path + '/' + f)
+        }
+      }
+    })
+  }
+  return rtv
+}
+
+function generateFileList (picturePath, cardPath, categories) {
+  console.debug('<tease.js / generateFileList>\nFunction called with arguments: ', {picturePath: picturePath, cardPath: cardPath, categories: categories})
+  // Setup
+  var dfd = $.Deferred()
+  var raw = {}
+  var fin = []
+  var icl = {}
+  var order = storage.get('teaseParams.order') || {enabled: false}
+
+  // Catch fail because of arguments.
+  if (typeof categories === 'undefined') {
+    dfd.reject('Not enough arguments.')
+  }
+
+  // Trim categories
+  Object.keys(categories).forEach((cat) => {
+    if (categories[cat].amount < 1) delete categories[cat]
+  })
+
+  // Read directory files
+  let pictures = getPictures(picturePath, true)
+  let cards = getPictures(cardPath, true)
+  raw.pictures = pictures
+  raw.cards = {}
+
+  let ditched = []
+  // Sort categories
+  Object.keys(categories).forEach((cat) => {
+    raw.cards[cat] = []
+    cards.forEach((c) => {
+      if (c.toLowerCase().indexOf(categories[cat].name.toLowerCase()) !== -1) {
+        raw.cards[cat].push(c)
+      }
+    })
+    // Trim categories again
+    if (raw.cards[cat].length <= 0) {
+      ditched.push(categories[cat].name)
+      delete raw.cards[cat]
+      delete categories[cat]
+    }
+  })
+  storage.set('teaseParams.ditched', ditched)
+
+  // Double check any double cards (expirimental)
+  var mfd = []
+  Object.keys(raw.cards).forEach((cat) => {
+    let catname = categories[cat].name.toLowerCase()
+    raw.cards[cat].forEach((check, i) => {
+      check = check.toLowerCase()
+      Object.keys(raw.cards).forEach((cat1) => {
+        let cat1name = categories[cat1].name.toLowerCase()
+        if (cat1 !== cat) {
+          if (check.lastIndexOf(cat1name) !== -1) {
+            if (check.indexOf('/' + cat1name + '/') !== -1) {
+              mfd.push(cat + ':::' + i)
+            } else if (check.lastIndexOf(cat1name) > check.lastIndexOf(catname)) {
+              mfd.push(cat + ':::' + i)
+            } else if (check.split(catname).length <= 2 && check.indexOf('/' + catname + '/') === -1) {
+              mfd.push(cat + ':::' + i)
+            }
+          }
+        }
+      })
+    })
+  })
+  let mft = {}
+  mfd.forEach((tp) => {
+    mft[tp.split(':::')[0]] = 0
+  })
+  mfd.forEach((td) => {
+    let tdp = td.split(':::')
+    delete raw.cards[tdp[0]][tdp[1] - mft[tdp[0]]]
+    mft[tdp[0]]++
+    raw.cards[tdp[0]] = shrink(raw.cards[tdp[0]])
+  })
+
+  // Order cards
+  let biglist = []
+  let trimBiglist = {}
+  if (order.enabled === true) {
+    console.debug('<tease.js / generateFileList>\nEntered order section.')
+    // Populate biglist
+    Object.keys(raw.cards).forEach((key) => {
+      raw.cards[key].forEach((card) => {
+        biglist.push(key + ':=:' + card)
+      })
+    })
+    Object.keys(categories).forEach((cat) => {
+      trimBiglist[cat] = categories[cat].amount
+    })
+    // Sort by filename
+    if (order.type === 'filename') {
+      let dl = []
+      biglist.forEach((name, i) => {
+        let na = []
+        name.split('.').forEach((f) => { if (!isNaN(parseInt(f, 10))) na.push(parseInt(f, 10)) })
+        if (na.length > 1) na = na[na.length - 1]
+        if (na.length <= 0 || na < 0) dl.push(i)
+      })
+      dl.sort().reverse()
+      dl.forEach((i) => {
+        delete biglist[i]
+      })
+      console.debug('<tease.js / generateFileList>\n' + dl.length, 'cards were found unsortable:\n', dl)
+      biglist.sort((a, b) => {
+        let aa = []
+        let ba = []
+        a.split('.').forEach((f) => { if (!isNaN(parseInt(f, 10))) aa.push(parseInt(f, 10)) })
+        b.split('.').forEach((f) => { if (!isNaN(parseInt(f, 10))) ba.push(parseInt(f, 10)) })
+        aa = aa[aa.length - 1]
+        ba = ba[ba.length - 1]
+        return aa - ba
+      })
+      if (order.not === 'random') {
+        dl.forEach((d) => {
+          biglist.splice(Math.floor(Math.random() * biglist.length), 0, d)
+        })
+      } else if (order.not === 'end') {
+        let lower = biglist.length - 1
+        dl.forEach((d) => {
+          let space = biglist.length - lower
+          biglist.splice(lower + Math.floor(Math.random() * space + 1), 0, d)
+        })
+      }
+    } else if (order.type === 'property') {
+      // Sort by ORDER property
+      console.debug('<tease.js / generateFileList>\nEntered order-property section.')
+      let dl = []
+      let sort = {}
+      biglist.forEach((card, i) => {
+        let path = card.split(':=:')[1].split('.').splice(0, card.split(':=:')[1].split('.').length - 1).concat('ctis').join('.')
+        console.debug('<tease.js / generateFileList>\nChecking order info on path', path)
+        if (fs.existsSync(path)) {
+          try {
+            let json = JSON.parse(fs.readFileSync(path), {encoding: 'utf8'})
+            if (isNaN(json.order)) {
+              dl.push(card)
+            } else {
+              if (sort[json.order] === undefined) sort[json.order] = []
+              sort[json.order].push(card)
+            }
+          } catch (e) {
+            console.warn('We had a run in with a faulty .ctis card:\n', path, '\nThe complete error is as follows:\n', e)
+          }
+        }
+      })
+      biglist = []
+      Object.keys(sort).forEach((key) => {
+        while (sort[key].length > 0) {
+          let pick = Math.floor(Math.random() * sort[key].length)
+          console.debug('<tease.js / TeaseParams>\nPushing card ' + sort[key][pick] + ' to biglist.')
+          biglist.push(sort[key][pick])
+          sort[key].splice(pick, 1)
+        }
+      })
+      if (order.not === 'random') {
+        dl.forEach((d) => {
+          biglist.splice(Math.floor(Math.random() * biglist.length), 0, d)
+        })
+      } else if (order.not === 'end') {
+        let lower = biglist.length - 1
+        dl.forEach((d) => {
+          let space = biglist.length - lower
+          biglist.splice(lower + Math.floor(Math.random() * space + 1), 0, d)
+        })
+      }
+    }
+    // Trim biglist
+    console.debug('<tease.js / generateFileList>\nGoing into biglist trimming with:', {trimBiglist: trimBiglist})
+    let ga = {}
+    Object.keys(trimBiglist).forEach((cat) => {
+      let amount = trimBiglist[cat]
+      let trim = []
+      biglist.forEach((card, i) => {
+        let cardcat = card.split(':=:')[0]
+        if (cardcat === cat) {
+          if (amount > 0) {
+            amount--
+          } else {
+            trim.push(i)
+            amount--
+          }
+        }
+      })
+      ga[cat] = amount
+      trim.sort().reverse()
+      trim.forEach((i) => {
+        biglist.splice(i, 1)
+      })
+    })
+    console.debug('<tease.js / generateFileList>\nCards sorted and trimmed.\n', ga)
+  }
+
+  // Get the ratio of pictures to cards
+  let pictureAmount = storage.get('teaseParams.pictureAmount')
+  let gameCards = 1
+  let eM = {}
+  Object.keys(categories).forEach((gcKey) => {
+    gameCards += categories[gcKey].amount
+    eM[gcKey] = categories[gcKey].amount
+  })
+  let ratio = (pictureAmount + gameCards) / gameCards
+  ratio = [ratio, ratio]
+  gameCards--
+  var oL = {}
+  Object.keys(raw.cards).forEach((key) => {
+    oL[key] = raw.cards[key].length
+  })
+  oL['pictures'] = raw.pictures.length
+
+  // Get Schwifty
+  console.debug('<tease.js / generateFileList> Going into swifty mode with the following data:', {eM: eM, raw: raw, ratio: ratio, gameCards: gameCards, oL: oL, icl: icl, biglist: biglist})
+  for (var n = 0; n < (pictureAmount + gameCards); n++) {
+    if (n + 1 > ratio[0] && n !== 0 && Object.keys(raw.cards).length > 0) {
+      ratio[0] += ratio[1]
+      var pcat
+      if (order.enabled !== true) {
+        pcat = Object.keys(raw.cards)[Math.floor(Math.random() * Object.keys(raw.cards).length)]
+        // console.debug('Selected categorie', pcat, 'is:', categories[pcat])
+        if (oL[pcat] < categories[pcat].amount) {
+          fin.push(raw.cards[pcat][Math.floor(Math.random() * raw.cards[pcat].length)])
+        } else {
+          fin.push(raw.cards[pcat].splice(Math.floor(Math.random() * raw.cards[pcat].length), 1)[0])
+        }
+        eM[pcat]--
+        if (eM[pcat] === 0) {
+          delete raw.cards[pcat]
+        }
+      } else {
+        let num = Math.floor((ratio[0] - ratio[1]) / ratio[1]) - 1
+        let card = biglist[num]
+        console.debug('Currently at num ' + num + ' (' + ratio[0] + '). We got this card here ' + biglist[num])
+        card = card.split(':=:')
+        pcat = card[0]
+        fin.push(card[1])
+      }
+      icl[fin.length - 1] = categories[pcat].name
+    } else {
+      if (oL['pictures'] < pictureAmount) {
+        fin.push(raw.pictures[Math.floor(Math.random() * raw.pictures.length)])
+      } else {
+        fin.push(raw.pictures.splice(Math.floor(Math.random() * raw.pictures.length), 1)[0])
+      }
+    }
+  }
+  // console.debug('<tease.js / generateFileList>\nCould not fill all categories:', eM)
+  fin = clean(fin, undefined)
+  fin.forEach((r, i) => {
+    // console.debug('<tease.js / generateFileList> Fin replace with r:', r, 'and i:', i)
+    if (r !== undefined) fin[i] = r.replace(/\\/g, '/')
+  })
+  dfd.resolve([fin, icl])
+  return dfd.promise()
+}
+
 $(document).ready(_ => {
   mdc.autoInit()
   updateSuggestion('all')
