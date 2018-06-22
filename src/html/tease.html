@@ -3,10 +3,67 @@
   <head>
     <meta charset="utf-8">
     <title>Black - Tease</title>
+    <style>
+      #leftBar {
+        left: 0;
+      }
+
+      #rightBar {
+        right: 0;
+      }
+
+      .sidebar {
+        bottom: 0;
+        top: 0;
+        width: 15%;
+        min-width: 100px;
+      }
+
+      #topBar {
+        top: 0;
+        height: 5%;
+        max-height: 5%;
+      }
+    </style>
   </head>
-  <body>
+  <body class="mdc-typography">
+
+    <main id="preTease">
+      <h1 class="mdc-typograpy--title">Preparing the tease...</h1>
+    </main>
+
+    <main id="tease" style="display: none;">
+      <div id="leftBar" class="sidebar">
+
+      </div>
+
+      <div id="topBar">
+
+      </div>
+
+      <img id="imageShown" src="" />
+
+      <div id="rightBar" class="sidebar">
+
+
+      </div>
+    </main>
+
+    <footer id="toolbar" style="display: none;">
+
+    </footer>
+
+    <img id="imageBuffer" src="" style="display: none;" />
 
     <!-- Script -->
-    <script src="../ts/tease.ts" charset="utf-8"></script>
+    <event-catcher style="display: none;"></event-catcher>
+    <script>
+      const $ = require('jquery')
+      const mdc = require('material-components-web')
+
+      $(document).ready(() => mdc.autoInit())
+    </script>
+    <script src="../ts/tease/tease.ts" charset="utf-8"></script>
+    <script src="../ts/tease/teasegen.ts" charset="utf-8"></script>
   </body>
 </html>
