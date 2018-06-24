@@ -9,11 +9,11 @@
   </p>
 </div>
 <div class="mdc-elevation--z3 box">
-  <h1 class="mdc-typography--subheading1">Quick start</h1>
+  <h1 class="mdc-typography--subtitle1">Quick start</h1>
   <button class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="swapper.swap('setup')">Go to Tease Dashboard</button>
 </div>
 <div class="mdc-elevation--z3 box">
-  <h1 class="mdc-typography--subheading1">About You</h1>
+  <h1 class="mdc-typography--subtitle1">About You</h1>
   <div id="aboutusr-fail" style="display: none;">
     <p>It seems you have yet to create a profile. Please do so here:</p>
     <button class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="swapper.swap('profile')">Go to Profile Settings</button>
@@ -25,7 +25,7 @@
 </div>
 <div id="version" class="mdc-elevation--z3 box">
   <div id="version-checking">
-    <h1 class="mdc-typography--subheading2">Checking for newer versions...</h1>
+    <h1 class="mdc-typography--subtitle2">Checking for newer versions...</h1>
     <div role="progressbar" class="mdc-linear-progress mdc-linear-progress--indeterminate" style="background-color: rgba(0, 0, 0, 0.2); margin-bottom: 3px;">
       <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
         <span class="mdc-linear-progress__bar-inner"></span>
@@ -36,16 +36,16 @@
     </div>
   </div>
   <div id="version-current" style="display: none;">
-    <h1 class="mdc-typography--subheading1">Your version of Black is up to date.</h1>
+    <h1 class="mdc-typography--subtitle1">Your version of Black is up to date.</h1>
     <p class="mdc-typography--body1">Your version - version <span class="lvn"></span> - is the latest version.</p>
   </div>
   <div id="version-new" style="display: none;">
-    <h1 class="mdc-typography--subheading1">You're rocking an old version of Black</h1>
+    <h1 class="mdc-typography--subtitle1">You're rocking an old version of Black</h1>
     <p class="mdc-typography--body1">A newer version - version <span class="lvn"></span> - is available here:</p>
     <button id="versionPage" type="button" class="mdc-button mdc-button--raised mdc-button--primary" onclick="shell.openExternal('https://github.com/Void-Cat/Black/releases/latest')">GitHub</button>
   </div>
   <div id="version-fail" style="display: none;">
-    <h1 class="mdc-typography--subheading1">Checking for a new version failed.</h1>
+    <h1 class="mdc-typography--subtitle1">Checking for a new version failed.</h1>
     <p class="mdc-typography--body1">Check your internet connection and press the button below to retry:</p>
     <button type="button" class="mdc-button mdc-button--raised mdc-button--accent" onclick="swapper.reload()">Retry</button>
   </div>

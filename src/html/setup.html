@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<h1 class="mdc-typography--heading2">Tease Setup</h1>
+<h1 class="mdc-typography--headline5">Tease Setup</h1>
 
 <!-- Save setup -->
 <div class="mdc-elevation--z3 box">
-    <h1 class="mdc-typography--subheading1">Save Setup</h1>
+    <h1 class="mdc-typography--subtitle1">Save Setup</h1>
     <div class="mdc-form-field">
         <div class="mdc-checkbox">
             <input type="checkbox" id="saveSetup" class="mdc-checkbox__native-control">
@@ -20,7 +20,7 @@
 
 <!-- Picture setup -->
 <div class="mdc-elevation--z3 box">
-    <h1 class="mdc-typography--subheading1">Pictures</h1>
+    <h1 class="mdc-typography--subtitle1">Pictures</h1>
     <div>
         <span class="mdc-typography--body">Select a pictures folder:</span><br>
         <button id="browsePicturesBtn" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
@@ -28,22 +28,23 @@
     </div>
     <br>
 
-    <div class="mdc-text-field" data-mdc-auto-init="MDCTextfield" style="width: 50%;">
+    <div class="mdc-text-field">
         <input type="number" min="0" class="mdc-text-field__input" id="pictureAmount">
         <label for="pictureAmount" class="mdc-floating-label">Amount of pictures</label>
+        <div class="mdc-line-ripple"></div>
     </div>
 </div>
 
 <!-- Ticker Setup -->
 <div class="mdc-elevation--z3 box">
-    <h1 class="mdc-typography--subheading1">Timing</h1>
+    <h1 class="mdc-typography--subtitle1">Timing</h1>
     <div class="mdc-text-field" data-mdc-auto-init="MDCTextField" style="margin-top: 0; width: 50%;">
         <input type="number" min="0" id="slideTime" class="mdc-text-field__input" />
         <label for="slideTime" class="mdc-floating-label">Seconds per slide</label>
     </div>
     <br>
 
-    <h1 class="mdc-typography--subheading1">Ticker</h1>
+    <h1 class="mdc-typography--subtitle1">Ticker</h1>
     <div class="mdc-form-field">
         <div class="mdc-checkbox">
             <input type="checkbox" id="enableTicker" class="mdc-checkbox__native-control" checked>
@@ -94,8 +95,8 @@
 </div>
 
 <div class="mdc-elevation--z3 box">
-    <h1 class="mdc-typography--subheading1">Cards</h1>
-    <div class="mdc-select">
+    <h1 class="mdc-typography--subtitle1">Cards</h1>
+    <div class="mdc-select" id="cardModeSelectionContainer">
         <select class="mdc-select__native-control" id="cardModeSelection">
             <option value="percentage">Percentages</option>
             <option value="manual">Manual</option>

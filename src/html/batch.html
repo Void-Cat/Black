@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <div id="bcc-0" class="mdc-elevation--z3 box">
-  <h1 class="mdc-typography--title">Batch Card Maker</h1>
-  <h1 class="mdc-typography--subheading2">Create multiple cards at once.</h1>
+  <h1 class="mdc-typography--headline5">Batch Card Maker</h1>
+  <h1 class="mdc-typography--subtitle2">Create multiple cards at once.</h1>
   <div class="mdc-form-field">
     <div class="mdc-checkbox">
       <input id="bcc-save" type="checkbox" class="mdc-checkbox__native-control" />
@@ -16,7 +16,7 @@
   </div>
   <hr>
 
-  <h1 class="mdc-typography--subheading1">Card Type</h1>
+  <h1 class="mdc-typography--subtitle1">Card Type</h1>
   <div class="mdc-form-field">
     <div class="mdc-radio">
       <input class="mdc-radio__native-control" type="radio" id="bcc-type-1" name="bcc-type" />
@@ -53,7 +53,7 @@
   </div>
   <br>
 
-  <h1 class="mdc-typography--subheading1">Image Folder</h1>
+  <h1 class="mdc-typography--subtitle1">Image Folder</h1>
   <div class="mdc-form-field">
     <button type="button" class="mdc-button mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" id="bcc-image-folder">Select Folder</button>
     <label id="bcc-image-folder-label" class="path-box" style="display: none;"></label>
@@ -70,7 +70,7 @@
     </div>
     <label for="bcc-image-folder-recursive">Recurse into image folder</label>
   </div>
-  <h1 class="mdc-typography--subheading1">Image Selection</h1>
+  <h1 class="mdc-typography--subtitle1">Image Selection</h1>
   <div class="mdc-form-field">
     <div class="mdc-radio">
       <input class="mdc-radio__native-control" type="radio" id="bcc-image-select-order" name="bcc-image-select" />
@@ -106,7 +106,7 @@
   <br>
   <br>
 
-  <h1 class="mdc-typography--subheading1">Save Location</h1>
+  <h1 class="mdc-typography--subtitle1">Save Location</h1>
   <div class="mdc-form-field">
     <button type="button" class="mdc-button mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" id="bcc-save-folder">Select Folder</button>
     <label id="bcc-save-folder-label" class="path-box" style="display: none;"></label>
@@ -134,8 +134,8 @@
 </div>
 
 <div id="bcc-1" class="mdc-elevation--z3 box" style="display: none;">
-  <h1 class="mdc-typography--title">Batch Card Maker</h1>
-  <h1 class="mdc-typography--subheading2">General Card Information</h1>
+  <h1 class="mdc-typography--headline5">Batch Card Maker</h1>
+  <h1 class="mdc-typography--subtitle2">General Card Information</h1>
   <hr>
   <div class="mdc-text-field" data-mdc-auto-init="MDCTextField">
     <input type="text" id="bcc-author" class="mdc-text-field__input" />
@@ -147,7 +147,7 @@
     <label for="bcc-deck-name" class="mdc-text-field__label">Deck Name</label>
   </div>
   <br>
-  <h1 class="mdc-typography--subheading1">Deck Image</h1>
+  <h1 class="mdc-typography--subtitle1">Deck Image</h1>
   <div class="mdc-form-field">
     <button type="button" id="bcc-deck-image" class="mdc-button mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Select Image</button>
     <label id="bcc-deck-image-label" class="path-box" style="display: none;"></label>
@@ -161,8 +161,8 @@
 </div>
 
 <div id="bcc-2" class="mdc-elevation--z3 box" style="display: none;">
-  <h1 class="mdc-typography--title">Batch Card Maker</h1>
-  <h1 class="mdc-typography--subheading2">Card Overview</h1>
+  <h1 class="mdc-typography--headline5">Batch Card Maker</h1>
+  <h1 class="mdc-typography--subtitle2">Card Overview</h1>
   <hr>
   <table style="width: 100%;">
     <thead>
@@ -181,7 +181,7 @@
   </style>
   <div id="bcc-imageLoad">
     <br>
-    <p class="mdc-typography--subheading1">Loading images, please wait...</p>
+    <p class="mdc-typography--subtitle1">Loading images, please wait...</p>
     <div role="progressbar" class="mdc-linear-progress mdc-linear-progress--indeterminate mdc-linear-progress--reversed" style="background-color: rgba(0, 0, 0, 0.2);">
       <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
         <span class="mdc-linear-progress__bar-inner"></span>
@@ -205,7 +205,7 @@
 
 <div id="bcc-new" style="width: 100vw; height: calc(100vh - 24px); z-index: 2; background-color: rgba(0, 0, 0, 0.2); position: fixed; top: 24px; display: none;">
   <div class="mdc-elevation--z3 box" style="max-width: 600px;">
-    <h1 class="mdc-typography--subheading2">New Card<span id="bcc-new-cancel" class="material-icons" style="cursor: pointer; float: right;">close</span></h1>
+    <h1 class="mdc-typography--subtitle2">New Card<span id="bcc-new-cancel" class="material-icons" style="cursor: pointer; float: right;">close</span></h1>
     <hr>
     <div class="mdc-text-field" data-mdc-auto-init="MDCTextField">
       <input type="text" id="bcc-new-type" class="mdc-text-field__input" />
@@ -236,7 +236,7 @@
       </div>
     </div>
     <br>
-    <h1 class="mdc-typography--subheading1">Card Image<span id="bcc-new-image-sort" class="mdc-theme--secondary"></span></h1>
+    <h1 class="mdc-typography--subtitle1">Card Image<span id="bcc-new-image-sort" class="mdc-theme--secondary"></span></h1>
     <div class="mdc-form-field">
       <button type="button" id="bcc-new-image" class="mdc-button mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Select Image</button>
       <label id="bcc-new-image-label" class="path-box" style="display: none;"></label>
@@ -265,7 +265,7 @@
 
 <div id="bcc-preview" style="width: 100vw; height: calc(100vh - 24px); z-index: 2; background-color: rgba(0, 0, 0, 0.2); position: fixed; top: 24px; display: none;">
   <div class="mdc-elevation--z3 box">
-    <h1 class="mdc-typography--title">Preview<span id="bcc-preview-close" class="material-icons" style="cursor: pointer; float: right;">close</span></h1>
+    <h1 class="mdc-typography--headline5">Preview<span id="bcc-preview-close" class="material-icons" style="cursor: pointer; float: right;">close</span></h1>
     <hr>
     <div role="progressbar" class="mdc-linear-progress mdc-linear-progress--indeterminate mdc-linear-progress--reversed" style="background-color: rgba(0, 0, 0, 0.2);">
       <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
@@ -281,7 +281,7 @@
 
 <div id="bcc-ctis" style="width: 100vw; height: calc(100vh - 24px); z-index: 2; background-color: rgba(0, 0, 0, 0.2); position: fixed; top: 24px; display: none;">
   <div class="mdc-elevation--z3 box" style="max-width: 600px;">
-    <h1 class="mdc-typography--title">Edit CTIS<span id="bcc-ctis-close" class="material-icons" style="cursor: pointer; float: right;">close</span></h1>
+    <h1 class="mdc-typography--headline5">Edit CTIS<span id="bcc-ctis-close" class="material-icons" style="cursor: pointer; float: right;">close</span></h1>
     <div class="mdc-text-field mdc-text-field--disabled" data-mdc-auto-init="MDCTextField">
       <input type="text" disabled id="bcc-ctis-type" class="mdc-text-field__input">
       <label for="bcc-ctis-type" class="mdc-text-field__label mdc-text-field__label--float-above">Card Type</label>
@@ -303,8 +303,8 @@
 </div>
 
 <div id="bcc-3" class="mdc-elevation--z3 box" style="display: none;">
-  <h1 class="mdc-typography--title">Batch Card Maker</h1>
-  <h1 class="mdc-typography--subheading2">Generating Cards...</h1>
+  <h1 class="mdc-typography--headline5">Batch Card Maker</h1>
+  <h1 class="mdc-typography--subtitle2">Generating Cards...</h1>
   <hr>
   <div id="bcc-3-progress" role="progressbar" class="mdc-linear-progress" style="background-color: rgba(0, 0, 0, 0.2);">
     <!-- <div class="mdc-linear-progress__buffering-dots"></div> -->
@@ -319,8 +319,8 @@
 </div>
 
 <div id="bcc-4" class="mdc-eleavtion--z3 box" style="display: none;">
-  <h1 class="mdc-typography--title">Batch Card Maker</h1>
-  <h1 class="mdc-typography--subheading2">Add CTIS behaviour</h1>
+  <h1 class="mdc-typography--headline5">Batch Card Maker</h1>
+  <h1 class="mdc-typography--subtitle2">Add CTIS behaviour</h1>
   <hr>
   <table style="width: 100%;">
     <thead>
@@ -338,8 +338,8 @@
 </div>
 
 <div id="bcc-5" class="mdc-elevation--z3 box" style="display: none;">
-  <h1 class="mdc-typography--title">Batch Card Maker</h1>
-  <h1 class="mdc-typography--subheading2">Generating Cards...</h1>
+  <h1 class="mdc-typography--headline5">Batch Card Maker</h1>
+  <h1 class="mdc-typography--subtitle2">Generating Cards...</h1>
   <hr>
   <div id="bcc-5-progress" role="progressbar" class="mdc-linear-progress" style="background-color: rgba(0, 0, 0, 0.2);">
     <!-- <div class="mdc-linear-progress__buffering-dots"></div> -->
@@ -354,8 +354,8 @@
 </div>
 
 <div id="bcc-6" class="mdc-elevation--z3 box" style="display: none;">
-  <h1 class="mdc-typography--title">Batch Card Maker</h1>
-  <h1 class="mdc-typography--subheading2">Cards generated!</h1>
+  <h1 class="mdc-typography--headline5">Batch Card Maker</h1>
+  <h1 class="mdc-typography--subtitle2">Cards generated!</h1>
   <hr>
   <h1 class="mdc-typography--body2">Saved your cards to:</h1><br>
   <label id="bcc-saveLoc" class="path-box"></label>
