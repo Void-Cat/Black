@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<h1 class="mdc-typography--headline5">Tease Setup</h1>
+<h1 class="mdc-typography--headline5 box" style="background-color: transparent;">Tease Setup</h1>
 
 <!-- Save setup -->
 <div class="mdc-elevation--z3 box">
@@ -19,12 +19,12 @@
 </div>
 
 <!-- Picture setup -->
-<div class="mdc-elevation--z3 box">
+<div class="mdc-elevation--z3 box" id="pictureSetup">
     <h1 class="mdc-typography--subtitle1">Pictures</h1>
     <div>
-        <span class="mdc-typography--body">Select a pictures folder:</span><br>
-        <button id="browsePicturesBtn" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
-        <label id="browsePicturesLabel" class="box" style="margin-left: 5px; background-color: rgba(0, 0, 0, 0.2); border-radius: 5px; display: none;"></label>
+        <span class="mdc-typography--body1">Select a pictures folder:</span><br>
+        <button id="selectImageFolder" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
+        <label id="selectImageFolderLabel" class="box" style="margin-left: 5px; background-color: rgba(0, 0, 0, 0.2); border-radius: 5px; display: none;"></label>
     </div>
     <br>
 
@@ -38,8 +38,8 @@
 <!-- Ticker Setup -->
 <div class="mdc-elevation--z3 box">
     <h1 class="mdc-typography--subtitle1">Timing</h1>
-    <div class="mdc-text-field" data-mdc-auto-init="MDCTextField" style="margin-top: 0; width: 50%;">
-        <input type="number" min="0" id="slideTime" class="mdc-text-field__input" />
+    <div class="mdc-text-field">
+        <input type="number" min="0" value="10" id="slideTime" class="mdc-text-field__input" />
         <label for="slideTime" class="mdc-floating-label">Seconds per slide</label>
     </div>
     <br>
@@ -59,45 +59,50 @@
     </div>
     <br>
     <div class="mdc-form-field">
-        <label for="ticker-sound">Ticker Sound&nbsp;&nbsp;</label>
-        <div class="mdc-select" id="ticker-sound" role="listbox">
-            <div class="mdc-select__surface" tabindex="0">
-                <div class="mdc-select__label mdc-select__label--float-above">Ticker Sound</div>
-                <div class="mdc-select__selected-text"></div>
-                <div class="mdc-select__bottom-line"></div>
-            </div>
-            <div class="mdc-simple-menu mdc-select__menu">
-                <ul class="mdc-list mdc-simple-menu__items">
-                    <li class="mdc-list-item" role="option" aria-selected id="ticker-default" tabindex="0">Default</li>
-                    <li class="mdc-list-item" role="option" id="ticker-metronome" tabindex="0">Metronome</li>
-                </ul>
-            </div>
+        <div class="mdc-select" id="tickerSoundContainer">
+            <select class="mdc-select__native-control" id="tickerSound">
+                <option value="default" selected>Default</option>
+                <option value="metronome">Metronome</option>
+            </select>
+            <label for="tickerSound" class="mdc-floating-label">Ticker Sound</label>
+            <div class="mdc-line-ripple"></div>
         </div>
     </div>
     <br><br>
     <div class="mdc-form-field">
-        <label for="announce-card">Announce card&nbsp;&nbsp;</label>
+        <label for="announceCard">Announce card&nbsp;&nbsp;</label>
         <div class="mdc-switch">
-            <input type="checkbox" id="announce-card" class="mdc-switch__native-control" />
+            <input type="checkbox" id="announceCard" class="mdc-switch__native-control" />
             <div class="mdc-switch__background">
                 <div class="mdc-switch__knob"></div>
             </div>
         </div>
         &nbsp;&nbsp;&nbsp;
-        <label for="announce-picture">Announce picture&nbsp;&nbsp;</label>
+        <label for="announceImage">Announce picture&nbsp;&nbsp;</label>
         <div class="mdc-switch">
-            <input type="checkbox" id="announce-picture" class="mdc-switch__native-control" />
+            <input type="checkbox" id="announceImage" class="mdc-switch__native-control" />
             <div class="mdc-switch__background">
                 <div class="mdc-switch__knob"></div>
             </div>
         </div>
     </div>
+    <br>
 </div>
 
+<!-- Card Mode/Folder Selection -->
 <div class="mdc-elevation--z3 box">
     <h1 class="mdc-typography--subtitle1">Cards</h1>
+
+    <div>
+        <span class="mdc-typography--body1">Select a cards folder:</span><br>
+        <button id="selectCardFolder" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
+        <label id="selectCardFolderLabel" class="box" style="margin-left: 5px; background-color: rgba(0, 0, 0, 0.2); border-radius: 5px; display: none;"></label>
+    </div>
+    <br><br>
+
     <div class="mdc-select" id="cardModeSelectionContainer">
         <select class="mdc-select__native-control" id="cardModeSelection">
+            <option value="none" disabled selected></option>
             <option value="percentage">Percentages</option>
             <option value="manual">Manual</option>
             <option value="premade">Pre-made Deck</option>
@@ -105,18 +110,87 @@
         <label for="card-mode" class="mdc-floating-label">Pick a card mode</label>
         <div class="mdc-line-ripple"></div>
     </div>
+    <br><hr>
+
+    <!-- Card Selection -->
+    <div id="cardMode">
+        <div id="cardMode-percentage" style="display: none;">
+            <div id="cardMode-percentage-list" class="mdc-list">
+    
+            </div>
+        </div>
+        <div id="cardMode-manual" style="display: none;">
+            <div id="cardMode-manual-list" class="mdc-list">
+    
+            </div>
+        </div>
+        <div id="cardMode-premade" style="display: none;">
+            <h1 class="mdc-typography--body1">Load a pre-made deck</h1>
+            <div>
+                <button id="selectPremadeDeck" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
+                <label id="selectPremadeDeckLabel" class="box" style="margin-left: 5px; background-color: rgba(0, 0, 0, 0.2); border-radius: 5px; display: none;"></label>
+            </div>
+        </div>
+    </div><hr>
+
+    <div id="categoryButtons">
+        <button id="addCategory" class="mdc-button mdc-button--primary mdc-button--raised">Add Category</button>
+        &nbsp;
+        <button id="resetCategories" class="mdc-button mdc-button--raised">Default Categories</button>
+    </div>
 </div>
 
-<div id="cardMode">
-    <div id="cardMode:percentage" class="mdc-elevation--z3 box" style="display: none;">
-        <p>TEST: percentage</p>
-    </div>
-    <div id="cardMode:manual" class="mdc-elevation--z3 box" style="display: none;">
-        <p>TEST: manual</p>
-    </div>
-    <div id="cardMode:premade" class="mdc-elevation--z3 box" style="display: none;">
-        <p>TEST: premade</p>
-    </div>
+<!-- Tease -->
+<div class="mdc-elevation--z3 box" id="teaseGoalSetup">
+    <h1 class="mdc-typography--subtitle1">Tease Goal</h1>
+
+    <div class="mdc-select" id="teaseGoalSelectionContainer">
+        <select id="teaseGoalSelection" class="mdc-select__native-control">
+            <option value="end" selected>The end of the tease is reached</option>
+            <option value="cum">I've came X times</option>
+            <option value="release">A card allows me to quit</option>
+            <option value="minutes">X minutes have passed</option>
+        </select>
+        <label for="teaseGoalSelection" class="mdc-floating-label">Continue Until</label>
+    </div><br>
+
+    <div class="mdc-text-field" id="teaseGoalXContainer" style="display: none;">
+        <input type="number" class="mdc-text-field__input" id="teaseGoalX" min="0" />
+        <label for="teaseGoalX" class="mdc-floating-label">X variable</label>
+        <div class="mdc-line-ripple"></div>
+    </div><br>
+
+    <div class="mdc-form-field" id="infiniteTeaseContainer" style="display: none;">
+        <div class="mdc-checkbox">
+            <input type="checkbox" class="mdc-checkbox__native-control" id="infiniteTease"/>
+            <div class="mdc-checkbox__background">
+                <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
+                    <path class="mdc-checkbox__checkmark-path" fill="none" d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+                </svg>
+                <div class="mdc-checkbox__mixedmark"></div>
+            </div>
+        </div>
+        <label for="infiniteTease">Tease Indefinitely (until goal)</label>
+    </div><br>
+
+    <div class="mdc-form-field">
+        <div class="mdc-checkbox">
+            <input type="checkbox" class="mdc-checkbox__native-control" id="teaseGoalQuitBlock"/>
+            <div class="mdc-checkbox__background">
+                <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
+                    <path class="mdc-checkbox__checkmark-path" fill="none" d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+                </svg>
+                <div class="mdc-checkbox__mixedmark"></div>
+            </div>
+        </div>
+        <label for="teaseGoalQuitBlock">Block quitting until goal is reached</label>
+    </div><br>
 </div>
 
-<script src="./ts/setup.ts"></script>
+<button id="startTease" class="mdc-fab" style="position: absolute; right: 5%; bottom: 5%;">
+    <span class="mdc-fab__icon material-icons" style="font-size: 28pt;">play_circle_outline</span>
+</button>
+
+<script>var exports</script>
+<script src="./ts/setup/categories.ts"></script>
+<script src="./ts/setup/setup.ts"></script>
