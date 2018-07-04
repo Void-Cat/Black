@@ -1,4 +1,6 @@
 /node_modules/
+/.vscode/
+/notes/
 /out/
 *.scss
 tsconfig.json
