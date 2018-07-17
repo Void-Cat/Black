@@ -1,69 +1,252 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <title>Black - Tease</title>
+    <link rel="stylesheet" href="../css/material-icons/material-icons.css">
+    <link rel="stylesheet" href="../css/material-components-web/material-components-web.min.css">
+    <link rel="stylesheet" id="theme">
     <style>
-      #leftBar {
-        left: 0;
-      }
+        html, body, #tease {
+            height: 100vh;
+            width: 100vw;
+        }
 
-      #rightBar {
-        right: 0;
-      }
+        #leftBar {
+            left: 0;
+            margin: 3px 0 0 3px;
+            overflow: auto;
+            top: 0;
+            z-index: 3;
+        }
+        
+        #rightBar {
+            margin: 3px 3px 0 0;
+            overflow: auto;
+            right: 2px;
+            top: 2px;
+            z-index: 2;
+        }
+        
+        .sidebar {
+            bottom: 0;
+            top: 0;
+            width: 15%;
+            min-width: 100px;
+            max-width: 200px;
+        }
 
-      .sidebar {
-        bottom: 0;
-        top: 0;
-        width: 15%;
-        min-width: 100px;
-      }
+        .sidebar-controls {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            text-align: right;
+            z-index: 3;
+        }
 
-      #topBar {
-        top: 0;
-        height: 5%;
-        max-height: 5%;
-      }
+        th {
+            text-align: left;
+        }
+        td {
+            text-align: right;
+        }
+
+        .sidebar-smaller {
+            max-height: 28px !important;
+        }
+        
+        #topBar {
+            top: 0;
+            height: 5%;
+            max-height: 5%;
+            position: fixed;
+        }
+
+        #view-container {
+            position: fixed;
+            text-align: center;
+            top: 5vh;
+            width: 100vw;
+            z-index: 0;
+        }
     </style>
-  </head>
-  <body class="mdc-typography">
-
+</head>
+<body class="mdc-typography">
+    
     <main id="preTease">
-      <h1 class="mdc-typograpy--title">Preparing the tease...</h1>
+        <h1 class="mdc-typograpy--title">Preparing the tease...</h1>
     </main>
-
+    
     <main id="tease" style="display: none;">
-      <div id="leftBar" class="sidebar">
+        <div id="leftBar" class="sidebar">
+            <div class="mdc-card">
+                <div class="mdc-card__media mdc-card__media--16-9" card-bg="../img/sidebarimage1.jpg">
+                    <div class="sidebar-controls">
+                        <i class="material-icons native-btn" visibility>visibility_off</i>
+                        <i class="material-icons native-btn" unfold="less">unfold_less</i>
+                        <i class="material-icons native-btn" expand="less">expand_less</i>
+                    </div>
+                    <div class="mdc-card__media-content" style="padding: 2px;">Information</div>
+                </div>
+                <div class="mdc-card__body">
+                    <table style="padding: 0 5px; width: 100%;">
+                        <tbody>
+                            <tr id="info-slide">
+                                <th>Slide</th>
+                                <td>0</td>
+                            </tr>
+                            <tr id="info-strokes">
+                                <th>Strokes</th>
+                                <td>10</td>
+                            </tr>
+                            <tr id="info-slidetime">
+                                <th>Slidetime</th>
+                                <td>10</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-      </div>
+            <div class="mdc-card" style="margin-top: 10px;">
+                <div class="mdc-card__media mdc-card__media--16-9" card-bg="../img/sidebarimage2.jpg">
+                    <div class="sidebar-controls">
+                        <i class="material-icons native-btn" visibility>visibility_off</i>
+                        <i class="material-icons native-btn" unfold="less">unfold_less</i>
+                        <i class="material-icons native-btn" expand="less">expand_less</i>
+                    </div>
+                    <div class="mdc-card__media-content" style="padding: 2px;">Status</div>
+                </div>
+                <div class="mdc-card__body" style="padding: 0 5px;">
+                    <h1 class="mdc-typography--subtitle2"><b>Chastity</b><br>&nbsp;&nbsp;<span id="info-chastity">No</span></h1>
+                    <h1 class="mdc-typography--subtitle2"><b>Cumming</b><br>&nbsp;&nbsp;<span id="info-cumming">Not Allowed</span></h1>
+                    <h1 class="mdc-typography--subtitle2"><b>Mood</b><br>&nbsp;&nbsp;<span id="info-mood" class="material-icons">thumbs_up_down</span></h1>
+                    <h1 class="mdc-typography--subtitle2"><b>Position</b><br>&nbsp;&nbsp;<span id="info-position">Free</span></h1>
+                </div>
+            </div>
 
-      <div id="topBar">
-
-      </div>
-
-      <img id="imageShown" src="" />
-
-      <div id="rightBar" class="sidebar">
-
-
-      </div>
+            <div class="mdc-card" style="margin-top: 10px;">
+                <div class="mdc-card__media mdc-card__media--16-9" card-bg="../img/sidebarimage3.jpg">
+                    <div class="sidebar-controls">
+                        <i class="material-icons native-btn" visibility>visibility_off</i>
+                        <i class="material-icons native-btn" unfold="less">unfold_less</i>
+                        <i class="material-icons native-btn" expand="less">expand_less</i>
+                    </div>
+                    <div class="mdc-card__media-content" style="padding: 2px;">Items</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="topBar">
+            
+        </div>
+        
+        <div id="view-container">
+            <img id="view" src="" style="max-height: 90vh; max-width: 90%;" />
+        </div>
+        
+        <div id="rightBar" class="sidebar">
+            
+        </div>
     </main>
-
+    
     <footer id="toolbar" style="display: none;">
-
+        
     </footer>
-
-    <img id="imageBuffer" src="" style="display: none;" />
-
+    
     <!-- Script -->
-    <event-catcher style="display: none;"></event-catcher>
+    <!-- <event-catcher style="display: none;"></event-catcher> -->
+    
     <script>
-      const $ = require('jquery')
-      const mdc = require('material-components-web')
-
-      $(document).ready(() => mdc.autoInit())
+        const Store = require('electron-store')
+        const $ = require('jquery')
+        const mdc = require('material-components-web/dist/material-components-web')
+        const { isNullOrUndefined, isNull, isObject, isBoolean, isString, isNumber, isArray } = require('util')
+        const fs = require('fs')
+        
+        var storage = new Store()
     </script>
-    <script src="../ts/tease/tease.ts" charset="utf-8"></script>
-    <script src="../ts/tease/teasegen.ts" charset="utf-8"></script>
-  </body>
+    <script src="../ts/tease/tease.ts"></script>
+    <script src="../ts/tease/exitcontroller.ts"></script>
+    <script src="../ts/tease/goalcontroller.ts"></script>
+    <script src="../ts/tease/imagecontroller.ts"></script>
+    <script src="../ts/tease/strokingcontroller.ts"></script>
+    <script src="../ts/tease/teaseEvent.ts"></script>
+    <script src="../ts/tease/viewcontroller.ts"></script>
+    <script>
+        import Theme from '../js/catworks/themer.js'
+        var tease = new Tease()
+
+        var theme = new Theme({
+            active: storage.get('theme.index'),
+            path: '../themes/',
+            themelist: [
+                // 'red',
+                'red.dark',
+                // 'blue',
+                'blue.dark',
+                // 'green',
+                'green.dark',
+                // 'yellow',
+                'yellow.dark',
+                // 'purple',
+                'purple.dark',
+                // 'black',
+                'black.dark'
+            ]
+        })
+        theme.setTheme(storage.get('theme.index') || 0)
+        if (theme.active < 0 || theme.active >= theme.themelist.length) theme.setTheme(0)
+
+        $('[card-bg]').each((i, el) => {
+            $(el).css('background', `linear-gradient(var(--mdc-theme--halfopacity), var(--mdc-theme--halfopacity)), url(${$(el).attr('card-bg')})`)
+        })
+
+        $('[unfold]').click((data) => {
+            let el = data.currentTarget
+            let sidebar = $(el).parent().parent()
+            if ($(el).attr('unfold') == 'less') {
+                $(el).attr('unfold', 'more').text('unfold_more')
+                $(sidebar).addClass('sidebar-smaller')
+            } else {
+                $(el).attr('unfold', 'less').text('unfold_less')
+                $(sidebar).removeClass('sidebar-smaller')
+            }
+        })
+
+        $('[expand]').click((data) => {
+            let el = data.currentTarget
+            let card = $(el).parent().parent().parent()
+            let unfold = $(el).siblings('[unfold]')
+            if ($(el).attr('expand') == 'less') {
+                $(el).attr('expand', 'more').text('expand_more')
+                if ($(unfold).attr('unfold') == 'less') {
+                    $(unfold).click()
+                    $(unfold).prop('reunfold', true)
+                }
+                $(unfold).hide()
+                $(card).children('.mdc-card__body, .mdc-card__actions').slideUp(200)
+                $(card)
+            } else {
+                $(el).attr('expand', 'less').text('expand_less')
+                if ($(unfold).prop('reunfold')) {
+                    $(unfold).click()
+                    $(unfold).removeProp('reunfold')
+                }
+                $(unfold).show()
+                $(card).children('.mdc-card__body, .mdc-card__actions').slideDown(200)
+            }
+        })
+        
+        $('[visibility]').click((data) => {
+            let el = data.currentTarget
+            let card = $(el).parent().parent().parent()
+            $(card).slideUp(200)
+        })
+
+        $(document).ready(() => {
+            mdc.autoInit()
+        })
+    </script>
+</body>
 </html>
