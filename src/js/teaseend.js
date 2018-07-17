@@ -12,7 +12,7 @@ function hashCode (string) {
 }
 
 if (typeof teaseExit === 'undefined') {
-  var teaseExit = storage.get('teaseExit')
+  var teaseExit = storage.get('tease.exit')
   var cumInfo = storage.get('stats.lastTease.cumming')
   var punish = storage.get('stats.lastTease.cumming.nonAllowed')
   var sublevel = storage.get('profile.sublevel')
