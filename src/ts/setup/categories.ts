@@ -53,6 +53,7 @@ class CategoryControl {
         })
         $(`input[name="category-${id}-count"]`).on('change', (event) => {
             this.categories[id].count = parseInt($(`input[name="category-${id}-count"]`).val().toString(), 10)
+            this.toRatio(id)
         })
         $(`input[name="category-${id}-ratio"]`).on('change', (event) => {
             this.categories[id].ratio = parseInt($(`input[name="category-${id}-ratio"]`).val().toString(), 10)
@@ -106,6 +107,8 @@ class CategoryControl {
 
     public save() : void {
         this.retrieveAll()
+        if ($('#cardModeSelection').val() == 'manual')
+            this.toRatio()
         storage.set('tease.categories', this.categories)
     }
 
@@ -121,6 +124,22 @@ class CategoryControl {
         if (!isNullOrUndefined(ratio))
             this.categories[id].ratio = ratio
         return true;
+    }
+
+    toRatio(id?: number) {
+        let total = 0
+        Object.keys(this.categories).forEach((key) => {
+            total += this.categories[key].count
+        })
+        if (isNullOrUndefined(id))
+            Object.keys(this.categories).forEach((key) => {
+                this.categories[key].ratio = Math.round(this.categories[key].count / total)
+                $(this.elements[key].ratio).val(this.categories[key].ratio)
+            })
+        else {
+            this.categories[id].ratio = Math.round(this.categories[id].count / total)
+            $(this.elements[id].ratio).val(this.categories[id].ratio)
+        }
     }
 
     public retrieveAll() : void {

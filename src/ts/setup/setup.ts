@@ -1,4 +1,4 @@
-var { isNullOrUndefined, isObject, isBoolean, isString, isNumber, isArray } = require('util')
+var { isNullOrUndefined, isObject, isNull, isBoolean, isString, isNumber, isArray } = require('util')
 
 declare const mdc, dialog, BrowserWindow, globalShortcut, swapper
 
@@ -99,7 +99,9 @@ function loadSetup() {
     if (isBoolean(setup['infinite']))
         $('#infiniteTease').prop('checked', setup['infinite'])
     if (isBoolean(setup['blockexit']))
-        $('#teaseGoalQuitBlock').prop('checked')
+        $('#teaseGoalQuitBlock').prop('checked', setup['blockexit'])
+    if (isBoolean(setup['recurseimagefolder']))
+        $('#recurseImage').prop('checked', setup['recurseimagefolder'])
 }
 
 function reportError(text: string, appendTo?: string) {
@@ -135,6 +137,7 @@ function saveSetup() {
     storage.set('tease.setup.goalx', parseInt($('#teaseGoalX').val().toString(), 10))
     storage.set('tease.setup.infinite', $('#infiniteTease').prop('checked'))
     storage.set('tease.setup.blockexit', $('#teaseGoalQuitBlock').prop('checked'))
+    storage.set('tease.setup.recurseimagefolder', $('#recurseImage').prop('checked'))
 }
 
 // Setup page components
