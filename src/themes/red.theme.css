@@ -6217,6 +6217,9 @@ a.mdc-list-item {
   text-decoration: none;
   text-transform: uppercase; }
 
+:root {
+  --mdc-theme--halfopacity: rgba(244, 67, 54, 0.5); }
+
 #appheader {
   -webkit-app-region: drag;
   height: 24px;
