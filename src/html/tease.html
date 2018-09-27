@@ -62,10 +62,20 @@
             position: fixed;
         }
 
+        #view {
+            display: block;
+            left: 50%;
+            max-height: calc(100vh - 100px);
+            max-width: calc(100vw - 450px);
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
         #view-container {
+            height: 100vh;
             position: fixed;
-            text-align: center;
-            top: 5vh;
+            top: 0;
             width: 100vw;
             z-index: 0;
         }
@@ -73,8 +83,13 @@
 </head>
 <body class="mdc-typography">
     
-    <main id="preTease">
-        <h1 class="mdc-typograpy--title">Preparing the tease...</h1>
+    <main id="preTease" style="text-align: center;">
+        <h1 class="mdc-typograpy--title">Your tease is ready.</h1>
+        <div id="startcards-container" style="display: none;">
+            <h1 class="mdc-typography--subtitle2">The following cards will be active from the start:</h1>
+            <div id="startcards"></div>
+        </div>
+        <button class="mdc-button mdc-button--primary mdc-button--raised" onclick="tease.start()">Start Tease</button>
     </main>
     
     <main id="tease" style="display: none;">
@@ -103,6 +118,10 @@
                                 <th>Slidetime</th>
                                 <td>10</td>
                             </tr>
+                            <tr id="info-muted" style="display: none;">
+                                <th>Muted</th>
+                                <td></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -118,7 +137,7 @@
                     <div class="mdc-card__media-content" style="padding: 2px;">Status</div>
                 </div>
                 <div class="mdc-card__body" style="padding: 0 5px;">
-                    <h1 class="mdc-typography--subtitle2"><b>Chastity</b><br>&nbsp;&nbsp;<span id="info-chastity">No</span></h1>
+                    <h1 id="info-chastity" class="mdc-typography--subtitle2" style="display: none;"><b>In Chastity</b></h1>
                     <h1 class="mdc-typography--subtitle2"><b>Cumming</b><br>&nbsp;&nbsp;<span id="info-cumming">Not Allowed</span></h1>
                     <h1 class="mdc-typography--subtitle2"><b>Mood</b><br>&nbsp;&nbsp;<span id="info-mood" class="material-icons">thumbs_up_down</span></h1>
                     <h1 class="mdc-typography--subtitle2"><b>Position</b><br>&nbsp;&nbsp;<span id="info-position">Free</span></h1>
@@ -142,20 +161,46 @@
         </div>
         
         <div id="view-container">
-            <img id="view" src="" style="max-height: 90vh; max-width: 90%;" />
+            <img id="view" src="" />
         </div>
         
         <div id="rightBar" class="sidebar">
             
         </div>
+
+        <aside id="contact-element" class="mdc-dialog" role="alertdialog" aria-labelledby="contact-label" aria-describedby="contact-description">
+            <div class="mdc-dialog__surface">
+                <header class="mdc-dialog__header">
+                    <h2 class="mdc-dialog__header__title">
+                        <i id="contact-icon" class="material-icons"></i>
+                        <span id="contact-label"></span>
+                    </h2>
+                </header>
+                <section id="contact-description" class="mdc-dialog__body"></section>
+                <footer id="contact-footer-message" class="mdc-dialog__footer" style="display: none; text-align: right;">
+                    <button id="contact-dismiss" class="mdc-button mdc-button--primary">Dismiss</button>
+                </footer>
+                <footer id="contact-footer-prompt" class="mdc-dialog__footer" style="display: none;">
+                    <div class="mdc-text-field">
+                        <input type="text" id="contact-prompt" class="mdc-text-field__input">
+                        <label for="contact-prompt" class="mdc-floating-label">Input</label>
+                        <div class="mdc-line-ripple"></div>
+                    </div>
+                    <button id="contact-submit" class="mdc-button mdc-button--primary" style="float: right;">Submit</button>
+                </footer>
+                <footer id="contact-footer-options" class="mdc-dialog__footer" style="display: none;"></footer>
+            </div>
+            <div class="mdc-dialog__backdrop"></div>
+        </aside>
     </main>
     
     <footer id="toolbar" style="display: none;">
         
     </footer>
     
-    <!-- Script -->
     <!-- <event-catcher style="display: none;"></event-catcher> -->
+    
+    <!-- Script -->
     
     <script>
         const Store = require('electron-store')
@@ -167,14 +212,18 @@
         var storage = new Store()
     </script>
     <script src="../ts/tease/tease.ts"></script>
+    <script src="../ts/tease/actionController.ts"></script>
     <script src="../ts/tease/exitcontroller.ts"></script>
     <script src="../ts/tease/goalcontroller.ts"></script>
     <script src="../ts/tease/imagecontroller.ts"></script>
     <script src="../ts/tease/strokingcontroller.ts"></script>
+    <script src="../ts/tease/teaseAction.ts"></script>
     <script src="../ts/tease/teaseEvent.ts"></script>
     <script src="../ts/tease/viewcontroller.ts"></script>
+    <script src="../ts/tease/keycontroller.ts"></script>
     <script>
         import Theme from '../js/catworks/themer.js'
+        //import * as Mousetrap from 'mousetrap'
         var tease = new Tease()
 
         var theme = new Theme({

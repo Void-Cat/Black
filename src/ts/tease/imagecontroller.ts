@@ -1,10 +1,11 @@
 class ImageController {
     public cardratio: number
+    cardmode: string
     public cards : Card[] = []
     categories: object
     public cil = {}
     public images : string[] = []
-    index = -1
+    public startcards : number[] = []
     length = 0
     localCards: any[][] = []
     localImages: string[] = []
@@ -13,37 +14,86 @@ class ImageController {
     public unending = false
     
     constructor(startingIndex = -1, unending = false) {
-        if (startingIndex <= 1) startingIndex = -1
-        this.index = startingIndex
+        if (startingIndex <= 1)
+            startingIndex = -1
         this.unending = unending
+        this.cardmode = storage.get('tease.setup.cardmode')
         this.categories = storage.get('tease.categories')
         this.findCards()
         this.localImages = this.findImages()
         this.cardratio = storage.get('settings.cardratio') / 100
-        let startlength = storage.get('tease.setup.imagecount') * (1 + storage.get('settings.cardratio'))
-        this.extend(startlength)
+
+        if (this.cardmode == 'percentage') {
+            let startlength = storage.get('tease.setup.imagecount') * (1 + storage.get('settings.cardratio'))
+            this.extend(startlength)
+        } else if (this.cardmode == 'manual')
+            this.extend(storage.get('tease.setup.imagecount'), true)
+        else
+            console.error('Selected cardmode failed to execute: ' + this.cardmode)
     }
 
-    public extend(n?: number) : void {
+    public extend(n?: number, buildmode = false) : void {
         if (isNullOrUndefined(n))
             n = this.length + 50
 
-        while (this.length < n) {
-            // Card or image
-            if (Math.random() < this.cardratio) {
-                let card = this.getCard()
-                let index = this.images.length
-                this.images.push(card[0])
-                if (isNullOrUndefined(card[2]))
-                    this.cil[index] = [card[1], null]
-                else {
-                    this.cil[index] = [card[1], this.cards.length]
-                    this.cards.push(new Card(card[2], index))
-                }
-            } else {
-                this.images.push(this.getImage())
+        let firstbuild = (this.length == 0)
+
+        if (buildmode) {
+            let cardTotal = 0
+            let cardInsert
+            Object.keys(this.categories).forEach((key) => {
+                if (!isNaN(this.categories[key]['count']))
+                    cardTotal += this.categories[key]['count']
+            })
+            cardInsert = Math.floor(n / cardTotal)
+            this.cardratio = cardTotal / (n + cardTotal)
+            while (this.length < n) {
+                let card = false
+                if (cardTotal > 0)
+                    if (cardInsert <= 1) {
+                        if (Math.random() < 0.5)
+                            card = true
+                    } else
+                        if (this.length % cardInsert == 0)
+                            card = true
+                if (card) {
+                    cardTotal--
+                    let card = this.getCard()
+                    let index = this.images.length
+                    this.images.push(card[0])
+                    if (isNullOrUndefined(card[2]))
+                        this.cil[index] = { category: card[1], cardindex: null }
+                    else {
+                        if (card[2]['start'] == 'start')
+                            this.startcards.push(index)
+                        this.cil[index] = { category: card[1], cardindex: this.cards.length }
+                        this.cards.push(new Card(card[2], index))
+                    }
+                } else
+                    this.images.push(this.getImage())
+                this.length++
             }
-            this.length++
+        } else {
+            while (this.length < n) {
+                // Card or image
+                if (Math.random() < this.cardratio) {
+                    let card = this.getCard()
+                    let index = this.images.length
+                    if (firstbuild && card[2]['start'] == 'start')
+                        this.startcards.push(index)
+                    else if (!firstbuild && card[2]['start'] == 'start')
+                        continue
+                    this.images.push(card[0])
+                    if (isNullOrUndefined(card[2]))
+                        this.cil[index] = { category: card[1], cardindex: null }
+                    else {
+                        this.cil[index] = { category: card[1], cardindex: this.cards.length }
+                        this.cards.push(new Card(card[2], index))
+                    }
+                } else
+                    this.images.push(this.getImage())
+                this.length++
+            }
         }
     }
 
@@ -88,15 +138,16 @@ class ImageController {
         if (isNullOrUndefined(folder))
             folder = storage.get('tease.setup.cardfolder')
 
+        let localControl = {}
         let raw = this.findImages(folder, true)
         raw.forEach((path) => {
             // Find the category for the card
-            let bestmatch = [0, null]
+            let bestmatch : any[] = [-1, null]
             Object.keys(this.categories).forEach((key) => {
                 let name = this.categories[key].name.toLowerCase()
                 let match = path.toLowerCase().lastIndexOf(name)
                 if (match > bestmatch[0])
-                    bestmatch = [match, name]
+                    bestmatch = [match, key]
             })
 
             // Check result
@@ -109,11 +160,44 @@ class ImageController {
             let substrend = path.lastIndexOf('.')
             let ctispath = path.substring(0, substrend) + '.ctis'
             let ctis = null
-            if (fs.existsSync(ctispath))
-                ctis = JSON.parse(fs.readFileSync(ctispath))
+            if (fs.existsSync(ctispath)) {
+                try {
+                    ctis = JSON.parse(fs.readFileSync(ctispath))
+                } catch (e) {
+                    console.warn('Failed to read CTIS card at ', ctispath)
+                }
             
-            // Add the card
-            this.localCards.push([path, bestmatch[0], ctis])
+            // Add the card if cardmode is ratio
+            if (this.cardmode == 'percentage') {
+                this.localCards.push([path, bestmatch[1], ctis])
+            } else {
+                if (this.categories[bestmatch[1]]['count'] > 0) {
+                    if (isNullOrUndefined(localControl[bestmatch[1]]))
+                        localControl[bestmatch[1]] = [[path, bestmatch[1], ctis]]
+                    else
+                        localControl[bestmatch[1]].push([path, bestmatch[1], ctis])
+                }
+            }
         })
+
+        if (this.cardmode == 'manual') {
+            Object.keys(this.categories).forEach((key) => {
+                let n = this.categories[key]['count']
+                while (n > 0) {
+                    if (isNullOrUndefined(localControl[key])) {
+                        console.warn(`Could not add ${n} cards of category '${this.categories[key].name}', none were found.`)
+                        break
+                    }
+                    let i = Math.floor(Math.random() * localControl[key].length)
+                    let card
+                    if (localControl[key].length >= n)
+                        card = localControl[key].splice(i, 1)[0]
+                    else
+                        card = localControl[key][i]
+                    this.localCards.push(card)
+                    n--
+                }
+            })
+        }
     }
 }

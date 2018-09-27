@@ -80,7 +80,7 @@ class CategoryControl {
             &nbsp;
             <div class="mdc-text-field">
                 <input name="category-${id}-${type}" value="${numerical}" type="number" min="0" class="mdc-text-field__input" />
-                <label class="mdc-floating-label" for="category-${id}-${type}">Category ${type[0].toUpperCase()}${type.substring(1)}</label>
+                <label class="mdc-floating-label" for="category-${id}-${type}">Card ${type[0].toUpperCase()}${type.substring(1)}</label>
                 <div class="mdc-line-ripple"></div>
             </div>
             <i name="category-${id}-remove" class="material-icons" style="float: right; cursor: pointer;">delete</i>

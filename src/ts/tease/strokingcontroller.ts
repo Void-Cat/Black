@@ -1,7 +1,9 @@
 class StrokingController {
     carousel: HTMLAudioElement[] = []
+    chastised: boolean = false
     instantupdate: boolean = false
     interval = []
+    muted: boolean = false
     paused: boolean = true
     slidetiming: number = 0
     slidetime: number
@@ -42,7 +44,7 @@ class StrokingController {
 
     updateTicker(stash = true) {
         clearInterval(this.interval[0])
-        let interval = this.slidetiming * 1000 / this.strokerate
+        let interval = this.slidetime * 1000 / this.strokerate
         this.interval[0] = setInterval(() => this.tickerInterval(), interval)
     }
 
@@ -117,6 +119,7 @@ class StrokingController {
     /** Pause/Unpause the tease. 
      * @param setting provides the setting, if null toggles the pause state, if undefined gets the pause state
     */
+    //TODO: update interface to reflect pause
     public pause(setting?: boolean) : boolean {
         if (isBoolean(setting)) {
             this.paused = setting
@@ -127,5 +130,37 @@ class StrokingController {
         } else {
             return this.paused
         }
+    }
+
+    public mute(active?: boolean) {
+        if (isNullOrUndefined(active))
+            active = !this.muted
+        
+        if (!active && this.chastised)
+            return
+
+        this.muted = active
+        
+        this.carousel.forEach((audio) => {
+            audio.muted = active
+        })
+
+        if (active)
+            $('#info-muted').slideDown(100)
+        else
+            $('#info-muted').slideUp(100)
+    }
+
+    public chastity(active?: boolean) {
+        if (isNullOrUndefined(active))
+            active = !this.chastised
+        
+        this.chastised = active
+        this.mute(active)
+        
+        if (active)
+            $('#info-chastity').slideDown(100)
+        else
+            $('#info-chastity').slideUp(100)
     }
 }
