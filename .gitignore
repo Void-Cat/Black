@@ -1,3 +1,4 @@
-node_modules
-out
-*.scss
+/node_modules/
+/.vscode/
+/out/
+/notes/
