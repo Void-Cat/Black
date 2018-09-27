@@ -1,0 +1,12 @@
+$mdc-theme-primary: #F44336; // Red 500
+$mdc-theme-secondary: #FF9800; // Amber 500
+$mdc-theme-background: #212121; // Grey 900
+$mdc-theme-surface: #3B3B3B; // Grey 850
+$mdc-theme-on-primary: black;
+$mdc-theme-on-secondary: black;
+$mdc-theme-on-background: white;
+$mdc-theme-on-surface: white;
+
+@import "@material/theme/mdc-theme";
+@import "material-components-web/material-components-web.scss";
+@import "global.scss";
