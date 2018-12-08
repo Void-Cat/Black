@@ -1,19 +1,29 @@
+declare const storage
+import { isBoolean, isNumber, isNullOrUndefined } from 'util'
+
 /** Class for keeping track of tease-exits */
-class ExitController {
-    public readonly cua: {} = {};
-    public highestBlock: number[] = [];
-    public highestAllow: number[] = [];
+export default class ExitController {
+    public readonly cua: object = {}
+    public highestBlock: string[] = []
+    public highestAllow: string[] = []
+    public cumming: object = {
+        full: 0,
+        edge: 0,
+        ruin: 0,
+        nonAllowed: 0
+    }
 
     constructor(startState?: boolean) {
         if (isBoolean(startState))
             this.cua[-1] = (new cu(-1, startState, 0))
         else
             this.cua[-1] = (new cu(-1, true, 0))
-        
     }
 
     /** Add an exit-controlunit to the controlunit-array (this.cua) */
-    public addCU(id: number, allows = false, priority = 0) : boolean {
+    public addCU(id: number | string, allows = false, priority = 0) : boolean {
+        id = id.toString()
+
         if (!isNullOrUndefined(this.cua[id]))
             return false
 
@@ -36,14 +46,32 @@ class ExitController {
         return true
     }
 
+    private updateStatics(end: string) {
+        storage.set('tease.exit', end)
+        storage.set('stats.lastTease.cumming', this.cumming)
+        storage.set('stats.teases.total', storage.get('stats.teases.total') + 1)
+        if (end === 'user')
+            storage.set('stats.teases.etes', storage.get('stats.teases.etes') + 1)
+        let lcumming = storage.get('stats.total.cumming')
+        lcumming['full'] += this.cumming['full']
+        lcumming['edge'] += this.cumming['edge']
+        lcumming['ruin'] += this.cumming['ruin']
+        lcumming['nonAllowed'] += this.cumming['nonAllowed']
+        storage.set('stats.total.cumming', lcumming)
+    }
+
     /** Exists the tease if allowed */
     public exitTease(state: string) : boolean {
         if (state == 'teaseend') {
-            storage.set('tease.exit', 'end')
-            close()
+            this.updateStatics('end')
+            setTimeout(() => close(), 10000)
+            return true
+        } else if (state == 'quitcard') {
+            this.updateStatics('card')
+            setTimeout(() => close(), 10000)
             return true
         } else if (state == 'userexit' && this.allowed()) {
-            storage.set('tease.exit', 'user')
+            this.updateStatics('user')
             close()
             return true
         }
@@ -69,7 +97,9 @@ class ExitController {
     }
 
     /** Remove an exit-controlunit from the controlunit-array (this.cua) */
-    public removeCU(id: number) : boolean {
+    public removeCU(id: number | string) : boolean {
+        id = id.toString()
+
         if (isNullOrUndefined(this.cua[id]))
             return false
         
@@ -97,7 +127,9 @@ class ExitController {
     }
 
     /** Updates a specified controlunit with new allowance or with new priority */
-    public updateCU(id: number, newAllows?: boolean, newPriority?: number) : boolean {
+    public updateCU(id: number | string, newAllows?: boolean, newPriority?: number) : boolean {
+        id = id.toString()
+
         if (isNullOrUndefined(this.cua[id]) || (!isBoolean(newAllows) && !isNumber(newPriority)))
             return false
 
@@ -120,11 +152,11 @@ class ExitController {
 
     /** Updates the highest allow/block array to the specified priority level */
     private updateHighest(allows: boolean, priority: number) : void {
-        let highest: number[] = []
+        let highest: string[] = []
         Object.keys(this.cua).forEach((key) => {
             if (this.cua[key].allows == allows)
                 if (this.cua[key].priority == priority)
-                    highest.push(parseInt(key, 10))
+                    highest.push(key)
         })
         if (highest.length > 0)
             if (allows)
@@ -140,11 +172,11 @@ class ExitController {
 /** Class for ExitHandler control-units */
 class cu {
     public allows: boolean
-    public readonly id: number
+    public readonly id: string
     public priority: number
 
-    constructor(id: number, allows = false, priority = 0) {
-        this.id = id
+    constructor(id: number | string, allows = false, priority = 0) {
+        this.id = id.toString()
         this.allows = allows
         this.priority = priority
     }

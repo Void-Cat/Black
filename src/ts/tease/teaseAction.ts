@@ -1,3 +1,5 @@
+import { isNullOrUndefined, isArray } from 'util'
+
 const allowedActions = {
     start: ['start', 'draw']
 }
@@ -6,11 +8,10 @@ function verifyActionData(actiondata: object) : object {
     return [true]
 }
 
-class Action {
+export default class Action {
     // Default data for a card
     public data = {
         action: undefined,
-        active: false,
         after: {
             active: false,
             subactions: []
@@ -22,6 +23,7 @@ class Action {
             value: 'none',
             force: false
         },
+        delay: 0,
         flags: [],
         fors: {
             type: 'instant',
@@ -38,6 +40,8 @@ class Action {
             value: 'none'
         }
     }
+
+    public live = {}
     
     // Parse actiondata to actualized data variable
     constructor(actiondata: object, index: number) {
@@ -58,7 +62,7 @@ class Action {
         if (!isNullOrUndefined(actiondata['delay'])) {
             let delay = parseInt(actiondata['delay'], 10)
             if (!isNaN(delay))
-                this.data.start += delay
+                this.data.delay = delay
         }
         
         // Parse Conditional
@@ -86,7 +90,7 @@ class Action {
             fors.splice(0, 1)
         this.data.fors.type = fors[0]
         if (!isNullOrUndefined(fors[1]))
-            this.data.fors.value = fors
+            this.data.fors.value = fors.splice(1)
         
         // Parse Action
         let action = actiondata['action']
@@ -211,10 +215,15 @@ class Action {
 
         // Parse CLEAN
         let clean = actiondata['clean']
-        if (clean == 'false')
+        if (clean == 'false' || clean == false)
             this.data.clean = false
         else
             this.data.clean = true
+
+        // Parse PRIORITY
+        let priority = actiondata['priority']
+        if (!isNaN(parseInt(priority, 10)))
+            this.data.priority = parseInt(priority, 10)
 
         // Parse AFTER
         if (!isNullOrUndefined(actiondata['after'])) 
@@ -224,5 +233,29 @@ class Action {
         if (!isNullOrUndefined(actiondata['flags']) && isArray(actiondata['flags']))
             this.data.flags = actiondata['flags']
         // #endregion
+    }
+
+    public setLive(name: string | number, value: any) : boolean {
+        this.live[name] = value
+        return true
+    }
+
+    public getLive(name: string | number, def?: any) : any {
+        if (this.live[name] == null) {
+            console.warn(`[TeaseAction] Live value '${name}' was never defined for action with index ${this.data.index}.`)
+            if (def !== undefined)
+                this.setLive(name, def)
+            return def
+        }
+        return this.live[name]
+    }
+
+    public removeLive(name: string | number) : boolean {
+        if (this.live[name] == null) {
+            console.warn(`[TeaseAction] Live value '${name}' never defined for action with index ${this.data.index}.`)
+            return false
+        }
+        delete this.live[name]
+        return true
     }
 }

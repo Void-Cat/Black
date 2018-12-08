@@ -1,4 +1,7 @@
-class ImageController {
+declare const storage, isNullOrUndefined, fs
+import {Card} from './tease'
+
+export default class ImageController {
     public cardratio: number
     cardmode: string
     public cards : Card[] = []
@@ -166,7 +169,7 @@ class ImageController {
                 } catch (e) {
                     console.warn('Failed to read CTIS card at ', ctispath)
                 }
-            
+            }
             // Add the card if cardmode is ratio
             if (this.cardmode == 'percentage') {
                 this.localCards.push([path, bestmatch[1], ctis])

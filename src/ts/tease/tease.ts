@@ -1,6 +1,14 @@
 //var storage = new Storage();
 declare var storage
-declare const fs
+import * as fs from 'fs'
+import Action from './teaseAction'
+import ActionController from './actioncontroller'
+import ExitController from './exitcontroller'
+import GoalController from './goalcontroller'
+import ImageController from './imagecontroller'
+import KeyController from './keycontroller'
+import StrokingController from './strokingcontroller'
+import ViewController from './viewcontroller'
 
 var Globals = {
     categories: storage.get('teaseslave.teaseParams.categories'),
@@ -66,19 +74,19 @@ function Count(obj: Array<any>, value: any) {
     return count;
 }
 
-function retrieveFiles(path: string, recursive: boolean, pattern?: string) {
-    let files = []
-    fs.readdirSync(path, (err, files: Array<string>) => {
-        if (err) console.warn(err)
-        files.forEach(file => {
-            let stat = fs.lstatSync(path + '/' + file)
-            if ((stat.isDirectory() || stat.isSymbolicLink()) && recursive) {
-                files = files.concat(retrieveFiles(path + '/' + file, true, pattern))
-            }
-        });
-    })
-    return files
-}
+// function retrieveFiles(path: string, recursive: boolean, pattern?: string) {
+//     let files = []
+//     fs.readdirSync(path, (err, files) => {
+//         if (err) console.warn(err)
+//         files.forEach(file => {
+//             let stat = fs.lstatSync(path + '/' + file)
+//             if ((stat.isDirectory() || stat.isSymbolicLink()) && recursive) {
+//                 files = files.concat(retrieveFiles(path + '/' + file, true, pattern))
+//             }
+//         });
+//     })
+//     return files
+// }
 
 function Values(obj: object) {
     let ret = []
@@ -89,7 +97,7 @@ function Values(obj: object) {
 }
 
 // Class for keeping track of individual cards.
-class Card {
+export class Card {
     // Variable keeping track of actions
     actions = []
     
@@ -118,7 +126,7 @@ class Card {
     }
 }
 
-class Tease {
+export default class Tease {
     actionController: ActionController
     exitController: ExitController
     goalController: GoalController
@@ -134,7 +142,7 @@ class Tease {
         this.viewController = new ViewController(this.imageController, this.exitController, '#view')
         this.strokingController = new StrokingController(this.viewController)
         this.keyController = new KeyController(this.exitController, this.viewController, this.strokingController)
-        this.actionController = new ActionController(this.imageController, this.strokingController, this.viewController)
+        this.actionController = new ActionController(this.imageController, this.goalController, this.strokingController, this.viewController)
         this.viewController.strokingController = this.strokingController
         this.viewController.actionController = this.actionController
 

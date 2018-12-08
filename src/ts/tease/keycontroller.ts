@@ -1,6 +1,10 @@
-var Mousetrap = require('mousetrap')
+declare const storage
+const Mousetrap = require('mousetrap')
+import ExitController from './exitcontroller'
+import StrokingController from './strokingcontroller'
+import ViewController from './viewcontroller'
 
-class KeyController {
+export default class KeyController {
     exitController: ExitController
     keymap = {
         next: 'right',

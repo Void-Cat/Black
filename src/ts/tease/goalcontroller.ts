@@ -1,5 +1,10 @@
-class GoalController {
+import ExitController from './exitcontroller'
+import TeaseEvent from './teaseEvent'
+import { isNumber } from 'util'
+
+export default class GoalController {
     allowedGoals = ['end', 'cum', 'release', 'minutes']
+    ctc: string | boolean = false
     exitController: ExitController
     goal: string
     goalVal: number
@@ -26,7 +31,18 @@ class GoalController {
         this.exitController = exitController
     }
 
+    public ctcState(state?: string | boolean) : string | boolean {
+        if (state === 'full' || state === 'ruin' || state === 'edge' || state === false)
+            this.ctc = state
+        return this.ctc
+    }
+
     public handleEvent(event: TeaseEvent) : boolean {
+        if (event.type === 'cum') {
+            this.exitController.cumming[event.value] += 1
+            if (this.ctc !== event.type)
+                this.exitController.cumming['nonAllowed'] += 1
+        }
         if (!this.reached)
             switch (this.goal) {
                 case 'end':
@@ -37,7 +53,7 @@ class GoalController {
                     }
                     return false
                 case 'cum':
-                    if (event.type == 'cum' && event.value == 'full')
+                    if (event.type == 'cum' && (event.value == 'full' || event.value == 'ruin'))
                         this.reachedVal++
                     if (this.reachedVal >= this.goalVal) {
                         this.reached = true

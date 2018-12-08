@@ -1,4 +1,6 @@
-class TeaseEvent {
+import { isNullOrUndefined } from 'util'
+
+export default class TeaseEvent {
     public origin: string | undefined
     public type: string
     public value: any
@@ -10,7 +12,7 @@ class TeaseEvent {
     }
 }
 
-function watchTeaseEvent(callback, eventType?: string, eventValue?: any, eventOrigin?: string) {
+export function watchTeaseEvent(callback, eventType?: string, eventValue?: any, eventOrigin?: string) {
     return $('event-catcher').on('teaseEvent', (_, data: TeaseEvent) => {
         if ((!isNullOrUndefined(eventType) && data.type != eventType) || 
             (!isNullOrUndefined(eventValue) && data.value != eventValue) ||

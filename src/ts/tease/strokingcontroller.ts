@@ -1,4 +1,9 @@
-class StrokingController {
+declare const storage
+import ViewController from './viewcontroller'
+import * as fs from 'fs'
+import {isNumber, isBoolean, isNull, isNullOrUndefined} from 'util'
+
+export default class StrokingController {
     carousel: HTMLAudioElement[] = []
     chastised: boolean = false
     instantupdate: boolean = false
@@ -13,7 +18,7 @@ class StrokingController {
     constructor(viewController: ViewController) {
         this.viewController = viewController
         this.slidetime = this.strokerate = storage.get('tease.setup.slidetime')
-        let audiosrc = storage.get('tease.setup.tickersrc') || `${__dirname}/../audio/ticker.ogg`
+        let audiosrc = storage.get('tease.setup.tickersrc') || `${__dirname}/../../audio/ticker.ogg`
         if (!fs.existsSync(audiosrc))
             throw new Error(`Ticker at source '${audiosrc}' could not be found.`)
         for (let i = 0; i < 6; i++) {
@@ -119,13 +124,17 @@ class StrokingController {
     /** Pause/Unpause the tease. 
      * @param setting provides the setting, if null toggles the pause state, if undefined gets the pause state
     */
-    //TODO: update interface to reflect pause
     public pause(setting?: boolean) : boolean {
         if (isBoolean(setting)) {
             this.paused = setting
+            if (setting)
+                $('#info-paused').show()
+            else
+                $('#info-paused').hide()
             return setting
         } else if (isNull(setting)) {
             this.paused = !this.paused
+            $('#info-paused').toggle()
             return this.paused
         } else {
             return this.paused
