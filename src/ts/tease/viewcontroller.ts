@@ -127,11 +127,11 @@ export default class ViewController {
 
     public instructions = {
         _counter: 0,
-        _raw: [],
+        _raw: {},
         add: (id: number, desc: string) : number => {
-            $('#info-instructions').append(`<span instruction-id="${id}">${desc}</span>`)
+            $('#info-instructions').append(`<span class=" instruction-id="${id}">${desc}</span>`)
             $('#info-instructions').slideDown(200)
-            this.instructions._raw.push({id: id, element: $(`#info-instructions > [instruction-id="${id}"]`)})
+            this.instructions._raw[id] = {id: id, desc: desc, element: $(`#info-instructions > [instruction-id="${id}"]`)}
             return id
         },
         remove: (id: number) : void => {
