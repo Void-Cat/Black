@@ -181,7 +181,7 @@ export default class ActionController {
                     }
                 break
         }
-        if ((forsIndex = action.data.fors.any.indexOf(id)) != -1)
+        if ((forsIndex = this.actions.fors.any.indexOf(id)) != -1)
             this.actions.fors.any.splice(forsIndex, 1)
 
         // Remove from until
@@ -214,12 +214,12 @@ export default class ActionController {
                 }
                 break
         }
-        if ((untilIndex = action.data.until.any.indexOf(id)) != -1)
-            this.actions.until.any.splice(forsIndex, 1)
+        if ((untilIndex = this.actions.until.any.indexOf(id)) != -1)
+            this.actions.until.any.splice(untilIndex, 1)
 
         // Remove from raw
         delete this.actions.raw[id]
-    }j
+    }
 
     public exec(event: TeaseEvent) {
         // Debug
