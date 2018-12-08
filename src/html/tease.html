@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="../css/material-components-web/material-components-web.min.css">
     <link rel="stylesheet" id="theme">
     <style>
+        html {
+            background-color: black;
+        }
         html, body, #tease {
             height: 100vh;
             width: 100vw;
@@ -118,6 +121,10 @@
                                 <th>Slidetime</th>
                                 <td>10</td>
                             </tr>
+                            <tr id="info-paused" style="display: none;">
+                                <th>Paused</th>
+                                <td></td>
+                            </tr>
                             <tr id="info-muted" style="display: none;">
                                 <th>Muted</th>
                                 <td></td>
@@ -141,6 +148,12 @@
                     <h1 class="mdc-typography--subtitle2"><b>Cumming</b><br>&nbsp;&nbsp;<span id="info-cumming">Not Allowed</span></h1>
                     <h1 class="mdc-typography--subtitle2"><b>Mood</b><br>&nbsp;&nbsp;<span id="info-mood" class="material-icons">thumbs_up_down</span></h1>
                     <h1 class="mdc-typography--subtitle2"><b>Position</b><br>&nbsp;&nbsp;<span id="info-position">Free</span></h1>
+                    <div id="info-instructions-container">
+                        <h1 class="mdc-typography--subtitle2"><b>Instructions</b></h1><br>
+                        <div id="info-instructions" style="margin-left: 3px;">
+
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -152,6 +165,9 @@
                         <i class="material-icons native-btn" expand="less">expand_less</i>
                     </div>
                     <div class="mdc-card__media-content" style="padding: 2px;">Items</div>
+                </div>
+                <div id="info-items" class="mdc-card__body" style="padding: 0 5px;">
+                    
                 </div>
             </div>
         </div>
@@ -172,18 +188,18 @@
             <div class="mdc-dialog__surface">
                 <header class="mdc-dialog__header">
                     <h2 class="mdc-dialog__header__title">
-                        <i id="contact-icon" class="material-icons"></i>
+                        <i id="contact-icon" class="material-icons" style="vertical-align: sub;"></i>
                         <span id="contact-label"></span>
                     </h2>
                 </header>
-                <section id="contact-description" class="mdc-dialog__body"></section>
+                <section id="contact-description" class="mdc-dialog__body" style="color: var(--mdc-theme-text-secondary-on-dark);"></section>
                 <footer id="contact-footer-message" class="mdc-dialog__footer" style="display: none; text-align: right;">
                     <button id="contact-dismiss" class="mdc-button mdc-button--primary">Dismiss</button>
                 </footer>
                 <footer id="contact-footer-prompt" class="mdc-dialog__footer" style="display: none;">
-                    <div class="mdc-text-field">
+                    <div class="mdc-text-field" style="left: 5%; width: 80%; position: absolute; bottom: 7px;">
                         <input type="text" id="contact-prompt" class="mdc-text-field__input">
-                        <label for="contact-prompt" class="mdc-floating-label">Input</label>
+                        <label for="contact-prompt" class="mdc-floating-label mdc-floating-label--float-above">Input</label>
                         <div class="mdc-line-ripple"></div>
                     </div>
                     <button id="contact-submit" class="mdc-button mdc-button--primary" style="float: right;">Submit</button>
@@ -197,6 +213,13 @@
     <footer id="toolbar" style="display: none;">
         
     </footer>
+
+    <div class="mdc-snackbar" aria-live="assertive" aria-atomic="true" aria-hidden="true">
+        <div class="mdc-snackbar__text"></div>
+        <div class="mdc-snackbar__action-wrapper">
+            <button type="button" class="mdc-snackbar__action-button"></button>
+        </div>
+    </div>
     
     <!-- <event-catcher style="display: none;"></event-catcher> -->
     
@@ -211,18 +234,10 @@
         
         var storage = new Store()
     </script>
-    <script src="../ts/tease/tease.ts"></script>
-    <script src="../ts/tease/actionController.ts"></script>
-    <script src="../ts/tease/exitcontroller.ts"></script>
-    <script src="../ts/tease/goalcontroller.ts"></script>
-    <script src="../ts/tease/imagecontroller.ts"></script>
-    <script src="../ts/tease/strokingcontroller.ts"></script>
-    <script src="../ts/tease/teaseAction.ts"></script>
-    <script src="../ts/tease/teaseEvent.ts"></script>
-    <script src="../ts/tease/viewcontroller.ts"></script>
-    <script src="../ts/tease/keycontroller.ts"></script>
+    <!-- <script src="../ts/tease/tease.ts" type="module"></script> -->
     <script>
         import Theme from '../js/catworks/themer.js'
+        import Tease from '../ts/tease/tease.ts'
         //import * as Mousetrap from 'mousetrap'
         var tease = new Tease()
 

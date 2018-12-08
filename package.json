@@ -4,6 +4,7 @@
   "version": "1.7.0-alpha",
   "description": "A digital master/mistress",
   "main": "src/index.js",
+  "private": true,
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
@@ -12,7 +13,7 @@
     "lint": "eslint src --color"
   },
   "keywords": [],
-  "author": "Catworks",
+  "author": "Void-Cat",
   "license": "GPL-3.0",
   "config": {
     "forge": {
@@ -60,6 +61,8 @@
   },
   "devDependencies": {
     "@types/jquery": "^3.3.4",
+    "@types/mousetrap": "^1.6.0",
+    "@types/node": "^10.11.3",
     "babel-cli": "^6.26.0",
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-preset-env": "^1.7.0",
