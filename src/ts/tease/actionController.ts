@@ -106,6 +106,7 @@ export default class ActionController {
             case 'instant':
             case 'key':
             case 'picture':
+            case 'any':
                 this.actions.until[action.data.until.type].push(id)
                 break
             case 'cum':
@@ -124,7 +125,6 @@ export default class ActionController {
                         this.actions.fors.instruction.instruction[value].push(id)
                 break
         }
-        this.actions.until.any.push(id)
 
         if (active) {
             let delay = action.data.delay
