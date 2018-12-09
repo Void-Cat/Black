@@ -25,6 +25,9 @@ export default class StrokingController {
             this.carousel.push(new Audio())
             this.carousel[i].src = audiosrc
         }
+    }
+
+    init() {
         this.updateTicker()
         this.interval[1] = setInterval(() => this.slideTimeInterval(), 500)
         this.instantupdate = storage.get('settings.instanttickerupdate') || false
@@ -43,7 +46,6 @@ export default class StrokingController {
                 this.viewController.nextSlide()
                 this.slidetiming = 0
                 this.updateTicker()
-                this.updateSlideTime()
             } else
                 this.slidetiming += 0.5
     }
@@ -53,12 +55,6 @@ export default class StrokingController {
         let interval = this.slidetime * 1000 / this.strokerate
         this.interval[0] = setInterval(() => this.tickerInterval(), interval)
         this.viewController.info.nextStrokeCount(true)
-    }
-
-    updateSlideTime() {
-        clearInterval(this.interval[1])
-        let interval = this.slidetime * 1000
-        this.interval[1] = setInterval(() => this.slideTimeInterval(), interval)
         this.viewController.info.nextSlideTime(true)
     }
 
@@ -127,7 +123,7 @@ export default class StrokingController {
         if (this.slidetime < 1)
             this.slidetime = 1
         if (this.instantupdate)
-            this.updateSlideTime()
+            this.updateTicker()
         else
             this.viewController.info.nextSlideTime()
 

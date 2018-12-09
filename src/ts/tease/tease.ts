@@ -142,9 +142,10 @@ export default class Tease {
         this.viewController = new ViewController(this.imageController, this.exitController, '#view')
         this.strokingController = new StrokingController(this.viewController)
         this.keyController = new KeyController(this.exitController, this.viewController, this.strokingController)
-        this.actionController = new ActionController(this.imageController, this.goalController, this.strokingController, this.viewController)
+        this.actionController = new ActionController(this.imageController, this.goalController, this.strokingController, this.viewController, this.exitController)
         this.viewController.strokingController = this.strokingController
         this.viewController.actionController = this.actionController
+        this.viewController.exitController = this.exitController
 
         if (this.imageController.startcards.length > 0) {
             this.imageController.startcards.forEach((index) => {
@@ -157,7 +158,7 @@ export default class Tease {
     }
 
     public start() : void {
-        this.viewController.exitController = this.exitController
+        this.strokingController.init()
         this.viewController.jumpSlide(0)
         this.strokingController.pause(false)
         $('#preTease').hide()
