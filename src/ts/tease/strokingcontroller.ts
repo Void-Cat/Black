@@ -43,14 +43,23 @@ export default class StrokingController {
                 this.viewController.nextSlide()
                 this.slidetiming = 0
                 this.updateTicker()
+                this.updateSlideTime()
             } else
                 this.slidetiming += 0.5
     }
 
-    updateTicker(stash = true) {
+    updateTicker() {
         clearInterval(this.interval[0])
         let interval = this.slidetime * 1000 / this.strokerate
         this.interval[0] = setInterval(() => this.tickerInterval(), interval)
+        this.viewController.info.nextStrokeCount(true)
+    }
+
+    updateSlideTime() {
+        clearInterval(this.interval[1])
+        let interval = this.slidetime * 1000
+        this.interval[1] = setInterval(() => this.slideTimeInterval(), interval)
+        this.viewController.info.nextSlideTime(true)
     }
 
     /** Sets/Gets the strokerate
@@ -83,6 +92,8 @@ export default class StrokingController {
             this.strokerate = 0
         if (this.instantupdate)
             this.updateTicker()
+        else
+            this.viewController.info.nextStrokeCount()
 
         return this.strokerate
     }
@@ -116,7 +127,9 @@ export default class StrokingController {
         if (this.slidetime < 1)
             this.slidetime = 1
         if (this.instantupdate)
-            this.updateTicker()
+            this.updateSlideTime()
+        else
+            this.viewController.info.nextSlideTime()
 
         return this.slidetime
     }

@@ -5,8 +5,6 @@ import ExitController from './exitcontroller'
 import ImageController from './imagecontroller'
 import StrokingController from './strokingcontroller'
 import TeaseEvent from './teaseEvent'
-import { createDeflateRaw } from 'zlib';
-//import { MDCSnackbar } from '@material/snackbar'
 
 export default class ViewController {
     buffer: HTMLImageElement
@@ -125,11 +123,32 @@ export default class ViewController {
         })
     }
 
+    public info = {
+        nextSlideTime: (now: boolean = false) => {
+            if (now) {
+                $('#info-slidetime > td').text(`${this.strokingController.slidetime}`)
+                this.info.old.slideTime = this.strokingController.slidetime.toString()
+            } else
+                $('#info-strokes > td').text(`${this.info.old.slideTime} (${this.strokingController.slidetime})`)
+        },
+        nextStrokeCount: (now: boolean = false) => {
+            if (now) {
+                $('#info-strokes > td').text(`${this.strokingController.strokerate}`)
+                this.info.old.strokeCount = this.strokingController.strokerate.toString()
+            } else
+                $('#info-strokes > td').text(`${this.info.old.strokeCount} (${this.strokingController.strokerate})`)
+        },
+        old: {
+            slideTime: null,
+            strokeCount: null
+        }
+    }
+
     public instructions = {
         _counter: 0,
         _raw: {},
         add: (id: number, desc: string) : number => {
-            $('#info-instructions').append(`<span class=" instruction-id="${id}">${desc}</span>`)
+            $('#info-instructions').append(`<span class="mdc-typography--body2" instruction-id="${id}">${desc}<br></span>`)
             $('#info-instructions').slideDown(200)
             this.instructions._raw[id] = {id: id, desc: desc, element: $(`#info-instructions > [instruction-id="${id}"]`)}
             return id
