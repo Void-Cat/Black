@@ -74,6 +74,8 @@ export default class ActionController {
     public push(action: Action, active: boolean = true) : number {
         let id = this.actions.id++
         this.actions.raw[id] = action
+
+        console.debug(`[ActionController] Pushed new action with active state '${active}'.\n`, action)
         
         switch (action.data.fors.type) {
             case 'key':
@@ -144,6 +146,8 @@ export default class ActionController {
         let action = this.actions.raw[id]
         let activeIndex = this.actions.active.indexOf(id)
         let inactiveIndex = this.actions.inactive.indexOf(id)
+
+        console.debug(`[ActionController] Removing action with id '${id}'.\n`, action)
         
         // Remove from active/inactive lists
         if (activeIndex >= 0)
