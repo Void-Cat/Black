@@ -122,7 +122,7 @@ export default class Action {
             case 'slidetime':
             case 'strokecount':
             case 'sublevel':
-                if (!isNaN(parseInt(action, 10))) {
+                if (['=', '+', '-', '/', '*', 's'].indexOf(action[0]) === -1) {
                     this.data.action = {
                         value: parseInt(action, 10),
                         modifier: '='

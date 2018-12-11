@@ -4,7 +4,7 @@ import StrokingController from './strokingController'
 import ViewController from './viewcontroller'
 import Action from './teaseAction'
 import TeaseEvent from './teaseEvent'
-import { isNullOrUndefined } from 'util'
+import { isNullOrUndefined, isArray } from 'util'
 import GoalController from './goalcontroller'
 import ExitController from './exitcontroller'
 import { Card } from './tease';
@@ -47,7 +47,10 @@ export default class ActionController {
             instant: [],
             end: []
         },
-        delayed: {},
+        delayed: {
+            fors: {},
+            until: {}
+        },
         id: 0,
         inactive: [],
         raw: {}
@@ -256,12 +259,35 @@ export default class ActionController {
             }
         }
 
+        // Filter any duplicates out of the list
+        for (let i = 0; i < cards.length; i++) {
+            while (i !== cards.lastIndexOf(cards[i])) {
+                cards.splice(i, 1)
+                i--
+            }
+        }
+
+        // Make sure there's no priority conflicts
+        cards = this.prioritize(cards)
+
         // Execute all remaining eligible cards (if they meet conditional)
+        let instants = []
         cards.forEach((key) => {
             let action : Action = this.actions.raw[key]
-            if (this.conditional(action, key))
+            if (this.conditional(action, key)) {
                 this.execByType[action.data.type](action)
+                if (action.data.fors.type == 'instant')
+                    instants.push(key)
+            }
         })
+
+        // Remove all run "instant" FORS parameter cards
+        while (instants.length > 0) {
+            let key = instants.pop()
+            let index = [this.actions.fors.instant.indexOf(key), this.actions.fors.any.indexOf(key)]
+            this.actions.fors.instant.splice(index[0], 1)
+            this.actions.fors.any.splice(index[1], 1)
+        }
 
         // Clean all cards by UNTIL
         cards = this.actions.until.any
@@ -290,25 +316,106 @@ export default class ActionController {
             }
         }
 
+        for (let i = 0; i < cards.length; i++) {
+            // Filter cards to check if they need multiple UNTIL activations
+            let action = this.actions.raw[cards[i]]
+            let until = action.data.until
+            if (!isNullOrUndefined(until.count))
+                if (until.count > 1) {
+                    let live = action.getLive('until-count')
+                    if (isNullOrUndefined(live)) {
+                        action.setLive('until-count', until.count - 1)
+                        cards.splice(i, 1)
+                        i--
+                        continue
+                    } else if (parseInt(live, 10) > 1) {
+                        action.setLive('until-count', parseInt(live, 10) - 1)
+                        cards.splice(i, 1)
+                        i--
+                        continue
+                    }
+                }
+            // Filter cards to check if they're in the delayed UNTIL circle (and add them to it if they belong there)
+            if (!isNullOrUndefined(until.delay))
+                if (until.delay > 0) {
+                    let live = action.getLive('until-delay')
+                    if (typeof(live) == 'string')
+                        live = (live == 'true' ? true : false)
+                    
+                    if (live) {
+                        cards.splice(i, 1)
+                        i--
+                        continue
+                    }
+                    
+                    if (isNullOrUndefined(this.actions.delayed.until[until.delay]))
+                        this.actions.delayed.until[until.delay] = [cards[i]]
+                    else
+                        this.actions.delayed.until[until.delay].push(cards[i])
+                    action.setLive('until-delay', true)
+                    cards.splice(i, 1)
+                    i--
+                }
+        }
+
+        // Filter any duplicates out of the list
+        for (let i = 0; i < cards.length; i++) {
+            while (i !== cards.lastIndexOf(cards[i])) {
+                cards.splice(i, 1)
+                i--
+            }
+        }
+
         // Remove all remaining eligible cards
         cards.forEach((key) => {
+            let action = this.actions.raw[key]
+            if (isNullOrUndefined(action))
+                console.warn(`[ActionController/Exec] Tried to remove missing action with id '${key}'`)
+            else {
+                if (action.data.clean && action.data.until.type !== 'instant')
+                    this.cleanup(action)
+                this.remove(key)
+            }
+        })
+    }
+
+    public delay() {
+        // Get the next generation
+        let nextFors = this.actions.delayed.fors[0] || []
+        let nextUntil = this.actions.delayed.until[0] || []
+
+        // Process nextFors
+        nextFors.forEach((id) => this.actions.active.push(id))
+
+        // Process nextUntil
+        nextUntil.forEach((key) => {
             let action = this.actions.raw[key]
             if (action.data.clean)
                 this.cleanup(action)
             this.remove(key)
         })
-    }
 
-    public delay() {
-        let nextup = this.actions.delayed[0] || []
-        nextup.forEach((id) => this.actions.active.push(id))
-        let newdelay = {}
-        Object.keys(this.actions.delayed).forEach((key) => {
-            let newkey = parseInt(key, 10) - 1
-            if (newkey >= 0)
-                newdelay[newkey] = this.actions.delayed[key]
+        // Create new delay for FORS
+        let newFors = {}
+        Object.keys(this.actions.delayed.fors).forEach((oldDelay) => {
+            let newDelay = parseInt(oldDelay, 10) - 1
+            if (newDelay >= 0)
+                newFors[newDelay] = this.actions.delayed.fors[oldDelay]
         })
-        this.actions.delayed = newdelay
+
+        // Create new delay for UNTIL
+        let newUntil = {}
+        Object.keys(this.actions.delayed.until).forEach((oldDelay) => {
+            let newDelay = parseInt(oldDelay, 10) - 1
+            if (newDelay >= 0)
+                newUntil[newDelay] = this.actions.delayed.until[oldDelay]
+        })
+
+        // Set the new delays
+        this.actions.delayed = {
+            fors: newFors,
+            until: newUntil
+        }
     }
 
     conditional(action: Action, id: number, inforce?: boolean) : boolean {
@@ -450,11 +557,12 @@ export default class ActionController {
             let type = action.data.action.toLowerCase()
             let found = false
             for (let i = this.viewController.index; i < this.imageController.length; i++) {
-                if (this.imageController.cil[i].category == type) {
-                    this.imageController.cil[i].ignored = true
-                    found = true
-                    break
-                }
+                if (this.imageController.cil[i] !== null && this.imageController.cil[i] !== undefined)
+                    if (this.imageController.cil[i].category == type) {
+                        this.imageController.cil[i].ignored = true
+                        found = true
+                        break
+                    }
             }
             if (!found)
                 this.viewController.snackbar(`No future '${type}' card found to ignore.`)
@@ -481,8 +589,15 @@ export default class ActionController {
                 console.warn(`[ActionController] Failed to recognize mood modifier '${action.data.action}'.`)
         },
         on: (action: Action) => {
-            this.push(new Action(action.data.action, action.data.index), true)
-            this.exec(new TeaseEvent('instant', undefined, 'onaction'))
+            if (Array.isArray(action.data.action)) {
+                action.data.action.forEach((localAction) => {
+                    this.push(new Action(localAction, action.data.index), true)
+                })
+                this.exec(new TeaseEvent('instant', undefined, 'onaction'))
+            } else if (action.data.action !== null && typeof action.data.action == 'object') {
+                this.push(new Action(action.data.action, action.data.index), true)
+                this.exec(new TeaseEvent('instant', undefined, 'onaction'))
+            }
         },
         // Position needs work (id system)
         position: (action: Action) => {
@@ -496,6 +611,8 @@ export default class ActionController {
             let timing = action.data.action
             if (Array.isArray(timing)) {
                 let index = action.getLive('switch-index', 0)
+                if (index >= timing.length)
+                    index = 0
                 action.setLive('switch-index', index + 1)
                 timing = timing[index]
             }
@@ -505,6 +622,8 @@ export default class ActionController {
             let count = action.data.action
             if (Array.isArray(count)) {
                 let index = action.getLive('switch-index', 0)
+                if (index >= count.length)
+                    index = 0
                 action.setLive('switch-index', index + 1)
                 count = count[index]
             }
@@ -798,5 +917,40 @@ export default class ActionController {
                 return omega
         }
         return alpha
+    }
+
+    prioritize(actions: number[]) : number[] {
+        let eligible : number[] = []
+
+        // All actions without a set priority are automatically eligible
+        for (var i = 0; i < actions.length; i++) {
+            if (this.actions.raw[actions[i]].data.priority === -1) {
+                eligible.push(actions.splice(i, 1)[0])
+                i--
+            }
+        }
+
+        // Find the highest priority of each category
+        let compare = {}
+        for (let i = 0; i < actions.length; i++) {
+            let type = this.actions.raw[actions[i]].data.type
+            let priority = this.actions.raw[actions[i]].data.priority
+            if (Array.isArray(compare[type])) {
+                let typePriority = compare[type][0][1]
+                if (priority > typePriority)
+                    compare[type] = [[actions[i], priority]]
+                else if (priority == typePriority)
+                    compare[type].push([actions[i], priority])
+            } else
+                compare[type] = [[actions[i], priority]]
+        }
+
+        // Add all highest priorities to eligible
+        Object.keys(compare).forEach((key) => {
+            compare[key].forEach((actionPriorityCombo) => eligible.push(actionPriorityCombo[0]))
+        })
+
+        // Return eligible cards
+        return eligible
     }
 }
