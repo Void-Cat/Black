@@ -175,6 +175,18 @@ export default class ViewController {
             $(`.item-container[item-bodypart="${bodypart}"]`).append(`<span item-id="${id}">${item[0].toUpperCase() + item.substr(1).toLowerCase()}<br></span>`)
         },
         keys: 0,
+        modKeys: (n?: number) => {
+            if (n === null || n === undefined)
+                n = 1
+
+            let newkeys = this.items.keys + n
+            if (newkeys < 0)
+                newkeys = 0
+
+            this.items.keys = newkeys
+            $('#info-keys').text(this.items.keys)
+            $('#info-keys').parent().prop('disabled', (this.items.keys === 0))
+        },
         remove: (id: number) => {
             let map = this.items._map[id]
             if (isNullOrUndefined(map)) {
