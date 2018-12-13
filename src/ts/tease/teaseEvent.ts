@@ -6,8 +6,14 @@ export default class TeaseEvent {
     public value: any
 
     constructor(type: string, value?: any, origin?: string) {
-        this.type = type
+        this.type = type.toLowerCase()
+
+        if (typeof value === 'string')
+            value = value.toLowerCase()
         this.value = value
+
+        if (typeof origin === 'string')
+            origin = origin.toLowerCase()
         this.origin = origin
     }
 }
