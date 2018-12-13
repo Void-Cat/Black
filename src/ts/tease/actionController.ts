@@ -247,7 +247,7 @@ export default class ActionController {
                 break
             case 'instruction':
                 cards = cards.concat(this.actions.fors.instruction.any).concat(this.actions.fors.instruction.instruction[event.type])
-                if (event.type.indexOf('mistress') != -1 || event.type.indexOf('master') != -1)
+                if (event.value.indexOf('mistress') !== -1 || event.value.indexOf('master') !== -1)
                     cards = cards.concat(this.actions.fors.instruction.mistress)
                 break
         }
@@ -590,11 +590,13 @@ export default class ActionController {
         },
         on: (action: Action) => {
             if (Array.isArray(action.data.action)) {
+                console.debug(`[ActionController/ExecByAction] Pusing 'on' action array of length ${action.data.action.length}.`)
                 action.data.action.forEach((localAction) => {
                     this.push(new Action(localAction, action.data.index), true)
                 })
                 this.exec(new TeaseEvent('instant', undefined, 'onaction'))
             } else if (action.data.action !== null && typeof action.data.action == 'object') {
+                console.debug(`[ActionController/ExecByAction] Pusing single 'on' action.`)
                 this.push(new Action(action.data.action, action.data.index), true)
                 this.exec(new TeaseEvent('instant', undefined, 'onaction'))
             }
