@@ -48,7 +48,7 @@ export default class ViewController {
 
     broadcastSlide(index: number, runaction = true) : void {
         console.debug(`<!> Broadcast of index ${index}.`)
-        $('#info-slide > td').text(index)
+        $('#info-slide > td').text(index + 1)
         this.actionController.delay()
         if (!runaction)
             return

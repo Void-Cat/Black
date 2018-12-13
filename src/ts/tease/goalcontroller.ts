@@ -32,8 +32,22 @@ export default class GoalController {
     }
 
     public ctcState(state?: string | boolean) : string | boolean {
-        if (state === 'full' || state === 'ruin' || state === 'edge' || state === false)
+        if (state === 'full' || state === 'ruin' || state === 'edge' || state === false) {
             this.ctc = state
+            switch (this.ctc) {
+                case 'full':
+                    $('#info-cumming').text('Fully Allowed')
+                    break
+                case 'ruin':
+                    $('#info-cumming').text('Ruining Allowed')
+                    break
+                case 'edge':
+                    $('#info-cumming').text('Edging Allowed')
+                    break
+                case false:
+                    $('#info-cumming').text('Not Allowed')
+            }
+        }
         return this.ctc
     }
 
