@@ -186,7 +186,7 @@ export default class Action {
             until = until.split(':')
             if (until[0] == 'type')
                 until = until.splice(1)
-            this.data.until.type = until[0]
+            this.data.until.type = until[0].split(/[\*\+]/gi)[0]
             let l = until.length - 1
             let starindex = until[l].indexOf('*')
             let plusindex = until[l].indexOf('+')
