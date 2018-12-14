@@ -59,6 +59,7 @@
     "npm": "^6.5.0"
   },
   "devDependencies": {
+    "@material/theme": "^0.41.0",
     "@types/jquery": "^3.3.27",
     "@types/mousetrap": "^1.6.0",
     "@types/node": "^10.12.15",
