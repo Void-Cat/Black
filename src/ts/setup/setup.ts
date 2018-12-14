@@ -1,6 +1,6 @@
-var { isNullOrUndefined, isObject, isNull, isBoolean, isString, isNumber, isArray } = require('util')
+var { isNullOrUndefined, isBoolean, isString, isNumber, isArray } = require('util')
 
-declare const mdc, dialog, BrowserWindow, globalShortcut, swapper
+declare var mdc, dialog, BrowserWindow, globalShortcut, swapper, storage
 
 var categories
 
@@ -102,6 +102,11 @@ function loadSetup() {
         $('#teaseGoalQuitBlock').prop('checked', setup['blockexit'])
     if (isBoolean(setup['recurseimagefolder']))
         $('#recurseImage').prop('checked', setup['recurseimagefolder'])
+
+    document.querySelectorAll('.mdc-text-field__input').forEach((el) => {
+        if ($(el).val() !== '')
+            $(el).siblings('.mdc-floating-label').addClass('.mdc-floating-label--float-above')
+    })
 }
 
 function reportError(text: string, appendTo?: string) {
@@ -232,6 +237,12 @@ $(document).ready(() => {
         else {
             saveSetup()
             categories.save()
+
+            let dialog = new mdc.dialog.MDCDialog($('#tease-cover-dialog')[0])
+            dialog.escapeKeyAction = ''
+            dialog.scrimClickAction = ''
+            dialog.open()
+
             var window = new BrowserWindow({
                 backgroundColor: '#000000',
                 frame: false,
@@ -239,6 +250,7 @@ $(document).ready(() => {
                 show: false,
                 width: 800
             })
+            $('#force-close-tease').on('click', () => window.close())
             window.loadURL(`file://${__dirname}/html/tease.html`)
             window.setFullScreen(true)
             globalShortcut.register('CommandOrControl+Shift+Y', () => window.webContents.toggleDevTools())

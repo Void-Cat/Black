@@ -1,3 +1,5 @@
+declare var storage, mdc;
+
 class CategoryControl {
     categories = {}
     elements = {}
@@ -31,7 +33,7 @@ class CategoryControl {
     constructor(load = true) {
         if (load) {
             let cats = storage.get('tease.categories')
-            if (isObject(cats))
+            if (typeof cats === 'object' && cats !== null)
                 Object.keys(cats).forEach((id: any) => {
                     let cat = cats[id]
                     this.add(cat.name, true, cat.count, cat.ratio)
@@ -40,8 +42,8 @@ class CategoryControl {
     }
 
     createElement(id: number, name: string, count?: number, ratio?: number) : boolean {
-        if (isNullOrUndefined(count)) count = 0
-        if (isNullOrUndefined(ratio)) ratio = 0
+        if (count === null || count === undefined) count = 0
+        if (ratio === null || ratio === undefined) ratio = 0
         this.elements[id] = {
             count: this._createElement(id, name, count, 'count'),
             ratio: this._createElement(id, name, ratio, 'ratio')
@@ -71,7 +73,7 @@ class CategoryControl {
 
     _createElement(id: number, name: string, numerical: number, type: string) : JQuery<HTMLElement> {
         let baseElement = `
-        <div name="category-${id}" class="mdc-list-item">
+        <div name="category-${id}" class="mdc-list-item" style="padding: 16px 8px 8px;">
             <div class="mdc-text-field">
                 <input name="category-${id}-name" value="${name}" type="text" class="mdc-text-field__input" />
                 <label class="mdc-floating-label" for="category-${id}-name">Category Name</label>
@@ -113,15 +115,15 @@ class CategoryControl {
     }
 
     public update(id?: number, count?: number, ratio?: number) : boolean {
-        if (isNullOrUndefined(id)) {
+        if (id === null || id === undefined) {
             this.retrieveAll()
             return true;
         }
-        if (isNullOrUndefined(this.categories[id]) || (isNullOrUndefined(count) && isNullOrUndefined(ratio)))
+        if (isNullOrUndefined(this.categories[id]) || (count === null || count === undefined && ratio === null || ratio === undefined))
             return false;
-        if (!isNullOrUndefined(count))
+        if (!count === null || count === undefined)
             this.categories[id].count = count
-        if (!isNullOrUndefined(ratio))
+        if (!ratio === null || ratio === undefined)
             this.categories[id].ratio = ratio
         return true;
     }
@@ -131,7 +133,7 @@ class CategoryControl {
         Object.keys(this.categories).forEach((key) => {
             total += this.categories[key].count
         })
-        if (isNullOrUndefined(id))
+        if (id === null || id === undefined)
             Object.keys(this.categories).forEach((key) => {
                 this.categories[key].ratio = Math.round(this.categories[key].count / total)
                 $(this.elements[key].ratio).val(this.categories[key].ratio)

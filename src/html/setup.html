@@ -43,7 +43,7 @@
     <br>
 
     <div class="mdc-text-field">
-        <input type="number" min="0" class="mdc-text-field__input" id="pictureAmount">
+        <input type="number" min="0" class="mdc-text-field__input" id="pictureAmount" />
         <label for="pictureAmount" class="mdc-floating-label">Amount of pictures</label>
         <div class="mdc-line-ripple"></div>
     </div>
@@ -134,7 +134,7 @@
             </div>
         </div>
         <div id="cardMode-manual" style="display: none;">
-            <div id="cardMode-manual-list" class="mdc-list">
+            <div id="cardMode-manual-list" class="mdc-list" style="max-height: 600px; overflow-y: auto;">
     
             </div>
         </div>
@@ -205,6 +205,26 @@
     <span class="mdc-fab__icon material-icons" style="font-size: 28pt;">play_circle_outline</span>
 </button>
 
-<script>var exports</script>
+<div class="mdc-dialog" id="tease-cover-dialog" role="alertdialog" aria-modal="true" aria-labelledby="tease-cover-title" aria-describedby="tease-cover-content">
+    <div class="mdc-dialog__container">
+        <div class="mdc-dialog__surface">
+            <h2 class="mdc-dialog__title" id="tease-cover-title">Tease in Progress</h2>
+            <div class="mdc-dialog__content" id="tease-cover-content">
+                <p class="mdc-typography--body1">A tease is currently starting or already in progress. Please close the Tease to continue here.</p>
+            </div>
+            <footer class="mdc-dialog__actions">
+                <button class="mdc-button mdc-button--outlined" id="force-close-tease">
+                    <i class="material-icons mdc-button__icon" aria-hidden="true">close</i>
+                    Force Close Tease
+                </button>
+            </footer>
+        </div>
+    </div>
+    <div class="mdc-dialog__scrim"></div>
+</div>
+
+<script>
+    var exports
+</script>
 <script src="./ts/setup/categories.ts"></script>
 <script src="./ts/setup/setup.ts"></script>
