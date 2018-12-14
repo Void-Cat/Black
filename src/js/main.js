@@ -41,7 +41,7 @@ if (theme.active < 0 || theme.active >= theme.themelist.length) theme.setTheme(0
 var swapper = new Swapper('swapper', './html/')
 swapper.start('continue', 'home')
 
-var drawer = new mdc.drawer.MDCTemporaryDrawer(document.querySelector('.mdc-drawer--temporary'))
+var drawer = new mdc.drawer.MDCDrawer(document.querySelector('.mdc-drawer'))
 $('#menu-btn').click(() => {
   drawer.open = true;
 })
