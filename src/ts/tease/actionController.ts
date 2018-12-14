@@ -91,6 +91,9 @@ export default class ActionController {
                 break
             case 'instruction':
                 let value = action.data.fors.value
+                if (Array.isArray(value))
+                    value = value[0]
+
                 if (value == 'any')
                     this.actions.fors.instruction.any.push(id)
                 else if (value == 'mistress')
@@ -117,6 +120,9 @@ export default class ActionController {
                 break
             case 'instruction':
                 let value = action.data.until.value
+                if (Array.isArray(value))
+                    value = value[0]
+
                 if (value == 'any')
                     this.actions.until.instruction.any.push(id)
                 else if (value == 'mistress')
