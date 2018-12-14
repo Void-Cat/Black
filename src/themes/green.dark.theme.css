@@ -7292,6 +7292,10 @@ main {
   background-color: rgba(0, 0, 0, 0.5);
   margin-top: 24px; }
 
+.mdc-notched-outline {
+  opacity: 1;
+  padding-top: 4px; }
+
 ::-webkit-scrollbar {
   width: 5px; }
 
