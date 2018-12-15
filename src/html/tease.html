@@ -414,6 +414,10 @@
         
         let menu = new mdc.dialog.MDCDialog($('#tease-menu')[0])
 
+        $('[keybind-key]').each((i, el) => {
+            let key = tease.keyController.keymap[$(el).attr('keybind-key')]
+            $(el).text(key[0].toUpperCase() + key.slice(1))
+        })
         let keybinds = {
             change: (binding) => {
                 let known = ['next', 'previous', 'pause', 'strokeup', 'strokedown', 'timeup', 'timedown', 'mute'].indexOf(binding) !== -1
