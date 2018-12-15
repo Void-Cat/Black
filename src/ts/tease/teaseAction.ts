@@ -23,7 +23,7 @@ export default class Action {
             value: 'none',
             force: false
         },
-        delay: 0,
+        delay: 1,
         flags: [],
         fors: {
             type: 'instant',

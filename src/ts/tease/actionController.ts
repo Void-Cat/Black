@@ -7,7 +7,7 @@ import TeaseEvent from './teaseEvent'
 import { isNullOrUndefined, isArray } from 'util'
 import GoalController from './goalcontroller'
 import ExitController from './exitcontroller'
-import { Card } from './tease';
+import Tease, { Card } from './tease';
 
 export default class ActionController {
     actions = {
@@ -77,13 +77,13 @@ export default class ActionController {
     public push(action: Action, active: boolean = true) : number {
         let id = this.actions.id++
         this.actions.raw[id] = action
-
-        console.debug(`[ActionController] Pushed new action with active state '${active}'.\n`, action)
         
+        console.debug(`[ActionController/Push] Pushing new action '${id}' with FORS parameters: ${action.data.fors}.`)
         switch (action.data.fors.type) {
             case 'key':
             case 'picture':
             case 'instant':
+            case 'any':
                 this.actions.fors[action.data.fors.type].push(id)
                 break
             case 'cum':
@@ -99,7 +99,6 @@ export default class ActionController {
                 else if (value == 'mistress')
                     this.actions.fors.instruction.mistress.push(id)
                 else {
-                    console.debug(`[ActionController/Push] Pushing to FORS instruction/instruction with value '${value}'.`)
                     if (isNullOrUndefined(this.actions.fors.instruction.instruction[value]))
                         this.actions.fors.instruction.instruction[value] = [id]
                     else
@@ -140,10 +139,10 @@ export default class ActionController {
         if (active) {
             let delay = action.data.delay
             if (delay > 0)
-                if (this.actions.delayed[delay] === null || this.actions.delayed[delay] === undefined)
-                    this.actions.delayed[delay] = [id]
+                if (this.actions.delayed.fors[delay] === null || this.actions.delayed.fors[delay] === undefined)
+                    this.actions.delayed.fors[delay] = [id]
                 else
-                    this.actions.delayed[delay].push(id)
+                    this.actions.delayed.fors[delay].push(id)
             else
                 this.actions.active.push(id)
         }
@@ -389,14 +388,21 @@ export default class ActionController {
 
     public delay() {
         // Get the next generation
-        let nextFors = this.actions.delayed.fors[0] || []
-        let nextUntil = this.actions.delayed.until[0] || []
+        let nextFors = this.actions.delayed.fors[1] || []
+        let nextUntil = this.actions.delayed.until[1] || []
 
         // Process nextFors
-        nextFors.forEach((id) => this.actions.active.push(id))
+        let instant = false
+        nextFors.forEach((id: number) => {
+            this.actions.active.push(id)
+            if (this.actions.raw[id].data.fors.type === 'instant')
+                instant = true
+        })
+        if (instant)
+            this.exec(new TeaseEvent('instant', undefined, 'delay'))
 
         // Process nextUntil
-        nextUntil.forEach((key) => {
+        nextUntil.forEach((key: number) => {
             let action = this.actions.raw[key]
             if (action.data.clean)
                 this.cleanup(action)
@@ -407,7 +413,7 @@ export default class ActionController {
         let newFors = {}
         Object.keys(this.actions.delayed.fors).forEach((oldDelay) => {
             let newDelay = parseInt(oldDelay, 10) - 1
-            if (newDelay >= 0)
+            if (newDelay >= 1)
                 newFors[newDelay] = this.actions.delayed.fors[oldDelay]
         })
 
@@ -415,7 +421,7 @@ export default class ActionController {
         let newUntil = {}
         Object.keys(this.actions.delayed.until).forEach((oldDelay) => {
             let newDelay = parseInt(oldDelay, 10) - 1
-            if (newDelay >= 0)
+            if (newDelay >= 1)
                 newUntil[newDelay] = this.actions.delayed.until[oldDelay]
         })
 
@@ -812,6 +818,8 @@ export default class ActionController {
                         else
                             this.contact._active = false
                     })
+                    this.contact._dialog.scrimClickAction = 'close'
+                    this.contact._dialog.escapeKeyAction = 'close'
                     break
 
                 case 'prompt':
@@ -829,6 +837,8 @@ export default class ActionController {
                         else
                             this.contact._active = false
                     })
+                    this.contact._dialog.scrimClickAction = ''
+                    this.contact._dialog.escapeKeyAction = ''
                     break
 
                 case 'options':
@@ -850,10 +860,12 @@ export default class ActionController {
                         else
                             this.contact._active = false
                     })
+                    this.contact._dialog.scrimClickAction = ''
+                    this.contact._dialog.escapeKeyAction = ''
             }
 
             // Show the dialog
-            this.contact._dialog.show()
+            this.contact._dialog.open()
 
             // Setup the timer for the dialog to automagically disappear
             if (!isNullOrUndefined(item.time) && item.time > 0) {

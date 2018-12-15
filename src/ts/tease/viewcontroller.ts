@@ -47,7 +47,7 @@ export default class ViewController {
     }
 
     broadcastSlide(index: number, runaction = true) : void {
-        console.debug(`<!> Broadcast of index ${index}.`)
+        console.info(`<!> Broadcast of index ${index}.`)
         $('#info-slide > td').text(index + 1)
         this.actionController.delay()
         if (!runaction)
@@ -65,13 +65,17 @@ export default class ViewController {
             console.debug('  > is card')
             this.noBroadcast.push(index)
             let ctis = this.imageController.cards[info['cardindex']]
-            console.info(`Found card at index ${index}:\n`, ctis)
+            console.debug(`Found card at index ${index}:\n`, ctis)
             let catname = this.imageController.categories[info['category']].name
             this.actionController.exec(new TeaseEvent('instruction', catname, 'view'))
+            let instant = false
             ctis.actions.forEach((action) => {
                 this.actionController.push(action, true)
-                this.actionController.exec(new TeaseEvent('instant', undefined, 'view'))
+                if (action.data.fors.type === 'instant' && action.data.delay > 0)
+                    instant = true
             })
+            if (instant)
+                this.actionController.exec(new TeaseEvent('instant', undefined, 'view'))
         } else {
             console.debug('  > is nobroadcast')
         }

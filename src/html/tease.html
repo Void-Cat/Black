@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="../css/material-icons/material-icons.css">
     <link rel="stylesheet" href="../css/material-components-web/material-components-web.min.css">
     <link rel="stylesheet" id="theme">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'">
     <style>
         html {
             background-color: black;
@@ -192,30 +193,30 @@
             
         </div>
         
-        <aside id="contact-element" class="mdc-dialog" role="alertdialog" aria-labelledby="contact-label" aria-describedby="contact-description">
-            <div class="mdc-dialog__surface">
-                <header class="mdc-dialog__header">
-                    <h2 class="mdc-dialog__header__title">
+        <div id="contact-element" class="mdc-dialog" role="alertdialog" aria-labelledby="contact-label" aria-describedby="contact-description">
+            <div class="mdc-dialog__container">
+                <div class="mdc-dialog__surface">
+                    <h2 class="mdc-dialog__title">
                         <i id="contact-icon" class="material-icons" style="vertical-align: sub;"></i>
                         <span id="contact-label"></span>
                     </h2>
-                </header>
-                <section id="contact-description" class="mdc-dialog__body" style="color: var(--mdc-theme-text-secondary-on-dark);"></section>
-                <footer id="contact-footer-message" class="mdc-dialog__footer" style="display: none; text-align: right;">
-                    <button id="contact-dismiss" class="mdc-button mdc-button--primary">Dismiss</button>
-                </footer>
-                <footer id="contact-footer-prompt" class="mdc-dialog__footer" style="display: none;">
-                    <div class="mdc-text-field" style="left: 5%; width: 80%; position: absolute; bottom: 7px;">
-                        <input type="text" id="contact-prompt" class="mdc-text-field__input">
-                        <label for="contact-prompt" class="mdc-floating-label mdc-floating-label--float-above">Input</label>
-                        <div class="mdc-line-ripple"></div>
-                    </div>
-                    <button id="contact-submit" class="mdc-button mdc-button--primary" style="float: right;">Submit</button>
-                </footer>
-                <footer id="contact-footer-options" class="mdc-dialog__footer" style="display: none;"></footer>
+                    <section id="contact-description" class="mdc-dialog__content" style="color: var(--mdc-theme-text-secondary-on-dark);"></section>
+                    <footer id="contact-footer-message" class="mdc-dialog__actions" style="display: none; text-align: right;">
+                        <button id="contact-dismiss" class="mdc-button mdc-button--primary">Dismiss</button>
+                    </footer>
+                    <footer id="contact-footer-prompt" class="mdc-dialog__actions" style="display: none;">
+                        <div class="mdc-text-field" style="left: 5%; width: 80%; position: absolute; bottom: 7px;">
+                            <input type="text" id="contact-prompt" class="mdc-text-field__input">
+                            <label for="contact-prompt" class="mdc-floating-label mdc-floating-label--float-above">Input</label>
+                            <div class="mdc-line-ripple"></div>
+                        </div>
+                        <button id="contact-submit" class="mdc-button mdc-button--primary" style="float: right;">Submit</button>
+                    </footer>
+                    <footer id="contact-footer-options" class="mdc-dialog__actions" style="display: none;"></footer>
+                </div>
             </div>
-            <div class="mdc-dialog__backdrop"></div>
-        </aside>
+            <div class="mdc-dialog__scrim"></div>
+        </div>
     </main>
     
     <footer id="toolbar" style="display: none;">

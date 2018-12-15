@@ -66,6 +66,8 @@ export default class StrokingController {
         if (!isNumber(n))
             return this.strokerate
 
+        console.debug(`[StrokingController/setStrokerate] Setting strokerate: ${this.strokerate} ${modifier || '='} ${n}.`)
+
         switch(modifier) {
             case '+':
                 this.strokerate += n
@@ -86,6 +88,7 @@ export default class StrokingController {
         
         if (this.strokerate < 0)
             this.strokerate = 0
+
         if (this.instantupdate)
             this.updateTicker()
         else
