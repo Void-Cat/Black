@@ -14,7 +14,7 @@
             height: 100vh;
             width: 100vw;
         }
-
+        
         #leftBar {
             left: 0;
             margin: 3px 0 0 3px;
@@ -38,7 +38,7 @@
             min-width: 100px;
             max-width: 200px;
         }
-
+        
         .sidebar-controls {
             position: absolute;
             top: 2px;
@@ -46,14 +46,14 @@
             text-align: right;
             z-index: 3;
         }
-
+        
         th {
             text-align: left;
         }
         td {
             text-align: right;
         }
-
+        
         .sidebar-smaller {
             max-height: 28px !important;
         }
@@ -64,7 +64,7 @@
             max-height: 5%;
             position: fixed;
         }
-
+        
         #view {
             display: block;
             left: 50%;
@@ -74,7 +74,7 @@
             top: 50%;
             transform: translate(-50%, -50%);
         }
-
+        
         #view-container {
             height: 100vh;
             position: fixed;
@@ -97,7 +97,7 @@
     
     <main id="tease" style="display: none;">
         <div id="leftBar" class="sidebar">
-            <div class="mdc-card">
+            <div id="info-card" class="mdc-card">
                 <div class="mdc-card__media mdc-card__media--16-9" card-bg="../img/sidebarimage1.jpg">
                     <div class="sidebar-controls">
                         <i class="material-icons native-btn" visibility>visibility_off</i>
@@ -133,8 +133,8 @@
                     </table>
                 </div>
             </div>
-
-            <div class="mdc-card" style="margin-top: 10px;">
+            
+            <div id="status-card" class="mdc-card" style="margin-top: 10px;">
                 <div class="mdc-card__media mdc-card__media--16-9" card-bg="../img/sidebarimage2.jpg">
                     <div class="sidebar-controls">
                         <i class="material-icons native-btn" visibility>visibility_off</i>
@@ -154,13 +154,13 @@
                     <div id="info-instructions-container">
                         <h1 class="mdc-typography--subtitle2" style="margin-bottom: 2px;"><b>Instructions</b></h1>
                         <div id="info-instructions" class="mdc-typography--body2" style="margin-left: 3px;">
-
+                            
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div class="mdc-card" style="margin-top: 10px;">
+            
+            <div id="items-card" class="mdc-card" style="margin-top: 10px;">
                 <div class="mdc-card__media mdc-card__media--16-9" card-bg="../img/sidebarimage3.jpg">
                     <div class="sidebar-controls">
                         <i class="material-icons native-btn" visibility>visibility_off</i>
@@ -191,7 +191,7 @@
         <div id="rightBar" class="sidebar">
             
         </div>
-
+        
         <aside id="contact-element" class="mdc-dialog" role="alertdialog" aria-labelledby="contact-label" aria-describedby="contact-description">
             <div class="mdc-dialog__surface">
                 <header class="mdc-dialog__header">
@@ -221,7 +221,137 @@
     <footer id="toolbar" style="display: none;">
         
     </footer>
-
+    
+    <!-- Menu -->
+    
+    <button id="menuButton" class="mdc-fab" aria-label="Menu" onclick="menu.open()" style="position: fixed; right: 15px; top: 15px;">
+        <span class="mdc-fab__icon material-icons">menu</span>
+    </button>
+    
+    <div id="tease-menu" class="mdc-dialog mdc-dialog--stacked" role="alertdialog" aria-modal="true" aria-labelledby="tease-menu-title" aria-describedby="tease-menu-content">
+        <div class="mdc-dialog__container">
+            <div class="mdc-dialog__surface">
+                <h2 class="mdc-dialog__title" id="tease-menu-title">Tease Menu</h2>
+                <div id="tease-menu-content" class="mdc-dialog__content">
+                    <ul class="mdc-list" id="tease-menu-menu">
+                        <li class="mdc-list-item" id="tease-menu-keybinds" onclick="keybinds.show()">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">keyboard</span>
+                            Key Binds
+                        </li>
+                        <li class="mdc-list-item" id="tease-menu-showinfo" onclick="$('#info-card').slideDown(200)">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">visibility</span>
+                            Show Information
+                        </li>
+                        <li class="mdc-list-item" id="tease-menu-showstatus" onclick="$('#status-card').slideDown(200)">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">visibility</span>
+                            Show Status
+                        </li>
+                        <li class="mdc-list-item" id="tease-menu-showitems" onclick="$('#items-card').slideDown(200)">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">visibility</span>
+                            Show Items
+                        </li>
+                        <li class="mdc-list-item" id="tease-menu-showcontrol">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">visibility</span>
+                            Show Control
+                        </li>
+                        <li class="mdc-list-item" id="tease-menu-changetheme" onclick="nextTheme()">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">color_lens</span>
+                            Change Theme
+                        </li>
+                        <li class="mdc-list-item" id="tease-menu-resetview">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">view_compact</span>
+                            Reset View
+                        </li>
+                    </ul>
+                    <ul class="mdc-list mdc-list--two-line" id="tease-menu-keybinds-menu" style="display: none;">
+                        <li class="mdc-list-item" onclick="keybinds.change('next');">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">skip_next</span>
+                            <span class="mdc-list-item__text">
+                                <span class="mdc-list-item__primary-text">Next Slide</span>
+                                <span keybind-key="next" class="mdc-list-item__secondary-text">Right</span>
+                            </span>
+                        </li>
+                        <li class="mdc-list-item" onclick="keybinds.change('previous')">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">skip_previous</span>
+                            <span class="mdc-list-item__text">
+                                <span class="mdc-list-item__primary-text">Previous Slide</span>
+                                <span keybind-key="previous" class="mdc-list-item__secondary-text">Left</span>
+                            </span>
+                        </li>
+                        <li class="mdc-list-item" onclick="keybinds.change('pause')">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">pause</span>
+                            <span class="mdc-list-item__text">
+                                <span class="mdc-list-item__primary-text">Pause Tease</span>
+                                <span keybind-key="pause" class="mdc-list-item__secondary-text">Space</span>
+                            </span>
+                        </li>
+                        <li class="mdc-list-item" onclick="keybinds.change('strokeup')">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">vertical_align_top</span>
+                            <span class="mdc-list-item__text">
+                                <span class="mdc-list-item__primary-text">Stroke Count Up</span>
+                                <span keybind-key="strokeup" class="mdc-list-item__secondary-text">Up</span>
+                            </span>
+                        </li>
+                        <li class="mdc-list-item" onclick="keybinds.change('strokedown')">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">vertical_align_bottom</span>
+                            <span class="mdc-list-item__text">
+                                <span class="mdc-list-item__primary-text">Stroke Count Down</span>
+                                <span keybind-key="strokedown" class="mdc-list-item__secondary-text">Down</span>
+                            </span>
+                        </li>
+                        <li class="mdc-list-item" onclick="keybinds.change('timeup')">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">fast_forward</span>
+                            <span class="mdc-list-item__text">
+                                <span class="mdc-list-item__primary-text">Slide Time Up</span>
+                                <span keybind-key="timeup" class="mdc-list-item__secondary-text">Pageup</span>
+                            </span>
+                        </li>
+                        <li class="mdc-list-item" onclick="keybinds.change('timedown')">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">fast_rewind</span>
+                            <span class="mdc-list-item__text">
+                                <span class="mdc-list-item__primary-text">Slide Time Down</span>
+                                <span keybind-key="timedown" class="mdc-list-item__secondary-text">Pagedown</span>
+                            </span>
+                        </li>
+                        <li class="mdc-list-item" onclick="keybinds.change('mute')">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">volume_off</span>
+                            <span class="mdc-list-item__text">
+                                <span class="mdc-list-item__primary-text">Mute</span>
+                                <span keybind-key="mute" class="mdc-list-item__secondary-text">M</span>
+                            </span>
+                        </li>
+                        <li class="mdc-list-item mdc-list-item--disabled">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">exit_to_app</span>
+                            <span class="mdc-list-item__text">
+                                <span class="mdc-list-item__primary-text">Exit</span>
+                                <span keybind-key="exit" class="mdc-list-item__secondary-text">Escape</span>
+                            </span>
+                        </li>
+                        <li class="mdc-list-item mdc-button mdc-button--primary" onclick="keybinds.hide()">
+                            <span class="mdc-list-item__graphic material-icons">arrow_back</span>
+                            <span class="mdc-list-item__text">
+                                <span class="mdc-list-item__primary-text">Back To Menu</span>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+                <footer class="mdc-dialog__actions">
+                    <button type="button" class="mdc-button mdc-dialog__button mdc-button--primary mdc-dialog__button--default" style="width: 100%;" data-mdc-dialog-action="close">
+                        <i class="material-icons mdc-button__icon" aria-hidden="true">play_arrow</i>
+                        Resume Tease
+                    </button>
+                    <button id="quit-button" type="button" class="mdc-button mdc-dialog__button mdc-button--secondary" onclick="tease.exitController.exitTease('userexit')" data-mdc-dialog-action="close" style="width: 100%;">
+                        <i class="material-icons mdc-button__icon" aria-hidden="true">exit_to_app</i>
+                        Quit Tease
+                    </button>
+                </footer>
+            </div>
+        </div>
+        <div class="mdc-dialog__scrim"></div>
+    </div>
+    
+    <!-- Snackbar -->
+    
     <div class="mdc-snackbar" aria-live="assertive" aria-atomic="true" aria-hidden="true">
         <div class="mdc-snackbar__text"></div>
         <div class="mdc-snackbar__action-wrapper">
@@ -248,32 +378,82 @@
         import Tease from '../ts/tease/tease.ts'
         //import * as Mousetrap from 'mousetrap'
         var tease = new Tease()
-
+        
         var theme = new Theme({
             active: storage.get('theme.index'),
             path: '../themes/',
             themelist: [
-                // 'red',
-                'red.dark',
-                // 'blue',
-                'blue.dark',
-                // 'green',
-                'green.dark',
-                // 'yellow',
-                'yellow.dark',
-                // 'purple',
-                'purple.dark',
-                // 'black',
-                'black.dark'
+            // 'red',
+            'red.dark',
+            // 'blue',
+            'blue.dark',
+            // 'green',
+            'green.dark',
+            // 'yellow',
+            'yellow.dark',
+            // 'purple',
+            'purple.dark',
+            // 'black',
+            'black.dark'
             ]
         })
         theme.setTheme(storage.get('theme.index') || 0)
         if (theme.active < 0 || theme.active >= theme.themelist.length) theme.setTheme(0)
+        function nextTheme() {
+            let nextTheme = storage.get('theme.index') + 1
+            if (nextTheme < 0 || nextTheme >= theme.themelist.length)
+            theme.setTheme(0)
+            else
+            theme.setTheme(nextTheme)
+        }
+        
+        let ripples = []
+        $('.mdc-button, .mdc-fab').each((i, el) => {
+            ripples.push(new mdc.ripple.MDCRipple($(el)[0]))
+        })
+        
+        let menu = new mdc.dialog.MDCDialog($('#tease-menu')[0])
 
+        let keybinds = {
+            change: (binding) => {
+                let known = ['next', 'previous', 'pause', 'strokeup', 'strokedown', 'timeup', 'timedown', 'mute'].indexOf(binding) !== -1
+                if (!known)
+                    return console.warn('[Tease.HTML/keybinds] Tried to change unknown binding.')
+                
+                tease.keyController.pause(true)
+
+                $(document).on('keydown', (event) => {
+                    $(document).off('keydown')
+
+                    let key = event.key.toLowerCase()
+                    if (key.match(/arrow[a-z]+/gi) !== null)
+                        key = key.slice(5)
+                    else if (key === ' ')
+                        key = 'space'
+                    
+                    tease.keyController.changeKey(binding, key)
+                    $(`[keybind-key="${binding}"]`).text(key[0].toUpperCase() + key.slice(1))
+
+                    tease.keyController.pause(false)
+                })
+                $(`[keybind-key="${binding}"]`).text('Press a key...')
+            },
+            hide: () => {
+                $('#tease-menu-menu, #quit-button').slideDown(200)
+                $('#tease-menu-keybinds-menu').slideUp(200)
+                $('#tease-menu-title').text('Tease Menu')
+            },
+            show: () => {
+                $('#tease-menu-menu, #quit-button').slideUp(200)
+                $('#tease-menu-keybinds-menu').slideDown(200)
+                $('#tease-menu-title').text('Key Binds')
+            }
+        }
+        
         $('[card-bg]').each((i, el) => {
             $(el).css('background', `linear-gradient(var(--mdc-theme--halfopacity), var(--mdc-theme--halfopacity)), url(${$(el).attr('card-bg')})`)
         })
-
+        
         $('[unfold]').click((data) => {
             let el = data.currentTarget
             let sidebar = $(el).parent().parent()
@@ -285,7 +465,7 @@
                 $(sidebar).removeClass('sidebar-smaller')
             }
         })
-
+        
         $('[expand]').click((data) => {
             let el = data.currentTarget
             let card = $(el).parent().parent().parent()
@@ -315,7 +495,7 @@
             let card = $(el).parent().parent().parent()
             $(card).slideUp(200)
         })
-
+        
         $(document).ready(() => {
             mdc.autoInit()
         })

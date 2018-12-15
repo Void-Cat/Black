@@ -4,6 +4,8 @@ import ExitController from './exitcontroller'
 import StrokingController from './strokingcontroller'
 import ViewController from './viewcontroller'
 
+(function(a){var b=a.prototype.stopCallback;a.prototype.stopCallback=function(a,c,d){return this.paused?!0:b.call(this,a,c,d)};a.prototype.pause=function(){this.paused=!0};a.prototype.unpause=function(){this.paused=!1};a.init()})(Mousetrap);
+
 export default class KeyController {
     exitController: ExitController
     keymap = {
@@ -17,6 +19,7 @@ export default class KeyController {
         exit: 'escape',
         mute: 'm'
     }
+    private paused: boolean = false
     viewController: ViewController
     strokingController: StrokingController
 
@@ -27,6 +30,31 @@ export default class KeyController {
 
         Object.assign(this.keymap, storage.get('settings.keymap'))
 
+        this.bindkeys()
+    }
+
+    public pause(toggle?: boolean) : boolean {
+        switch (toggle) {
+            case null:
+            case undefined:
+                return this.pause(!this.paused)
+
+            case true:
+                this.paused = true
+                Mousetrap.pause()
+                return true
+            
+            case false:
+                this.paused = false
+                Mousetrap.unpause()
+                return false
+        }
+    }
+
+    public changeKey(mapping: string, key: string) {
+        Mousetrap.reset()
+        this.keymap[mapping] = key
+        storage.set('settings.keymap', this.keymap)
         this.bindkeys()
     }
 
