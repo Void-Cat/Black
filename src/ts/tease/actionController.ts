@@ -98,11 +98,13 @@ export default class ActionController {
                     this.actions.fors.instruction.any.push(id)
                 else if (value == 'mistress')
                     this.actions.fors.instruction.mistress.push(id)
-                else
+                else {
+                    console.debug(`[ActionController/Push] Pushing to FORS instruction/instruction with value '${value}'.`)
                     if (isNullOrUndefined(this.actions.fors.instruction.instruction[value]))
                         this.actions.fors.instruction.instruction[value] = [id]
                     else
                         this.actions.fors.instruction.instruction[value].push(id)
+                }
                 break
         }
         this.actions.fors.any.push(id)
@@ -560,18 +562,29 @@ export default class ActionController {
                 console.warn(`[ActionController/ExecByType/ctc] Action not recognized: ${action.data.action}.`)
         },
         ignore: (action: Action) => {
-            let type = action.data.action.toLowerCase()
+            let typeName = action.data.action.toLowerCase()
+            let typeMatch : string[] = []
+
+            Object.keys(this.imageController.categories).forEach((cat) => {
+                let catName = this.imageController.categories[cat].name.toLowerCase()
+                if (typeName === 'mistress' && catName.match(/(mistress|master)/gi).length > 0)
+                    typeMatch.push(cat)
+                
+                if (typeName == catName)
+                    typeMatch.push(cat)
+            })
+
             let found = false
             for (let i = this.viewController.index; i < this.imageController.length; i++) {
                 if (this.imageController.cil[i] !== null && this.imageController.cil[i] !== undefined)
-                    if (this.imageController.cil[i].category == type) {
+                    if (typeMatch.indexOf(this.imageController.cil[i].category) !== -1) {
                         this.imageController.cil[i].ignored = true
                         found = true
                         break
                     }
             }
             if (!found)
-                this.viewController.snackbar(`No future '${type}' card found to ignore.`)
+                this.viewController.snackbar(`No future '${typeName}' card found to ignore.`)
         },
         instruction: (action: Action) => {
             let id = parseInt(action.data.index.toString() + Math.floor(Math.random() * 100).toString(), 10)
