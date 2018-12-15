@@ -54,8 +54,8 @@ export default class ViewController {
             return
         let info = this.imageController.cil[index]
         if (isNullOrUndefined(info)) {
-            console.debug('  > is image')
-            this.actionController.exec(new TeaseEvent('image', undefined, 'view'))
+            console.debug('  > is picture')
+            this.actionController.exec(new TeaseEvent('picture', undefined, 'view'))
         } else if (info.ignored) {
             console.debug('  > is ignored cared')
             this.imageController.cil[index].ignored = false
@@ -162,6 +162,7 @@ export default class ViewController {
     }
 
     public items = {
+        _chastity: -1,
         _counter: {},
         _map: {},
         add: (id: number, item: string, bodypart: string) => {
@@ -173,6 +174,17 @@ export default class ViewController {
             }
             this.items._counter[bodypart].push(id)
             $(`.item-container[item-bodypart="${bodypart}"]`).append(`<span item-id="${id}">${item[0].toUpperCase() + item.substr(1).toLowerCase()}<br></span>`)
+        },
+        chastity: (actionId: number, remove: boolean = false) => {
+            if (this.items._chastity !== -1 && this.actionController.actions.raw[actionId] != null)
+                this.actionController.remove(this.items._chastity)
+            this.items._chastity = -1
+            this.strokingController.chastity(!remove)
+            this.items.remove(-1, true)
+            if (!remove) {
+                this.items._chastity = actionId
+                this.items.add(-1, 'Chastity Device', 'chastity')
+            }
         },
         keys: 0,
         modKeys: (n?: number) => {
@@ -187,10 +199,11 @@ export default class ViewController {
             $('#info-keys').text(this.items.keys)
             $('#info-keys').parent().prop('disabled', (this.items.keys === 0))
         },
-        remove: (id: number) => {
+        remove: (id: number, supressWarning: boolean = false) => {
             let map = this.items._map[id]
             if (isNullOrUndefined(map)) {
-                console.warn(`[ViewController/items] Tried to remove item with id ${id}, which wasn't found.`)
+                if (!supressWarning)
+                    console.warn(`[ViewController/items] Tried to remove item with id ${id}, which wasn't found.`)
                 return
             }
             delete this.items._map[id]

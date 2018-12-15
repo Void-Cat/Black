@@ -283,7 +283,7 @@ export default class ActionController {
         cards.forEach((key) => {
             let action : Action = this.actions.raw[key]
             if (this.conditional(action, key)) {
-                this.execByType[action.data.type](action)
+                this.execByType[action.data.type](action, parseInt(key, 10))
                 if (action.data.fors.type == 'instant')
                     instants.push(key)
             }
@@ -312,7 +312,7 @@ export default class ActionController {
                 break
             case 'instruction':
                 cards = cards.concat(this.actions.until.instruction.any).concat(this.actions.until.instruction.instruction[event.type])
-                if (event.type.indexOf('mistress') != -1 || event.type.indexOf('master') != -1)
+                if (event.value.indexOf('mistress') != -1 || event.value.indexOf('master') != -1)
                     cards = cards.concat(this.actions.until.instruction.mistress)
         }
 
@@ -535,8 +535,11 @@ export default class ActionController {
     }
 
     execByType = {
-        chastity: (action: Action) => {
-            this.strokingController.chastity(action.data.action)
+        chastity: (action: Action, id: number) => {
+            if (action.data.action)
+                this.viewController.items.chastity(id)
+            else
+                this.viewController.items.chastity(-1, true)
         },
         contact: (action: Action) => {
             let contact = action.data.action
@@ -597,7 +600,10 @@ export default class ActionController {
             action.setLive('item-id', id)
         },
         key: (action: Action) => {
-            this.viewController.items.keys += action.data.action
+            let amount = parseInt(action.data.action, 10)
+            if (isNaN(amount))
+                amount = 1
+            this.viewController.items.modKeys(amount)
         },
         mood: (action: Action) => {
             if (action.data.action == 'good')
