@@ -747,7 +747,7 @@ export default class ActionController {
             }
             if (!isNullOrUndefined(answers['carry'])) {
                 let carry : any = JSON.stringify(answers['carry'])
-                carry.replace('//carry//', input)
+                carry = carry.replace('//carry//', input)
                 carry = JSON.parse(carry)
                 this.push(new Action(carry, this.viewController.index))
                 this.exec(new TeaseEvent('instant', undefined, 'contact'))
