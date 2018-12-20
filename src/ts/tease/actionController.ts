@@ -78,7 +78,7 @@ export default class ActionController {
         let id = this.actions.id++
         this.actions.raw[id] = action
         
-        console.debug(`[ActionController/Push] Pushing new action '${id}' with FORS parameters: ${action.data.fors}.`)
+        console.debug(`[ActionController/Push] Pushing new action '${id}' with FORS parameters:`, action.data.fors)
         switch (action.data.fors.type) {
             case 'key':
             case 'picture':
@@ -108,6 +108,7 @@ export default class ActionController {
         }
         this.actions.fors.any.push(id)
 
+        console.debug(`[ActionController/Push] Pushing '${id}' with UNTIL parameters:`, action.data.until)
         switch (action.data.until.type) {
             case 'end':
             case 'instant':
@@ -654,6 +655,7 @@ export default class ActionController {
         strokecount: (action: Action) => {
             let count = action.data.action
             if (Array.isArray(count)) {
+                console.debug(`[ActionController/ExecByType] Strokecount has encountered an array of length ${count.length}.`)
                 let index = action.getLive('switch-index', 0)
                 if (index >= count.length)
                     index = 0

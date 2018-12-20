@@ -189,8 +189,28 @@
             <img id="view" src="" />
         </div>
         
-        <div id="rightBar" class="sidebar">
-            
+        <div id="rightBar" class="sidebar" style="float: right; position: fixed; top: 80px;">
+            <div id="orgasms-card" class="mdc-card">
+                <div class="mdc-card__media mdc-card__media--16-9" card-bg="../img/sidebarimage4.jpg">
+                    <div class="sidebar-controls">
+                        <i class="material-icons native-btn" visibility>visibility_off</i>
+                        <i class="material-icons native-btn" unfold="less">unfold_less</i>
+                        <i class="material-icons native-btn" expand="less">expand_less</i>
+                    </div>
+                    <div class="mdc-card__media-content" style="padding: 2px;">Orgasms</div>
+                </div>
+                <div class="mdc-card__actions" style="display: block;">
+                    <button id="cumming_btn-full" class="mdc-button" style="width: 100%;" onclick="cumEvent('full')">
+                        <i class="material-icons mdc-button__icon">flare</i>I Came
+                    </button>
+                    <button id="cumming_btn-ruin" class="mdc-button" style="margin-top: 5px; width: 100%;" onclick="cumEvent('ruin')">
+                        <i class="material-icons mdc-button__icon">bubble_chart</i>I Ruined
+                    </button>
+                    <button id="cumming_btn-edge" class="mdc-button" style="margin-top: 5px; width: 100%;" onclick="cumEvent('edge')">
+                        <i class="material-icons mdc-button__icon">format_color_reset</i>I Edged
+                    </button>
+                </div>
+            </div>
         </div>
         
         <div id="contact-element" class="mdc-dialog" role="alertdialog" aria-labelledby="contact-label" aria-describedby="contact-description">
@@ -251,9 +271,9 @@
                             <span class="mdc-list-item__graphic material-icons" aria-hidden="true">visibility</span>
                             Show Items
                         </li>
-                        <li class="mdc-list-item" id="tease-menu-showcontrol">
+                        <li class="mdc-list-item" id="tease-menu-showorgasms" onclick="$('#orgasms-card').slideDown(200)">
                             <span class="mdc-list-item__graphic material-icons" aria-hidden="true">visibility</span>
-                            Show Control
+                            Show Orgasms
                         </li>
                         <li class="mdc-list-item" id="tease-menu-changetheme" onclick="nextTheme()">
                             <span class="mdc-list-item__graphic material-icons" aria-hidden="true">color_lens</span>
@@ -377,6 +397,7 @@
     <script>
         import Theme from '../js/catworks/themer.js'
         import Tease from '../ts/tease/tease.ts'
+        import TeaseEvent from '../ts/tease/teaseEvent.ts'
         //import * as Mousetrap from 'mousetrap'
         var tease = new Tease()
         
@@ -454,6 +475,12 @@
                 $('#tease-menu-title').text('Key Binds')
             }
         }
+
+        function cumEvent(type) {
+            let event = new TeaseEvent('cum', type)
+            tease.actionController.exec(event)
+            tease.goalController.handleEvent(event)
+        }
         
         $('[card-bg]').each((i, el) => {
             $(el).css('background', `linear-gradient(var(--mdc-theme--halfopacity), var(--mdc-theme--halfopacity)), url(${$(el).attr('card-bg')})`)
@@ -483,7 +510,6 @@
                 }
                 $(unfold).hide()
                 $(card).children('.mdc-card__body, .mdc-card__actions').slideUp(200)
-                $(card)
             } else {
                 $(el).attr('expand', 'less').text('expand_less')
                 if ($(unfold).prop('reunfold')) {

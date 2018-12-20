@@ -63,10 +63,12 @@ export default class StrokingController {
      * @param modifier modifier onto the current strokerate (+,-,/,*)
      */
     public setStrokerate(n?: number, modifier?: string) {
-        if (!isNumber(n))
+        if (typeof n === 'string')
+            n = parseInt(n, 10)
+        if (typeof n !== 'number' || isNaN(n)) {
+            console.warn(`[StrokingController/setStrokerate] Tried to set strokerate to '${n}' with typeof '${typeof n}'.`)
             return this.strokerate
-
-        console.debug(`[StrokingController/setStrokerate] Setting strokerate: ${this.strokerate} ${modifier || '='} ${n}.`)
+        }
 
         switch(modifier) {
             case '+':

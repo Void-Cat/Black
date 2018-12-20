@@ -1,18 +1,20 @@
 import ExitController from './exitcontroller'
 import TeaseEvent from './teaseEvent'
 import { isNumber } from 'util'
+import ViewController from './viewcontroller';
 
 export default class GoalController {
     allowedGoals = ['end', 'cum', 'release', 'minutes']
     ctc: string | boolean = false
     exitController: ExitController
+    viewController: ViewController
     goal: string
     goalVal: number
     interval: any
     reached = false
     reachedVal = 0
 
-    constructor(goal: string, exitController: ExitController, goalVal?: number) {
+    constructor(goal: string, exitController: ExitController, viewController: ViewController, goalVal?: number) {
         if (this.allowedGoals.indexOf(goal) == -1)
             throw new Error(`Goal '${goal}' wasn't recognized`)
         
@@ -37,15 +39,21 @@ export default class GoalController {
             switch (this.ctc) {
                 case 'full':
                     $('#info-cumming').text('Fully Allowed')
+                    $('#cumming_btn-full, #cumming_btn-ruin, #cumming_btn-edge').addClass('.mdc-button--primary')
                     break
                 case 'ruin':
                     $('#info-cumming').text('Ruining Allowed')
+                    $('#cumming_btn-ruin, #cumming_btn-edge').addClass('mdc-button--primary')
+                    $('#cumming_btn-full').removeClass('mdc-button--primary')
                     break
                 case 'edge':
                     $('#info-cumming').text('Edging Allowed')
+                    $('#cumming_btn-edge').addClass('mdc-button--primary')
+                    $('#cumming_btn-full, #cumming_btn-ruin').removeClass('mdc-button--primary')
                     break
                 case false:
                     $('#info-cumming').text('Not Allowed')
+                    $('#cumming_btn-full, #cumming_btn-ruin, #cumming_btn-edge').removeClass('.mdc-button--primary')
             }
         }
         return this.ctc
@@ -54,8 +62,31 @@ export default class GoalController {
     public handleEvent(event: TeaseEvent) : boolean {
         if (event.type === 'cum') {
             this.exitController.cumming[event.value] += 1
-            if (this.ctc !== event.type)
-                this.exitController.cumming['nonAllowed'] += 1
+            switch (this.ctc) {
+                case 'ruin':
+                    if (event.value === 'full') {
+                        this.exitController.cumming['nonAllowed'] += 1
+                        this.viewController.snackbar('You came while only allowed to ruin!')
+                    }
+                    break
+                case 'edge':
+                    if (event.value === 'full') {
+                        this.exitController.cumming['nonAllowed'] += 1
+                        this.viewController.snackbar('You came while only allowed to edge!')
+                    } else if (event.value === 'ruin') {
+                        this.exitController.cumming['nonAllowed'] += 1
+                        this.viewController.snackbar('You ruined while only allowed to edge!')
+                    }
+                    break
+                case false:
+                    this.exitController.cumming['nonAllowed'] += 1
+                    if (event.value === 'full')
+                        this.viewController.snackbar('You came whilst not allowed to!')
+                    else if (event.value === 'ruin')
+                        this.viewController.snackbar('You ruined whilst not allowed to!')
+                    else if (event.value === 'edge')
+                        this.viewController.snackbar('You edged whilst not allowed to!')
+            }
         }
         if (!this.reached)
             switch (this.goal) {

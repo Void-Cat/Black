@@ -174,7 +174,7 @@ export default class ViewController {
             this.items._map[id] = {id: id, item: item, bodypart: bodypart}
             if (isNullOrUndefined(this.items._counter[bodypart])) {
                 this.items._counter[bodypart] = []
-                $('#info-items').append(`<div class="item-bodypart" item-bodypart="${bodypart}" style="display: none;"><b>${bodypart[0].toUpperCase() + bodypart.substr(1)}</b><br><div class="item-container" item-bodypart="${bodypart}"></div></div>`)
+                $('#info-items').append(`<div class="item-bodypart" item-bodypart="${bodypart}"><h1 class="mdc-typography--subtitle2">${bodypart[0].toUpperCase() + bodypart.substr(1)}</h1><br><div class="item-container mdc-typography--body2" style="margin-left: 3px;" item-bodypart="${bodypart}"></div></div>`)
             }
             this.items._counter[bodypart].push(id)
             $(`.item-container[item-bodypart="${bodypart}"]`).append(`<span item-id="${id}">${item[0].toUpperCase() + item.substr(1).toLowerCase()}<br></span>`)
