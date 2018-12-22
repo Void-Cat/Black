@@ -17,6 +17,7 @@ aside a:not(.mdc-temporary-drawer--selected) {
 }
 
 body {
+    background-color: $mdc-theme-background;
     color: $mdc-theme-on-background;
     margin: 0;
     overflow: hidden;

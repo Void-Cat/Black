@@ -1,4 +1,4 @@
-/* global $, mdc, storage, dialog */
+/* global $, mdc, storage, dialog, themer */
 
 // if (typeof ratioslider !== 'undefined') {
 //   ratioslider = ratioslider.destroy()
@@ -30,6 +30,9 @@ if (storage.get('settings.subtags') !== undefined) {
     $('#subtagsExampleTagBad').text(storage.get('settings.subtags.bad') || 'bad')
 }
 
+if (storage.get('theme.lightmode') === true)
+    $('#lightThemes').prop('checked', true)
+
 if (storage.get('settings.disableHardwareAcceleration') === true) {
     $('#disableHardwareAcceleration').prop('checked', true)
 }
@@ -38,6 +41,30 @@ if (storage.get('settings.instanttickerupdate') !== false)
     $('#instantTickerUpdate').prop('checked', true)
 
 $('#instantTickerUpdate').click(() => storage.set('settings.instanttickerupdate', $('#instantTickerUpdate').is(':checked')))
+
+$('#lightThemes').click(() => {
+    let lightmode = $('#lightThemes').is(':checked')
+    storage.set('theme.lightmode', lightmode)
+    if (lightmode)
+        theme.themelist = [
+            'red',
+            'blue',
+            'green',
+            'yellow',
+            'purple',
+            'black',
+        ]
+    else
+        theme.themelist = [
+            'red.dark',
+            'blue.dark',
+            'green.dark',
+            'yellow.dark',
+            'purple.dark',
+            'black.dark',
+        ]
+    theme.setTheme(theme.active)
+})
 
 $('#disableHardwareAcceleration').on('click', _ => {
     storage.set('settings.disableHardwareAcceleration', $('#disableHardwareAcceleration').is(':checked'))

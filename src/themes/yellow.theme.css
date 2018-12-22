@@ -7227,6 +7227,7 @@ aside a:not(.mdc-temporary-drawer--selected) {
   cursor: pointer; }
 
 body {
+  background-color: #FAFAFA;
   color: black;
   margin: 0;
   overflow: hidden; }
