@@ -77,12 +77,19 @@
             <select class="mdc-select__native-control" id="tickerSound">
                 <option value="default" selected>Default</option>
                 <option value="metronome">Metronome</option>
+                <option value="custom">Custom</option>
             </select>
             <label for="tickerSound" class="mdc-floating-label">Ticker Sound</label>
             <div class="mdc-line-ripple"></div>
         </div>
     </div>
-    <br><br>
+    <br>
+    <div id="selectCustomTickerContainer" style="display: none;">
+        <span class="mdc-typography--body1">Select a ticker file:</span><br>
+        <button id="selectCustomTicker" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
+        <label id="selectCustomTickerLabel" class="box" style="margin-left: 5px; background-color: rgba(0, 0, 0, 0.2); border-radius: 5px; display: none;"></label>
+    </div>
+    <br>
     <div class="mdc-form-field">
         <label for="announceCard">Announce card&nbsp;&nbsp;</label>
         <div class="mdc-switch">

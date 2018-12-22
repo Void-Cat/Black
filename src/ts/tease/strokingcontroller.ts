@@ -18,7 +18,20 @@ export default class StrokingController {
     constructor(viewController: ViewController) {
         this.viewController = viewController
         this.slidetime = this.strokerate = storage.get('tease.setup.slidetime')
-        let audiosrc = storage.get('tease.setup.tickersrc') || `${__dirname}/../../audio/ticker.ogg`
+        let audiosrc
+        switch (storage.get('tease.setup.tickersound')) {
+            case 'metronome':
+                audiosrc = `${__dirname}/../../audio/metronome.ogg`
+                break
+
+            case 'custom':
+                audiosrc = storage.get('tease.setup.customticker')
+                break
+            
+            case 'default':
+            default:
+                audiosrc = `${__dirname}/../../audio/ticker.ogg`
+        }
         if (!fs.existsSync(audiosrc))
             throw new Error(`Ticker at source '${audiosrc}' could not be found.`)
         for (let i = 0; i < 6; i++) {

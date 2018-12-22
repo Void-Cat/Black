@@ -71,14 +71,22 @@ function loadSetup() {
         $('#saveSetup').prop('checked', setup['saveload'])
     if (isString(setup['imagefolder']))
         getFolder(undefined, '#selectImageFolderLabel', undefined, setup['imagefolder'])
-    if (isNumber(setup['imagecount']))
+    if (isNumber(setup['imagecount'])) {
         $('#pictureAmount').val(setup['imagecount'])
+        $('#pictureAmount').find('.mdc-floating-label').addClass('mdc-floating-label--float-above')
+    }
     if (isNumber(setup['slidetime']))
         $('#slideTime').val(setup['slidetime'])
     if (isBoolean(setup['enableticker']))
         $('#enableTicker').prop('checked', setup['enableticker'])
-    if (isString(setup['tickersound']))
+    if (isString(setup['tickersound'])) {
         $('#tickerSound option[value="' + setup['tickersound'] + '"]').prop('selected', true).siblings().prop('selected', false)
+        if (setup['tickersound'] === 'custom') {
+            $('#selectCustomTickerContainer').show()
+            if (typeof setup['customticker'] === 'string')
+                getFile(undefined, '#selectCustomTickerLabel', undefined, undefined, setup['customticker'])
+        }
+    }
     if (isBoolean(setup['announcecard']))
         $('#announceCard').prop('checked', setup['announcecard'])
     if (isBoolean(setup['announceimage']))
@@ -134,7 +142,7 @@ function saveSetup() {
     else
         storage.set('tease.setup.slidetime', 10)
     storage.set('tease.setup.enableticker', ($('#enableTicker').prop('checked') || true))
-    storage.set('tease.setup.tickersound', $('#tickersound').val())
+    storage.set('tease.setup.tickersound', $('#tickerSound').val() || 'default')
     storage.set('tease.setup.announcecard', ($('#announceCard').prop('checked') || false))
     storage.set('tease.setup.announceimage', ($('#announceImage').prop('checked') || false))
     storage.set('tease.setup.cardmode', $('#cardModeSelection').val())
@@ -167,8 +175,18 @@ $(document).ready(() => {
 
     // Setup folder buttons
     $('#selectImageFolder').click(() => getFolder('Select Image Folder', '#selectImageFolderLabel', 'tease.setup.imagefolder'))
+    $('#selectCustomTicker').click(() => getFile('Select Ticker File', '#selectCustomTickerLabel', 'tease.setup.customticker', [{name: 'Audio Files', extensions: ['mp3', 'm4a', 'ogg', 'wav', 'wma']}]))
     $('#selectCardFolder').click(() => getFolder('Select Cards Folder', '#selectCardFolderLabel', 'tease.setup.cardfolder'))
     $('#selectPremadeDeck').click(() => getFile('Select Deck File', '#selectPremadeDeckLabel', 'tease.setup.premade', [{name: 'Deck', extensions: ['deck']}]))
+
+    // Setup ticker selection
+    $('#tickerSound').change(() => {
+        let value = $('#tickerSound').val()
+        if (value === 'custom')
+            $('#selectCustomTickerContainer').slideDown(200)
+        else
+            $('#selectCustomTickerContainer').slideUp(200)
+    })
 
     // Setup saveload checkbox
     $('#saveSetup').click(() => saveSetup())
