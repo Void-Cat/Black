@@ -1,97 +1,134 @@
 <!DOCTYPE html>
+<!-- General Settings -->
 <div class="mdc-elevation--z3 box">
-  <h1 class="mdc-typography--headline5">General Settings</h1>
-  <h1 class="mdc-typography--subtitle1">These settings take effect after restarting Black.</h1>
-  <div class="mdc-form-field">
-    <div class="mdc-checkbox">
-      <input id="disableHardwareAcceleration" type="checkbox" class="mdc-checkbox__native-control">
-      <div class="mdc-checkbox__background">
-        <svg class="mdc-checkbox__checkmark" viewbox="0 0 24 24">
-          <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
-        </svg>
-        <div class="mdc-checkbox__mixedmark"></div>
-      </div>
-    </div>
-    <label for="disableHardwareAcceleration">Disable Hardware Acceleration</label>
-  </div>
-</div>
-<div class="mdc-elevation--z3 box">
-  <h1 class="mdc-typography--headline5">Tease Dashboard</h1>
-  <div>
-    <p class="mdc-typography--body1" style="margin-bottom: 0;">Preferred ratio of cards to pictures.</p>
-    <div id="ratioslider" class="mdc-slider mdc-slider--discrete" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="10" aria-label="Select Value">
-      <div class="mdc-slider__track-container" style="background-color: var(--mdc-theme-primary);">
-        <div class="mdc-slider__track" style="background-color: var(--mdc-theme-secondary);"></div>
-      </div>
-      <div class="mdc-slider__thumb-container">
-        <div class="mdc-slider__pin">
-          <span class="mdc-slider__pin-value-marker"></span>
+    <h1 class="mdc-typography--headline5">General Settings</h1>
+    <div class="mdc-form-field">
+        <div class="mdc-checkbox">
+            <input id="darkThemes" checked type="checkbox" class="mdc-checkbox__native-control" />
+            <div class="mdc-checkbox__background">
+                <svg class="mdc-checkbox__checkmark" viewbox="0 0 24 24">
+                    <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
+                </svg>
+                <div class="mdc-checkbox__mixedmark"></div>
+            </div>
         </div>
-        <svg class="mdc-slider__thumb" width="21" height="21" style="stroke: var(--mdc-theme-secondary);">
-          <circle cx="10.5" cy="10.5" r="7.875"></circle>
-        </svg>
-        <div class="mdc-slider__focus-ring"></div>
-      </div>
+        <label for="darkThemes">Use Dark Themes</label>
+    </div><br>
+    <div class="mdc-form-field">
+        <div class="mdc-checkbox">
+            <input id="disableHardwareAcceleration" type="checkbox" class="mdc-checkbox__native-control">
+            <div class="mdc-checkbox__background">
+                <svg class="mdc-checkbox__checkmark" viewbox="0 0 24 24">
+                    <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
+                </svg>
+                <div class="mdc-checkbox__mixedmark"></div>
+            </div>
+        </div>
+        <label for="disableHardwareAcceleration">Disable Hardware Acceleration (Restart Required)</label>
     </div>
-    <p class="mdc-typography--caption" style="margin: -10px 0 0 0; width: 100%; text-align: center;">
-      <span class="mdc-theme--secondary" style="float: left;">cards</span>
-      <span><span id="ratioperc" class="mdc-theme--secondary">10%</span> / <span id="notratioperc" class="mdc-theme--primary">90%</span></span>
-      <span class="mdc-theme--primary" style="float: right;">pictures</span>
+</div>
+
+<!-- Dashboard -->
+<!-- <div class="mdc-elevation--z3 box">
+    <h1 class="mdc-typography--headline5">Tease Dashboard</h1>
+    <div>
+        <p class="mdc-typography--body1" style="margin-bottom: 0;">Preferred ratio of cards to pictures.</p>
+        <div id="ratioslider" class="mdc-slider mdc-slider--discrete" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="10" aria-label="Select Value">
+            <div class="mdc-slider__track-container" style="background-color: var(--mdc-theme-primary);">
+                <div class="mdc-slider__track" style="background-color: var(--mdc-theme-secondary);"></div>
+            </div>
+            <div class="mdc-slider__thumb-container">
+                <div class="mdc-slider__pin">
+                    <span class="mdc-slider__pin-value-marker"></span>
+                </div>
+                <svg class="mdc-slider__thumb" width="21" height="21" style="stroke: var(--mdc-theme-secondary);">
+                    <circle cx="10.5" cy="10.5" r="7.875"></circle>
+                </svg>
+                <div class="mdc-slider__focus-ring"></div>
+            </div>
+        </div>
+        <p class="mdc-typography--caption" style="margin: -10px 0 0 0; width: 100%; text-align: center;">
+            <span class="mdc-theme--secondary" style="float: left;">cards</span>
+            <span><span id="ratioperc" class="mdc-theme--secondary">10%</span> / <span id="notratioperc" class="mdc-theme--primary">90%</span></span>
+            <span class="mdc-theme--primary" style="float: right;">pictures</span>
+        </p>
+        <p class="mdc-typography--caption" style="margin-top: 0;">Default is <span class="mdc-theme--secondary">10%</span> / <span class="mdc-theme--primary">90%</span></p>
+    </div>
+</div> -->
+
+<!-- Tease End -->
+<div class="mdc-elevation--z3 box">
+    <h1 class="mdc-typography--headline5">Tease</h1>
+    <div class="mdc-form-field">
+        <div class="mdc-checkbox">
+            <input type="checkbox" class="mdc-checkbox__native-control" id="instantTickerUpdate" />
+            <div class="mdc-checkbox__background">
+                <svg class="mdc-checkbox__checkmark" viewbox="0 0 24 24">
+                    <path class="mdc-checkbox__checkmar-path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
+                </svg>
+                <div class="mdc-checkbox__mixedmark"></div>
+            </div>
+        </div>
+        <label for="instantTickerUpdate">Instant Ticker (Stroke Count/Slide Time) Update</label>
+    </div>
+    <hr>
+    <h1 class="mdc-typography--headline5">Tease End</h1>
+    <div class="mdc-form-field">
+        <div class="mdc-checkbox">
+            <input type="checkbox" id="autoReport" class="mdc-switch__native-control" />
+            <div class="mdc-checkbox__background">
+                <svg class="mdc-checkbox__checkmark" viewbox="0 0 24 24">
+                    <path class="mdc-checkbox__checkmar-path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
+                </svg>
+                <div class="mdc-checkbox__mixedmark"></div>
+            </div>
+        </div>
+        <label for="autoReport" class="mdc-switch-label" style="padding-left: 0;">Automatically Save Tease Reports</label>
+    </div>
+    <div id="autoReportPathDiv" style="display: none;">
+        <span class="mdc-typography--body1">Select a location to save reports:</span><br>
+        <button id="autoReportPathBtn" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
+        <label id="autoReportPathLabel" class="box" style="margin-left: 5px; background-color: rgba(0, 0, 0, 0.2); border-radius: 5px; display: none;"></label>
+    </div>
+</div>
+
+<!-- Sublevel Tags -->
+<div class="mdc-elevation--z3 box">
+    <h1 class="mdc-typography--headline5">Sublevel tags</h1>
+    <p class="mdc-typography--body1">
+        How should we refer to your sublevel when it's low/neutral/high?<br>
+        Example: <i>You've been a <span id="subtagsExampleTagGood" class="mdc-theme--secondary">good</span> / <span id="subtagsExampleTagNeutral" class="mdc-theme--secondary">boring</span> / <span id="subtagsExampleTagBad" class="mdc-theme--secondary">bad</span>&nbsp;<span id="subtagsExampleGenderNick">boy</span>.</i>
     </p>
-    <p class="mdc-typography--caption" style="margin-top: 0;">Default is <span class="mdc-theme--secondary">10%</span> / <span class="mdc-theme--primary">90%</span></p>
-  </div>
+    <div class="mdc-form-field" style="display: flex; width: 100%;">
+        <div class="mdc-text-field" data-mdc-auto-init="MDCTextField" style="flex: 1;">
+            <input type="text" id="subtagsGood" class="mdc-text-field__input" value="good" />
+            <label for="subtagsGood" class="mdc-text-field__label">Obedient (high sublevel)</label>
+        </div>
+        &nbsp;
+        <div class="mdc-text-field" data-mdc-auto-init="MDCTextField" style="flex: 1;">
+            <input type="text" id="subtagsNeutral" class="mdc-text-field__input" value="boring" />
+            <label for="subtagsNeutral" class="mdc-text-field__label">Neutral</label>
+        </div>
+        &nbsp;
+        <div class="mdc-text-field" data-mdc-auto-init="MDCTextField" style="flex: 1;">
+            <input type="text" id="subtagsBad" class="mdc-text-field__input" value="bad" />
+            <label for="subtagsBad" class="mdc-text-field__label">Defiant (low sublevel)</label>
+        </div>
+    </div>
 </div>
+
+<!-- Delete Settings -->
 <div class="mdc-elevation--z3 box">
-  <h1 class="mdc-typography--headline5">Tease End</h1>
-  <div class="mdc-form-field">
-    <label for="autoReport" class="mdc-switch-label" style="padding-left: 0;">Automaticaly save Tease reports</label>
-    &nbsp;&nbsp;
-    <div class="mdc-switch">
-      <input type="checkbox" id="autoReport" class="mdc-switch__native-control" />
-      <div class="mdc-switch__background">
-        <div class="mdc-switch__knob"></div>
-      </div>
+    <h1 class="mdc-typography--headline5">Danger Zone</h1>
+    <div class="mdc-form-field">
+        <p class="mdc-typography--body1">To delete all values (this cannot be undone), open the developer console with <span class="mdc-theme--secondary">Ctrl + Shift + C</span>.<br>
+            Then, navigate to the <span class="mdc-theme--secondary">Console</span> tab, and type <span class="mdc-theme--secondary">resetAll()</span> and press enter.
+        </p>
     </div>
-  </div>
-  <div id="autoReportPathDiv" style="display: none;">
-    <span class="mdc-typography--body1">Select a location to save reports:</span><br>
-    <button id="autoReportPathBtn" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
-    <label id="autoReportPathLabel" class="box" style="margin-left: 5px; background-color: rgba(0, 0, 0, 0.2); border-radius: 5px; display: none;"></label>
-  </div>
 </div>
-<div class="mdc-elevation--z3 box">
-  <h1 class="mdc-typography--headline5">Sublevel tags</h1>
-  <p class="mdc-typography--body1">
-    How should we refer to your sublevel when it's low/neutral/high?<br>
-    Example: <i>You've been a <span id="subtagsExampleTagGood" class="mdc-theme--secondary">good</span> / <span id="subtagsExampleTagNeutral" class="mdc-theme--secondary">boring</span> / <span id="subtagsExampleTagBad" class="mdc-theme--secondary">bad</span>&nbsp;<span id="subtagsExampleGenderNick">boy</span>.</i>
-  </p>
-  <div class="mdc-form-field" style="display: flex; width: 100%;">
-    <div class="mdc-text-field" data-mdc-auto-init="MDCTextField" style="flex: 1;">
-      <input type="text" id="subtagsGood" class="mdc-text-field__input" value="good" />
-      <label for="subtagsGood" class="mdc-text-field__label">Obedient (high sublevel)</label>
-    </div>
-    &nbsp;
-    <div class="mdc-text-field" data-mdc-auto-init="MDCTextField" style="flex: 1;">
-      <input type="text" id="subtagsNeutral" class="mdc-text-field__input" value="boring" />
-      <label for="subtagsNeutral" class="mdc-text-field__label">Neutral</label>
-    </div>
-    &nbsp;
-    <div class="mdc-text-field" data-mdc-auto-init="MDCTextField" style="flex: 1;">
-      <input type="text" id="subtagsBad" class="mdc-text-field__input" value="bad" />
-      <label for="subtagsBad" class="mdc-text-field__label">Defiant (low sublevel)</label>
-    </div>
-  </div>
-</div>
-<div class="mdc-elevation--z3 box">
-  <h1 class="mdc-typography--headline5">Danger Zone</h1>
-  <div class="mdc-form-field">
-    <p class="mdc-typography--body1">To delete all values (this cannot be undone), open the developer console with <span class="mdc-theme--secondary">Ctrl + Shift + C</span>.<br>
-    Then, navigate to the <span class="mdc-theme--secondary">Console</span> tab, and type <span class="mdc-theme--secondary">resetAll()</span> and press enter.
-    </p>
-  </div>
-</div>
+
 <div style="margin: 10px 0;">
-  <p class="mdc-typography--body1" style="text-align: center;">Settings are saved automatically.</p>
+    <p class="mdc-typography--body1" style="text-align: center;">Settings are saved automatically.</p>
 </div>
 
 <script src="./js/settings.js" charset="utf-8"></script>
