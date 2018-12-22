@@ -93,6 +93,7 @@
             <h1 class="mdc-typography--subtitle2">The following cards will be active from the start:</h1>
             <div id="startcards"></div>
         </div>
+        <h1 id="no-startcards" class="mdc-typography--subtitle2" style="display: none;">No cards will be active right from the start.</h1>
         <button class="mdc-button mdc-button--primary mdc-button--raised" onclick="tease.start()">Start Tease</button>
     </main>
     
@@ -225,12 +226,12 @@
                         <button id="contact-dismiss" class="mdc-button mdc-button--primary">Dismiss</button>
                     </footer>
                     <footer id="contact-footer-prompt" class="mdc-dialog__actions" style="display: none;">
-                        <div class="mdc-text-field" style="left: 5%; width: 80%; position: absolute; bottom: 7px;">
+                        <div class="mdc-text-field" style="width: 80%; margin-bottom: 10px;">
                             <input type="text" id="contact-prompt" class="mdc-text-field__input">
                             <label for="contact-prompt" class="mdc-floating-label mdc-floating-label--float-above">Input</label>
                             <div class="mdc-line-ripple"></div>
                         </div>
-                        <button id="contact-submit" class="mdc-button mdc-button--primary" style="float: right;">Submit</button>
+                        <button id="contact-submit" class="mdc-button mdc-button--primary" style="float: right; margin: 10px 0;">Submit</button>
                     </footer>
                     <footer id="contact-footer-options" class="mdc-dialog__actions" style="display: none;"></footer>
                 </div>
@@ -528,6 +529,7 @@
         })
         
         $(document).ready(() => {
+            tease.ready()
             mdc.autoInit()
         })
     </script>

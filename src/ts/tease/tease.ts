@@ -146,7 +146,9 @@ export default class Tease {
         this.viewController.strokingController = this.strokingController
         this.viewController.actionController = this.actionController
         this.viewController.exitController = this.exitController
+    }
 
+    public ready() : void {
         if (this.imageController.startcards.length > 0) {
             this.imageController.startcards.forEach((index) => {
                 let image = new Image()
@@ -154,10 +156,17 @@ export default class Tease {
                 $('#startcards').append(image)
             })
             $('#startcards-container').slideDown(200)
-        }
+        } else $('#no-startcards').slideDown(200)
     }
 
     public start() : void {
+        this.imageController.startcards.forEach((index) => {
+            let card : Card = this.imageController.cards[this.imageController.cil[index].cardIndex]
+            card.actions.forEach((action : Action) => {
+                if (action.data.start === -1)
+                    this.actionController.push(action, true)
+            })
+        })
         this.strokingController.init()
         this.viewController.jumpSlide(0)
         this.strokingController.pause(false)

@@ -54,7 +54,7 @@ export default class Action {
         // #region Parser
         // Parse Start
         if (actiondata['start'] == 'start')
-            this.data.start = 0
+            this.data.start = -1
         else
             this.data.start = index
         

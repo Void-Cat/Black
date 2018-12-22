@@ -43,12 +43,11 @@ export default class ImageController {
 
         if (buildmode) {
             let cardTotal = 0
-            let cardInsert
             Object.keys(this.categories).forEach((key) => {
                 if (!isNaN(this.categories[key]['count']))
                     cardTotal += this.categories[key]['count']
             })
-            cardInsert = Math.floor(n / cardTotal)
+            let cardInsert = Math.floor(n / cardTotal)
             this.cardratio = cardTotal / (n + cardTotal)
             while (this.length < n) {
                 let card = false
@@ -67,8 +66,11 @@ export default class ImageController {
                     if (isNullOrUndefined(card[2]))
                         this.cil[index] = { category: card[1], cardindex: null }
                     else {
-                        if (card[2]['start'] == 'start')
-                            this.startcards.push(index)
+                        for (let ai = 0; ai < card[2].actions.length; ai++)
+                            if (card[2].actions[ai]['start'].toLowerCase() === 'start') {
+                                this.startcards.push(index)
+                                break
+                            }
                         this.cil[index] = { category: card[1], cardindex: this.cards.length }
                         this.cards.push(new Card(card[2], index))
                     }
