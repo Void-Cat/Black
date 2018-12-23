@@ -1,6 +1,6 @@
 var { isNullOrUndefined, isBoolean, isString, isNumber, isArray } = require('util')
 
-declare var mdc, dialog, BrowserWindow, globalShortcut, swapper, storage
+declare var mdc, dialog, BrowserWindow, globalShortcut, swapper, storage, fs
 
 var categories
 
@@ -200,9 +200,9 @@ $(document).ready(() => {
         else
             $('#teaseGoalSetup').slideDown(200)
         if ($('#cardModeSelection').val() == 'none' || $('#cardModeSelection').val() == 'premade')
-            $('#addCategory, #resetCategories').prop('disabled', true).addClass('mdc-button--disabled')
+            $('#categoryButtons > button').prop('disabled', true).addClass('mdc-button--disabled')
         else
-            $('#addCategory, #resetCategories').prop('disabled', false).removeClass('.mdc-button--disabled')
+            $('#categoryButtons > button').prop('disabled', false).removeClass('mdc-button--disabled')
     })
 
     // Setup teaseGoal switching
@@ -232,14 +232,70 @@ $(document).ready(() => {
     })
 
     // Setup default categories button
-    $('#resetCategories').click(() => {
-        if ($('#resetCategory').prop('disabled') != true) {
+    $('#defaultCategories').click(() => {
+        if ($('#defaultCategories').prop('disabled') != true) {
             categories.clear(true)
             let defaults = ['Stroke It', 'Bondage', 'Rough Mistress', 'Delusional', 'Nice Mistress', 'Dilemma',
                 'Chance to Cum', 'Getting into Character', 'Special', 'Humiliation', 'Chastity Belt', 'Mind Control',
                 'Key', 'Work It', 'Edge', 'Time Lapse']
             defaults.forEach((cat) => {
                 categories.add(cat)
+            })
+        }
+    })
+
+    // Setup clear categories button
+    $('#clearCategories').click(() => {
+        if ($('#clearCategories').prop('disabled') !== true) {
+            categories.clear(true)
+        }
+    })
+
+    // Setup save categories button
+    $('#saveCategories').click(() => {
+        if ($('#saveCategories').prop('disabled') !== true) {
+            dialog.showSaveDialog({
+                title: 'Save Categories to File',
+                defaultPath: 'categories.json',
+                filters: [{ 'name': 'JSON files', 'extensions': ['json'] }]
+            }, (path) => {
+                try {
+                    categories.save()
+                    let content = JSON.stringify(storage.get('tease.categories'))
+                    fs.writeFile(path, content, {encoding: 'utf8'}, (err) => { if (err) throw err })
+                } catch (err) {
+                    alert('Failed to save file, check console for more info.')
+                    console.error(err)
+                }
+            })
+        }
+    })
+
+    // Setup load categories button
+    $('#loadCategories').click(() => {
+        if ($('#loadCategories').prop('disabled') !== true) {
+            dialog.showOpenDialog({
+                title: 'Load Categories from File',
+                filters: [{ 'name': 'JSON files', 'extensions': ['json'] }],
+                properties: {
+                    multiSelections: false
+                }
+            }, (path: string | string[]) => {
+                if (Array.isArray(path))
+                    path = path[0]
+                
+                try {
+                    let content = JSON.parse(fs.readFileSync(path, { encoding: 'utf8' }))
+                    if (typeof content !== 'object' || content === null) {
+                        throw new Error('Failed to read object from file.')
+                    }
+                    storage.set('tease.categories', content)
+                    categories.clear()
+                    categories = new CategoryControl(true)
+                } catch (err) {
+                    alert('Failed to load file, check console for more info.')
+                    console.error(err)
+                }
             })
         }
     })
