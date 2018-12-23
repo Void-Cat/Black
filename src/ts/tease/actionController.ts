@@ -654,7 +654,6 @@ export default class ActionController {
         strokecount: (action: Action) => {
             let count = action.data.action
             if (Array.isArray(count)) {
-                console.debug(`[ActionController/ExecByType] Strokecount has encountered an array of length ${count.length}.`)
                 let index = action.getLive('switch-index', 0)
                 if (index >= count.length)
                     index = 0
