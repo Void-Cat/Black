@@ -18,6 +18,7 @@ function Swapper (id, location, current) {
         $(id).fadeOut(100, _ => {
             $(id).empty()
             $(id).load(adr, _ => {
+                $(id)[0].scrollTo(0, 0)
                 $(id).fadeIn(100)
                 this.current = loc
                 if ($('.mdc-drawer--temporary').length > 0) {
