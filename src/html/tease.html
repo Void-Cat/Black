@@ -18,26 +18,24 @@
         
         #leftBar {
             left: 0;
-            margin: 3px 0 0 3px;
             overflow: auto;
             top: 0;
-            z-index: 3;
         }
         
         #rightBar {
-            margin: 3px 3px 0 0;
             overflow: auto;
-            right: 2px;
-            top: 2px;
-            z-index: 2;
+            right: 0;
+            top: 80px;
         }
         
         .sidebar {
             bottom: 0;
-            top: 0;
-            width: 15%;
-            min-width: 100px;
+            margin: 3px 3px 0 3px;
             max-width: 200px;
+            min-width: 100px;
+            position: fixed;
+            width: 15%;
+            z-index: 1;
         }
         
         .sidebar-controls {
@@ -45,7 +43,7 @@
             top: 2px;
             right: 2px;
             text-align: right;
-            z-index: 3;
+            z-index: 2;
         }
         
         th {
@@ -190,7 +188,7 @@
             <img id="view" src="" />
         </div>
         
-        <div id="rightBar" class="sidebar" style="float: right; position: fixed; top: 80px;">
+        <div id="rightBar" class="sidebar">
             <div id="orgasms-card" class="mdc-card">
                 <div class="mdc-card__media mdc-card__media--16-9" card-bg="../img/sidebarimage4.jpg">
                     <div class="sidebar-controls">

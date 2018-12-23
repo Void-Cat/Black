@@ -133,7 +133,7 @@ export default class ActionController {
                     if (isNullOrUndefined(this.actions.until.instruction.instruction[value]))
                         this.actions.until.instruction.instruction[value] = [id]
                     else
-                        this.actions.fors.instruction.instruction[value].push(id)
+                        this.actions.until.instruction.instruction[value].push(id)
                 break
         }
 
