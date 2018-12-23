@@ -240,6 +240,12 @@ export default class Action {
         return true
     }
 
+    public hasLive(name: string | number) : boolean {
+        if (this.live[name] === null || this.live[name] === undefined)
+            return false
+        return true
+    }
+
     public getLive(name: string | number, def?: any) : any {
         if (this.live[name] == null) {
             console.warn(`[TeaseAction] Live value '${name}' was never defined for action with index ${this.data.index}.`)

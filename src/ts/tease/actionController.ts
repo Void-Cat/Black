@@ -330,14 +330,13 @@ export default class ActionController {
             let until = action.data.until
             if (!isNullOrUndefined(until.count))
                 if (until.count > 1) {
-                    let live = action.getLive('until-count')
-                    if (isNullOrUndefined(live)) {
+                    if (action.hasLive('until-count')) {
                         action.setLive('until-count', until.count - 1)
                         cards.splice(i, 1)
                         i--
                         continue
-                    } else if (parseInt(live, 10) > 1) {
-                        action.setLive('until-count', parseInt(live, 10) - 1)
+                    } else if (parseInt(action.getLive('until-count'), 10) > 0) {
+                        action.setLive('until-count', parseInt(action.getLive('until-count'), 10) - 1)
                         cards.splice(i, 1)
                         i--
                         continue
