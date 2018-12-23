@@ -111,6 +111,8 @@ function resetAll () {
     document.location.href = document.location.href
 }
 
+var deleteAll = new mdc.dialog.MDCDialog($('#deleteAll')[0])
+
 $('#swapper').ready(_ => {
     // ratioslider.layout()
     mdc.autoInit()

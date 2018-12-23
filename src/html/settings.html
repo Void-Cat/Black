@@ -123,11 +123,30 @@
 <!-- Delete Settings -->
 <div class="mdc-elevation--z3 box">
     <h1 class="mdc-typography--headline5">Danger Zone</h1>
-    <div class="mdc-form-field">
-        <p class="mdc-typography--body1">To delete all values (this cannot be undone), open the developer console with <span class="mdc-theme--secondary">Ctrl + Shift + C</span>.<br>
-            Then, navigate to the <span class="mdc-theme--secondary">Console</span> tab, and type <span class="mdc-theme--secondary">resetAll()</span> and press enter.
-        </p>
+    <button class="mdc-button" onclick="deleteAll.open()" style="background-color: red; color: white;">
+        <i class="material-icons mdc-button__icon" aria-hidden="true">delete_forever</i>
+        Reset Configuration Completely
+    </button>
+</div>
+<div id="deleteAll" class="mdc-dialog mdc-dialog--stacked" role="mdc-alertdialog" aria-modal="true" aria-labelledby="deleteAll-title" aria-describedby="deleteAll-content">
+    <div class="mdc-dialog__container">
+        <div class="mdc-dialog__surface">
+            <h2 id="deleteAll-title" class="mdc-dialog__title">
+                <i class="material-icons" style="vertical-align: text-bottom;">delete_forever</i>
+                Delete All Values
+            </h2>
+            <div id="deleteAll-content" class="mdc-dialog__content">
+                You're about to wipe clean the entire Black configuration.<br>
+                <span class="mdc-theme--secondary">This cannot be undone!</span><br>
+                The entire Black configuration includes (but is not limited to): your profile, your tease/cumming history, and your settings.
+            </div>
+            <footer class="mdc-dialog__actions">
+                <button type="button" class="mdc-button mdc-dialog__button mdc-dialog__button--default" data-mdc-dialog-action="close" style="width: 100%;">Actually, let's not do this.</button>
+                <button type="button" class="mdc-button mdc-dialog__button" onclick="resetAll()" style="width: 100%;">I'm sure, DELETE EVERYTHING</button>
+            </footer>
+        </div>
     </div>
+    <div class="mdc-dialog__scrim"></div>
 </div>
 
 <div style="margin: 10px 0;">
