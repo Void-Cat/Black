@@ -75,6 +75,9 @@ export default class ActionController {
     }
 
     public push(action: Action, active: boolean = true) : number {
+        if (action.data.start === -1 && this.viewController.index > 0)
+            return
+
         let id = this.actions.id++
         this.actions.raw[id] = action
         
