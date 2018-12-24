@@ -104,7 +104,7 @@
             <div id="startcards"></div>
         </div>
         <h1 id="no-startcards" class="mdc-typography--subtitle2" style="display: none;">No cards will be active right from the start.</h1>
-        <button class="mdc-button mdc-button--primary mdc-button--raised" onclick="tease.start()">Start Tease</button>
+        <button class="mdc-button mdc-button--primary mdc-button--raised" block-focus onclick="tease.start()">Start Tease</button>
     </main>
     
     <main id="tease" style="display: none;">
@@ -185,7 +185,7 @@
                     <div id="info-items"></div>
                 </div>
                 <div class="mdc-card__actions">
-                    <button class="mdc-button mdc-button--primary" disabled style="width: 100%;" onclick="tease.viewController.items.useKey()">
+                    <button class="mdc-button mdc-button--primary" block-focus disabled style="width: 100%;" onclick="tease.viewController.items.useKey()">
                         <span id="info-keys">0</span>&nbsp;Keys
                     </button>
                 </div>
@@ -211,13 +211,13 @@
                     <div class="mdc-card__media-content" style="padding: 2px;">Orgasms</div>
                 </div>
                 <div class="mdc-card__actions" style="display: block;">
-                    <button id="cumming_btn-full" class="mdc-button" style="width: 100%;" onclick="cumEvent('full')">
+                    <button id="cumming_btn-full" block-focus class="mdc-button" style="width: 100%;" onclick="cumEvent('full')">
                         <i class="material-icons mdc-button__icon">flare</i>I Came
                     </button>
-                    <button id="cumming_btn-ruin" class="mdc-button" style="margin-top: 5px; width: 100%;" onclick="cumEvent('ruin')">
+                    <button id="cumming_btn-ruin" block-focus class="mdc-button" style="margin-top: 5px; width: 100%;" onclick="cumEvent('ruin')">
                         <i class="material-icons mdc-button__icon">bubble_chart</i>I Ruined
                     </button>
-                    <button id="cumming_btn-edge" class="mdc-button" style="margin-top: 5px; width: 100%;" onclick="cumEvent('edge')">
+                    <button id="cumming_btn-edge" block-focus class="mdc-button" style="margin-top: 5px; width: 100%;" onclick="cumEvent('edge')">
                         <i class="material-icons mdc-button__icon">format_color_reset</i>I Edged
                     </button>
                 </div>
@@ -463,6 +463,8 @@
         })
         
         let menu = new mdc.dialog.MDCDialog($('#tease-menu')[0])
+
+        $('[block-focus]').on('click', function() { this.blur() })
 
         $('[keybind-key]').each((i, el) => {
             let key = tease.keyController.keymap[$(el).attr('keybind-key')]
