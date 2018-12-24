@@ -233,10 +233,13 @@ export default class ViewController {
                 // Prepare the List
                 let itemList = $('#key-use-list')[0]
                 $(itemList).empty()
-                Object.keys(this.items._map).forEach((key: string) => {
-                    let item = this.items._map[key]
-                    $(itemList).append(this.items._dialogItem(item.id, item.item, item.bodypart))
-                })
+                if (Object.keys(this.items._map).length > 0) {
+                    Object.keys(this.items._map).forEach((key: string) => {
+                        let item = this.items._map[key]
+                        $(itemList).append(this.items._dialogItem(item.id, item.item, item.bodypart))
+                    })
+                    $('#key-use-noitems').hide()
+                } else $('#key-use-noitems').show()
                 this.items._dialogList = new mdc.list.MDCList(itemList)
                 this.items._dialogList.singleSelection = true
                 this.items._keyUseTarget = -2
