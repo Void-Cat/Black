@@ -800,6 +800,7 @@ export default class ActionController {
             if (item.pause)
                 this.strokingController.pause(true)
 
+            let error = false
             // Set up type specific properties
             switch (item.type) {
                 case 'message':
@@ -840,8 +841,13 @@ export default class ActionController {
 
                 case 'options':
                     $(element.footer.options).empty().show().siblings('footer').hide()
+                    if (Object.keys(item.options).length <= 0) {
+                        console.warn('[ActionController/contact] Tried to create option dialog without any options.')
+                        error = true
+                    }
                     Object.keys(item.options).forEach((option) => {
-                        $(element.footer.options).append(`<button class="mdc-button mdc-button--raised mdc-button--primary" style="margin: 2px;" option="${option}">${option}</button>`).on('click', () => {
+                        $(element.footer.options).append(`<button class="mdc-button mdc-button--raised mdc-dialog__button" style="margin: 2px;" option="${option}">${option}</button>`)
+                        $(`button[option="${option}"]`).on('click', () => {
                             this.push(new Action(item.options[option], this.viewController.index))
                             this.exec(new TeaseEvent('instant', undefined, 'contact'))
                         })
@@ -862,26 +868,28 @@ export default class ActionController {
             }
 
             // Show the dialog
-            this.contact._dialog.open()
+            if (!error) {
+                this.contact._dialog.open()
 
-            // Setup the timer for the dialog to automagically disappear
-            if (!isNullOrUndefined(item.time) && item.time > 0) {
-                if (item.time < 1000)
-                    item.time *= 1000
-                console.info(`Added timeout for ${item.type} for ${item.time} milliseconds.`)
-                this.contact._timeout = setTimeout(this.contact._timelimit, item.time, item)
+                // Setup the timer for the dialog to automagically disappear
+                if (!isNullOrUndefined(item.time) && item.time > 0) {
+                    if (item.time < 1000)
+                        item.time *= 1000
+                    console.info(`Added timeout for ${item.type} for ${item.time} milliseconds.`)
+                    this.contact._timeout = setTimeout(this.contact._timelimit, item.time, item)
+                }
+                
+                // Pause the tease if so desired
+                if (item.pause == 'true')
+                    this.strokingController.pause(true)
             }
-            
-            // Pause the tease if so desired
-            if (item.pause == 'true')
-                this.strokingController.pause(true)
         },
         message: (options: object) => {
             let message = Object.assign({
                 alert: 'info',
                 color: null,
                 id: -1,
-                pause: false,
+                pause: 'false',
                 text: 'No Text Provided',
                 time: 4.1,
                 type: 'message',
@@ -898,7 +906,7 @@ export default class ActionController {
                 answer: [],
                 color: null,
                 id: -1,
-                pause: true,
+                pause: 'true',
                 text: 'No Text Provided',
                 time: -1,
                 timelimit: null,
@@ -916,7 +924,7 @@ export default class ActionController {
                 color: null,
                 id: -1,
                 options: [],
-                pause: true,
+                pause: 'true',
                 text: 'No Text Provided',
                 time: -1,
                 timelimit: null,
