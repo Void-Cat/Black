@@ -168,13 +168,25 @@ export default class ViewController {
     public items = {
         _chastity: -1,
         _counter: {},
+        _dialog: new mdc.dialog.MDCDialog($('#key-use')[0]),
+        _dialogItem: (id: number, name: string, bodypart: string) : string => {
+            let string = `<li class="mdc-list-item" key-use="${id.toString()}" role="option">
+                <span class="mdc-list-item__text">
+                    <span class="mdc-list-item__primary-text">${name}</span>
+                    <span class="mdc-list-item__secondary-text">${bodypart}</span>
+                </span>
+            </li>`
+            return string
+        },
+        _dialogList: new mdc.list.MDCList($('#key-use-list')[0]),
+        _keyUseTarget: -2,
         _map: {},
         add: (id: number, item: string, bodypart: string) => {
             bodypart = bodypart.toLowerCase()
             this.items._map[id] = {id: id, item: item, bodypart: bodypart}
             if (isNullOrUndefined(this.items._counter[bodypart])) {
                 this.items._counter[bodypart] = []
-                $('#info-items').append(`<div class="item-bodypart" item-bodypart="${bodypart}"><h1 class="mdc-typography--subtitle2">${bodypart[0].toUpperCase() + bodypart.substr(1)}</h1><br><div class="item-container mdc-typography--body2" style="margin-left: 3px;" item-bodypart="${bodypart}"></div></div>`)
+                $('#info-items').append(`<div class="item-bodypart" item-bodypart="${bodypart}"><h1 class="mdc-typography--subtitle2" style="margin-bottom: 0;">${bodypart[0].toUpperCase() + bodypart.substr(1)}</h1><div class="item-container mdc-typography--body2" style="margin-left: 3px;" item-bodypart="${bodypart}"></div></div>`)
             }
             this.items._counter[bodypart].push(id)
             $(`.item-container[item-bodypart="${bodypart}"]`).append(`<span item-id="${id}">${item[0].toUpperCase() + item.substr(1).toLowerCase()}<br></span>`)
@@ -215,6 +227,44 @@ export default class ViewController {
             $('#info-items').find(`span[item-id="${id}"]`).remove()
             if (this.items._counter[map.bodypart].length == 0)
                 $('#info-items').children(`.item-bodypart[item-bodypart="${map.bodypart}"]`).slideUp(200)
+        },
+        useKey: (force: boolean = false) => {
+            if (this.items.keys > 0 || force) {
+                // Prepare the List
+                let itemList = $('#key-use-list')[0]
+                $(itemList).empty()
+                Object.keys(this.items._map).forEach((key: string) => {
+                    let item = this.items._map[key]
+                    $(itemList).append(this.items._dialogItem(item.id, item.item, item.bodypart))
+                })
+                this.items._dialogList = new mdc.list.MDCList(itemList)
+                this.items._dialogList.singleSelection = true
+                this.items._keyUseTarget = -2
+
+                $('[key-use]').on('click', (e) => {
+                    let id = parseInt($(e.currentTarget).attr('key-use'), 10)
+                    this.items._keyUseTarget = id
+                    $('#key-use-button').prop('disabled', false)
+                })
+
+                $('#key-use-button').on('click', () => {
+                    if (this.items.keys > 0 && !$('#key-use-button').prop('disabled') && this.items._keyUseTarget !== -2 && !isNaN(this.items._keyUseTarget)) {
+                        $('[key-use]').off('click')
+                        $('#key-use-button').off('click')
+                        $('#key-use-button').prop('disabled')
+                        this.items.modKeys(-1)
+                        if (this.items._keyUseTarget === -1)
+                            this.items.chastity(this.items._chastity, true)
+                        else
+                            this.items.remove(this.items._keyUseTarget)
+                        this.items._dialog.close()
+                        this.actionController.exec(new TeaseEvent('key', undefined, 'keyuse'))
+                    }
+                })
+
+                // Show the List
+                this.items._dialog.open()
+            }
         }
     }
 

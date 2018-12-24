@@ -185,7 +185,7 @@
                     <div id="info-items"></div>
                 </div>
                 <div class="mdc-card__actions">
-                    <button class="mdc-button mdc-button--primary" disabled style="width: 100%;">
+                    <button class="mdc-button mdc-button--primary" disabled style="width: 100%;" onclick="tease.viewController.items.useKey()">
                         <span id="info-keys">0</span>&nbsp;Keys
                     </button>
                 </div>
@@ -250,10 +250,26 @@
         </div>
     </main>
     
-    <footer id="toolbar" style="display: none;">
-        
-    </footer>
-    
+    <!-- Key Usage -->
+    <div id="key-use" class="mdc-dialog mdc-dialog--stacked" role="alertdialog" aria-modal="true" aria-labelledby="key-use-title" aria-describedby="key-use-content">
+        <div class="mdc-dialog__container">
+            <div class="mdc-dialog__surface">
+                <h2 id="key-use-title" class="mdc-dialog__title">Unlock Item</h2>
+                <div id="key-use-content" class="mdc-dialog__content">
+                    <ul id="key-use-list" class="mdc-list mdc-list--two-line" role="listbox"></ul>
+                </div>
+                <footer class="mdc-dialog__actions">
+                    <button type="button" class="mdc-button mdc-dialog__button" style="width: 100%;" data-mdc-dialog-action="close">Leave</button>
+                    <button id="key-use-button" type="button" disabled style="width: 100%;" class="mdc-button mdc-button--primary mdc-dialog__button mdc-dialog__button--default">
+                        <i class="material-icons mdc-button__icon" style="vertical-align: sub;">lock_open</i>
+                        Unlock
+                    </button>
+                </footer>
+            </div>
+        </div>
+        <div class="mdc-dialog__scrim"></div>
+    </div>
+
     <!-- Menu -->
     
     <button id="menuButton" class="mdc-fab" aria-label="Menu" onclick="menu.open()" style="position: fixed; right: 15px; top: 15px;">
