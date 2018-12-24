@@ -276,10 +276,7 @@ $(document).ready(() => {
         if ($('#loadCategories').prop('disabled') !== true) {
             dialog.showOpenDialog({
                 title: 'Load Categories from File',
-                filters: [{ 'name': 'JSON files', 'extensions': ['json'] }],
-                properties: {
-                    multiSelections: false
-                }
+                filters: [{ 'name': 'JSON files', 'extensions': ['json'] }]
             }, (path: string | string[]) => {
                 if (Array.isArray(path))
                     path = path[0]
