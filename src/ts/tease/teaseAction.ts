@@ -99,13 +99,16 @@ export default class Action {
                 this.data.action = (action == 'true')
                 break
             case 'item':
-                if (isArray(action))
+                if (Array.isArray(action))
                     this.data.action = {
                         slot: action[0],
                         item: action[1]
                     }
                 else
-                    this.data.action = action
+                    this.data.action = {
+                        slot: 'general',
+                        item: action
+                    }
                 break
             case 'key':
                 if (isNullOrUndefined(action)) {
