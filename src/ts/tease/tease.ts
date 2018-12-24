@@ -161,7 +161,7 @@ export default class Tease {
 
     public start() : void {
         this.imageController.startcards.forEach((index) => {
-            let card : Card = this.imageController.cards[this.imageController.cil[index].cardIndex]
+            let card : Card = this.imageController.cards[this.imageController.cil[index].cardindex]
             card.actions.forEach((action : Action) => {
                 if (action.data.start === -1)
                     this.actionController.push(action, true)
