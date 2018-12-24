@@ -237,6 +237,21 @@ export default class Tease {
 
             // Report success
             console.log(`Succesfully inserted card with index ${insertIndex} (slide ${insertIndex + 1}).`)
+        },
+        pushAction: (data: object) => {
+            let keys = Object.keys(data)
+            
+            if (!keys.includes('type') || !keys.includes('action'))
+                console.debug(`[Tease/Debug] Can't create Action. Missing TYPE or ACTION parameter(s).`)
+
+            data = Object.assign({
+                start: 'draw',
+                fors: 'instant',
+                until: 'end'
+            }, data)
+
+            let action = new Action(data, this.viewController.index)
+            this.actionController.push(action)
         }
     }
 }
