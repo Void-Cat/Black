@@ -106,7 +106,6 @@ export default class ActionController {
                 }
                 break
         }
-        this.actions.fors.any.push(id)
 
         console.debug(`[ActionController/Push] Pushing '${id}' with UNTIL parameters:`, action.data.until)
         switch (action.data.until.type) {
@@ -630,6 +629,7 @@ export default class ActionController {
                 console.debug(`[ActionController/ExecByAction] Pusing single 'on' action.`)
                 this.push(new Action(action.data.action, action.data.index), true)
                 this.exec(new TeaseEvent('instant', undefined, 'onaction'))
+                debugger;
             }
         },
         // Position needs work (id system)
