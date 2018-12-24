@@ -133,18 +133,18 @@ export default class Action {
                     action = action.split(':')[1].split(',')
                     this.data.action = []
                     action.forEach((step) => {
-                        if (!isNaN(parseInt(step, 10)))
+                        if (['=', '+', '-', '/', '*'].indexOf(step[0]) === -1)
                             this.data.action.push({
                                 value: parseInt(step, 10),
                                 modifier: '='
                             })
                         else {
                             let modifier = step[0]
-                            let substep = step.substring(1)
-                            this.data.action = {
+                            let substep = parseInt(step.substring(1), 10)
+                            this.data.action.push({
                                 modifier: modifier,
                                 value: substep
-                            }
+                            })
                         }
                     })
                     break
