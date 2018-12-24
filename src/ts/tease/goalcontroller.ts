@@ -40,7 +40,7 @@ export default class GoalController {
             switch (this.ctc) {
                 case 'full':
                     $('#info-cumming').text('Fully Allowed')
-                    $('#cumming_btn-full, #cumming_btn-ruin, #cumming_btn-edge').addClass('.mdc-button--primary')
+                    $('#cumming_btn-full, #cumming_btn-ruin, #cumming_btn-edge').addClass('mdc-button--primary')
                     break
                 case 'ruin':
                     $('#info-cumming').text('Ruining Allowed')
@@ -54,7 +54,7 @@ export default class GoalController {
                     break
                 case false:
                     $('#info-cumming').text('Not Allowed')
-                    $('#cumming_btn-full, #cumming_btn-ruin, #cumming_btn-edge').removeClass('.mdc-button--primary')
+                    $('#cumming_btn-full, #cumming_btn-ruin, #cumming_btn-edge').removeClass('mdc-button--primary')
             }
         }
         return this.ctc

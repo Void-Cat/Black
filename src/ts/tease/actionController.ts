@@ -330,9 +330,9 @@ export default class ActionController {
             // Filter cards to check if they need multiple UNTIL activations
             let action = this.actions.raw[cards[i]]
             let until = action.data.until
-            if (!isNullOrUndefined(until.count))
+            if (typeof until.count === 'number')
                 if (until.count > 1) {
-                    if (action.hasLive('until-count')) {
+                    if (!action.hasLive('until-count')) {
                         action.setLive('until-count', until.count - 1)
                         cards.splice(i, 1)
                         i--
@@ -515,14 +515,14 @@ export default class ActionController {
     }
 
     cleanup(action: Action) {
+        console.debug(`[ActionController/CleanUp] Cleaning up card with type '${action.data.type}'.`)
         switch(action.data.type) {
             case 'chastity':
                 if (action.data.action)
                     this.strokingController.chastity(false)
                 break
             case 'ctc':
-                if (action.data.action.value != 'false' && action.data.action.value !== false)
-                    this.goalController.ctcState(false)
+                this.goalController.ctcState(false)
                 break
             case 'instruction':
                 let instructionid = action.getLive('instruction-id')
