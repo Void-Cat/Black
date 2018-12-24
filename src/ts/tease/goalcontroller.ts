@@ -31,6 +31,7 @@ export default class GoalController {
 
         this.goal = goal
         this.exitController = exitController
+        this.viewController = viewController
     }
 
     public ctcState(state?: string | boolean) : string | boolean {
