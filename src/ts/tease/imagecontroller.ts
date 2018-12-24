@@ -56,7 +56,7 @@ export default class ImageController {
                         if (Math.random() < 0.5)
                             card = true
                     } else
-                        if (this.length % cardInsert == 0)
+                        if ((this.length + Math.floor(cardInsert / 2)) % cardInsert == 0)
                             card = true
                 if (card) {
                     cardTotal--
