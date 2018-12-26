@@ -38,34 +38,36 @@ export default class ViewController {
             $(this.viewID).attr('src', this.buffer.src)
             if (!isNullOrUndefined(this.strokingController))
                 this.strokingController.slidetiming = 0
-            this.broadcastSlide(this.index)
+            this.broadcastSlide()
             if (this.index + 1 < this.imageController.length)
                 this.buffer.src = this.imageController.images[this.index + 1]
         } else {
+            this.snackbar('Reached the end of the tease. Tease will close automatically.')
             this.exitController.exitTease('teaseend')
         }
     }
 
-    broadcastSlide(index: number, runaction = true) : void {
-        console.info(`<!> Broadcast of index ${index}.`)
-        $('#info-slide > td').text(index + 1)
+    broadcastSlide(runaction: boolean = true) : void {
+        $('#info-slide > td').text(this.index + 1)
         this.actionController.delay()
-        if (!runaction)
+        if (!runaction) {
+            console.info(`<!> Broadcast of index ${this.index}. Runaction is false.`)
             return
-        let info = this.imageController.cil[index]
+        }
+        let info = this.imageController.cil[this.index]
         if (isNullOrUndefined(info)) {
-            console.debug('  > is picture')
+            console.debug(`<!> Broadcast of index ${this.index}; is picture`)
             this.actionController.exec(new TeaseEvent('picture', undefined, 'view'))
         } else if (info.ignored) {
-            console.debug('  > is ignored cared')
-            this.imageController.cil[index].ignored = false
+            console.debug(`<!> Broadcast of index ${this.index}; is ignored cared`)
+            this.imageController.cil[this.index].ignored = false
             this.snackbar('This card is ignored.')
-            this.noBroadcast.push(index)
-        } else if (this.noBroadcast.indexOf(index) == -1) {
-            console.debug('  > is card')
-            this.noBroadcast.push(index)
+            this.noBroadcast.push(this.index)
+        } else if (this.noBroadcast.indexOf(this.index) == -1) {
+            console.debug(`<!> Broadcast of index ${this.index}; is card`)
+            this.noBroadcast.push(this.index)
             let ctis = this.imageController.cards[info['cardindex']]
-            console.debug(`Found card at index ${index}:\n`, ctis)
+            console.debug(`Found card at index ${this.index}:\n`, ctis)
             let catname = this.imageController.categories[info['category']].name
             this.actionController.exec(new TeaseEvent('instruction', catname, 'view'))
             let instant = false
@@ -77,7 +79,7 @@ export default class ViewController {
             if (instant)
                 this.actionController.exec(new TeaseEvent('instant', undefined, 'view'))
         } else {
-            console.debug('  > is nobroadcast')
+            console.debug(`<!> Broadcast of index ${this.index}; is nobroadcast`)
         }
     }
 
@@ -95,26 +97,25 @@ export default class ViewController {
             $(this.viewID).attr('src', this.imageController.images[this.index])
             if (this.index + 1 < this.imageController.length)
                 this.buffer.src = this.imageController.images[this.index + 1]
-        } else console.warn('Tried to switch to slide with index below 0')
+        } else console.warn('[ViewController/previousSlide] Tried to switch to slide with index below 0.')
     }
 
-    public jumpSlide(n: number) {
+    public jumpSlide(n: number, broadcast: boolean = true) {
         if (n > this.imageController.length && this.imageController.unending)
             this.imageController.extend(n)
-            // Some loading anim here?
         if (n < this.imageController.length && n >= 0) {
-            let broadcast = false
-            if (n > this.index)
-                broadcast = true
+            broadcast = ((n > this.index) && broadcast)
             this.index = n;
             $(this.viewID).attr('src', this.imageController.images[n])
+            if (this.strokingController !== null && this.strokingController !== undefined)
+                this.strokingController.slidetiming = 0
+            if (broadcast)
+                this.broadcastSlide()
+            else
+                this.broadcastSlide(false)
             if (this.index + 1 < this.imageController.length)
                 this.buffer.src = this.imageController.images[this.index + 1]
-            if (broadcast)
-                this.broadcastSlide(this.index)
-            else
-                this.broadcastSlide(this.index, false)
-        } else console.warn(`Tried to jump to slide ${n}, but was out of bounds.`)
+        } else console.warn(`[ViewController/jumpSlide] Tried to jump to slide ${n}, but was out of bounds.`)
     }
 
     public snackbar(message: string, multiLine = false, buttonText?: string, buttonAction?, buttonMultiLine?: boolean) {

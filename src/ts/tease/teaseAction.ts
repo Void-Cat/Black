@@ -163,7 +163,7 @@ export default class Action {
                 action = action.split(':')
                 this.data.action = {
                     distance: parseInt(action[0], 10),
-                    categoryName: action[1]
+                    categoryName: action[1].toLowerCase()
                 }
                 break
             case 'contact':
@@ -214,6 +214,9 @@ export default class Action {
                 this.data.until.value = until[l].split('+')[0]
             } else
                 this.data.until.value = until[l]
+            
+            if (this.data.type === 'instruction' && this.data.until.delay === 0)
+                this.data.until.delay = 1
         }
 
         // Parse CLEAN

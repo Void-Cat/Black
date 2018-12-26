@@ -234,6 +234,18 @@ export default class ActionController {
         if ((untilIndex = this.actions.until.any.indexOf(id)) != -1)
             this.actions.until.any.splice(untilIndex, 1)
 
+        // Remove from delay
+        Object.keys(this.actions.delayed.fors).forEach((d) => {
+            let index = this.actions.delayed.fors[d].indexOf(id)
+            if (index !== -1)
+                this.actions.delayed.fors[d].splice(index, 1)
+        })
+        Object.keys(this.actions.delayed.until).forEach((d) => {
+            let index = this.actions.delayed.until[d].indexOf(id)
+            if (index !== -1)
+                this.actions.delayed.until[d].splice(index, 1)
+        })
+
         // Remove from raw
         delete this.actions.raw[id]
     }
@@ -662,28 +674,49 @@ export default class ActionController {
             }
             this.strokingController.setStrokerate(count.value, count.modifier)
         },
-        skip: (action: Action) => {
+        skip: (action: Action, id: number) => {
             let distance = action.data.action.distance
             let target = action.data.action.categoryName
             let traversed = 0
             let found = []
             let mod = (distance >= 0 ? 1 : -1)
+
+            // Get the category key instead of it's name
+            let foundKey = false
+            Object.keys(this.imageController.categories).forEach((key) => {
+                if (this.imageController.categories[key].name.toLowerCase() === target) {
+                    target = key
+                    foundKey = true
+                }
+            })
+            if (!foundKey) {
+                this.viewController.snackbar(`No card found to skip to.`)
+                console.warn(`[ActionController/ExecByType] Tried to skip to unrecognized category '${target}'.`)
+                return
+            }
+
             for (var i = this.viewController.index + 1; i < this.imageController.length; i += mod) {
                 if (this.imageController.cil[i] != null)
-                    if (this.imageController.cil[i].category.toLowerCase() == target.toLowerCase()) {
+                    if (this.imageController.cil[i].category == target) {
                         found.push(i)
                         traversed += mod
                         if (traversed == distance)
                             break
                     }
             }
+
+            console.debug(`[ActionController/ExecByType] Cards found:`, found)
+            this.remove(id)
+
             if (traversed == 0)
                 this.viewController.snackbar('No card found to skip to.')
             else if (traversed != distance) {
-                this.viewController.snackbar('Skipped as far as possible.')
-                this.viewController.jumpSlide(found.pop())
-            } else
-                this.viewController.jumpSlide(found.pop())
+                this.viewController.snackbar(`Skipped as far as possible. (${traversed} cards)`)
+                this.viewController.jumpSlide(found.pop(), false)
+            } else {
+                this.viewController.snackbar(`Skipped ${traversed} cards.`)
+                this.viewController.jumpSlide(found.pop(), false)
+            }
         },
         stop: (action: Action) => {
             let id = action.data.index + '-' + Math.floor(Math.random() * 100).toString()
