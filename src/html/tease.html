@@ -307,10 +307,10 @@
                             <span class="mdc-list-item__graphic material-icons" aria-hidden="true">color_lens</span>
                             Change Theme
                         </li>
-                        <li class="mdc-list-item" id="tease-menu-savedeck" onclick="saveTease()">
+                        <!-- <li class="mdc-list-item" id="tease-menu-savedeck" onclick="saveTease()">
                             <span class="mdc-list-item__graphic material-icons" aria-hidden="true">save</span>
                             Save Tease As Deck File
-                        </li>
+                        </li> -->
                     </ul>
                     <ul class="mdc-list mdc-list--two-line" id="tease-menu-keybinds-menu" style="display: none;">
                         <li class="mdc-list-item" onclick="keybinds.change('next');">
@@ -526,7 +526,8 @@
                     categories: tease.imageController.categories,
                     cards: tease.imageController.cards,
                     cil: tease.imageController.cil,
-                    images: tease.imageController.images
+                    images: tease.imageController.images,
+                    startcards: tease.imageController.startcards
                 })
                 try {
                     fs.writeFile(path, content, (err) => {
