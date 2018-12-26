@@ -252,6 +252,17 @@ export default class Tease {
 
             let action = new Action(data, this.viewController.index)
             this.actionController.push(action)
+        },
+        getImage: (index?: number) => {
+            if (index === null || index === undefined)
+                index = this.viewController.index
+
+            if (typeof index === 'string')
+                index = parseInt(index, 10)
+            if (typeof index !== 'number')
+                console.error('Index is NaN')
+
+            console.log(`Image path:\n${this.imageController.images[index]}`)
         }
     }
 }

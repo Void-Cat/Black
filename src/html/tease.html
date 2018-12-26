@@ -273,7 +273,6 @@
     </div>
 
     <!-- Menu -->
-    
     <button id="menuButton" class="mdc-fab" aria-label="Menu" onclick="menu.open()" style="position: fixed; right: 15px; top: 15px;">
         <span class="mdc-fab__icon material-icons">menu</span>
     </button>
@@ -288,19 +287,19 @@
                             <span class="mdc-list-item__graphic material-icons" aria-hidden="true">keyboard</span>
                             Key Binds
                         </li>
-                        <li class="mdc-list-item" id="tease-menu-showinfo" onclick="$('#info-card').slideDown(200)">
+                        <li class="mdc-list-item" id="tease-menu-showinfo" style="display: none;" onclick="$('#info-card').slideDown(200); $(this).slideUp(200)">
                             <span class="mdc-list-item__graphic material-icons" aria-hidden="true">visibility</span>
                             Show Information
                         </li>
-                        <li class="mdc-list-item" id="tease-menu-showstatus" onclick="$('#status-card').slideDown(200)">
+                        <li class="mdc-list-item" id="tease-menu-showstatus" style="display: none;" onclick="$('#status-card').slideDown(200); $(this).slideUp(200)">
                             <span class="mdc-list-item__graphic material-icons" aria-hidden="true">visibility</span>
                             Show Status
                         </li>
-                        <li class="mdc-list-item" id="tease-menu-showitems" onclick="$('#items-card').slideDown(200)">
+                        <li class="mdc-list-item" id="tease-menu-showitems" style="display: none;" onclick="$('#items-card').slideDown(200); $(this).slideUp(200)">
                             <span class="mdc-list-item__graphic material-icons" aria-hidden="true">visibility</span>
                             Show Items
                         </li>
-                        <li class="mdc-list-item" id="tease-menu-showorgasms" onclick="$('#orgasms-card').slideDown(200)">
+                        <li class="mdc-list-item" id="tease-menu-showorgasms" style="display: none;" onclick="$('#orgasms-card').slideDown(200); $(this).slideUp(200)">
                             <span class="mdc-list-item__graphic material-icons" aria-hidden="true">visibility</span>
                             Show Orgasms
                         </li>
@@ -308,9 +307,9 @@
                             <span class="mdc-list-item__graphic material-icons" aria-hidden="true">color_lens</span>
                             Change Theme
                         </li>
-                        <li class="mdc-list-item" id="tease-menu-resetview">
-                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">view_compact</span>
-                            Reset View
+                        <li class="mdc-list-item" id="tease-menu-savedeck" onclick="saveTease()">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">save</span>
+                            Save Tease As Deck File
                         </li>
                     </ul>
                     <ul class="mdc-list mdc-list--two-line" id="tease-menu-keybinds-menu" style="display: none;">
@@ -395,6 +394,9 @@
                         Quit Tease
                     </button>
                 </footer>
+                <div>
+                    <span id="imagePath"></span>
+                </div>
             </div>
         </div>
         <div class="mdc-dialog__scrim"></div>
@@ -427,6 +429,7 @@
         import Theme from '../js/catworks/themer.js'
         import Tease from '../ts/tease/tease.ts'
         import TeaseEvent from '../ts/tease/teaseEvent.ts'
+        const { dialog } = require('electron').remote
         //import * as Mousetrap from 'mousetrap'
         var tease = new Tease()
         
@@ -512,6 +515,33 @@
             tease.actionController.exec(event)
             tease.goalController.handleEvent(event)
         }
+
+        function saveTease() {
+            dialog.showSaveDialog({
+                title: 'Save Tease',
+                defaultPath: 'custom-tease.deck',
+                filters: [{name: 'Deck files', extensions: ['deck']}]
+            }, (path) => {
+                let content = JSON.stringify({
+                    categories: tease.imageController.categories,
+                    cards: tease.imageController.cards,
+                    cil: tease.imageController.cil,
+                    images: tease.imageController.images
+                })
+                try {
+                    fs.writeFile(path, content, (err) => {
+                        if (err)
+                            throw err
+                        
+                        menu.close()
+                        tease.viewController.snackbar('Tease save to deck file.')
+                    })
+                } catch (err) {
+                    alert('Failed to save tease. Check the console for more detail.')
+                    console.error(err)
+                }
+            })
+        }
         
         $('[card-bg]').each((i, el) => {
             $(el).css('background', `linear-gradient(var(--mdc-theme--halfopacity), var(--mdc-theme--halfopacity)), url(${$(el).attr('card-bg')})`)
@@ -556,6 +586,7 @@
             let el = data.currentTarget
             let card = $(el).parent().parent().parent()
             $(card).slideUp(200)
+            $(`#tease-menu-show${$(card).attr('id').split('-')[0]}`).slideDown(200)
         })
         
         $(document).ready(() => {
