@@ -739,6 +739,8 @@ export default class ActionController {
         },
         sublevel: (action: Action) => {
             let sublevel = parseInt(storage.get('profile.sublevel'), 10)
+            if (typeof sublevel !== 'number' || isNaN(sublevel))
+                sublevel = 0
             sublevel = this.numbermod(sublevel, action.data.action.modifier, action.data.action.value)
             if (sublevel > 5)
                 sublevel = 5
