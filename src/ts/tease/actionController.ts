@@ -248,6 +248,16 @@ export default class ActionController {
 
         // Remove from raw
         delete this.actions.raw[id]
+
+        // Add AFTER actions if any
+        let after = action.data.after
+        if (after.active === true) {
+            let currentIndex = this.viewController.index
+            after.actions.forEach((actiondata: object) => {
+                this.push(new Action(actiondata, currentIndex), true)
+            })
+            this.exec(new TeaseEvent('instant', undefined, 'after'))
+        }
     }
 
     public exec(event: TeaseEvent) {
@@ -988,17 +998,17 @@ export default class ActionController {
         }
         switch(modifier) {
             case '+':
-                return alpha += omega
+                return Math.round(alpha += omega)
             case '-':
-                return alpha -= omega
+                return Math.round(alpha -= omega)
             case '/':
-                return alpha /= omega
+                return Math.round(alpha /= omega)
             case '*':
-                return alpha *= omega
+                return Math.round(alpha *= omega)
             case '=':
-                return omega
+                return Math.fround(omega)
         }
-        return alpha
+        return Math.round(alpha)
     }
 
     prioritize(actions: number[]) : number[] {

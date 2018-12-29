@@ -14,7 +14,7 @@ export default class Action {
         action: undefined,
         after: {
             active: false,
-            subactions: []
+            actions: []
         },
         clean: true,
         conditional: {
@@ -232,8 +232,15 @@ export default class Action {
             this.data.priority = parseInt(priority, 10)
 
         // Parse AFTER
-        if (!isNullOrUndefined(actiondata['after'])) 
-            this.data.after = actiondata['after']
+        if (!isNullOrUndefined(actiondata['after'])) {
+            if (Array.isArray(actiondata['after'])) {
+                this.data.after.active = true
+                this.data.after.actions = actiondata['after']
+            } else if (typeof actiondata['after'] === 'object' && actiondata['after'] !== null) {
+                this.data.after.active = true
+                this.data.after.actions = [actiondata['after']]
+            }
+        }
         
         // Parse FLAGS
         if (!isNullOrUndefined(actiondata['flags']) && isArray(actiondata['flags']))
