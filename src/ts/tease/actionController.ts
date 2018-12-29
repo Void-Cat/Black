@@ -58,7 +58,6 @@ export default class ActionController {
     exitController: ExitController
     goalController: GoalController
     imageController: ImageController
-    mood: number = 0
     strokingController: StrokingController
     sublevel: number = storage.get('profile.sublevel')
     priority = {
@@ -475,34 +474,32 @@ export default class ActionController {
                 else
                     return !this.strokingController.chastised
             case 'mood':
-                if ((this.mood == 1 && conditional.value == 'good') ||
-                    (this.mood == 0 && conditional.value == 'neutral') ||
-                    (this.mood == -1 && conditional.value == 'bad'))
+                if ((this.viewController.mood.state == 1 && conditional.value == 'good') ||
+                    (this.viewController.mood.state == 0 && conditional.value == 'neutral') ||
+                    (this.viewController.mood.state == -1 && conditional.value == 'bad'))
                     return true
                 return false
             case 'nextinstruction':
                 for (let i = this.viewController.index + 1; i < this.imageController.length; i++) {
-                    if (!isNullOrUndefined(this.imageController.cil[i])) {
-                        let cil = this.imageController.cil[i]
-                        if (cil == conditional.value)
+                    if (this.imageController.cil[i] !== null && this.imageController.cil[i] !== undefined) {
+                        let name: string = this.imageController.categories[this.imageController.cil[i].category].name.toLowerCase()
+                        if (name === conditional.value.toLowerCase())
                             return true
-                        else if (conditional.value == 'mistress' && cil.indexOf('mistress') != -1)
+                        else if (conditional.value.toLowerCase() === 'mistress' && name.match(/(master|mistress)/gi) !== null)
                             return true
-                        else
-                            return false
+                        break
                     }
                 }
                 return false
             case 'previousinstruction':
                 for (let i = this.viewController.index - 1; i >= 0; i--) {
-                    if (!isNullOrUndefined(this.imageController.cil[i])) {
-                        let cil = this.imageController.cil[i]
-                        if (cil == conditional.value)
+                    if (this.imageController.cil[i] !== null && this.imageController.cil[i] !== undefined) {
+                        let name: string = this.imageController.categories[this.imageController.cil[i].category].name.toLowerCase()
+                        if (name === conditional.value.toLowerCase())
                             return true
-                        else if (conditional.value == 'mistress' && cil.indexOf('mistress') != -1)
+                        else if (conditional.value.toLowerCase() === 'mistress' && name.match(/(master|mistress)/gi) !== null)
                             return true
-                        else
-                            return false
+                        break
                     }
                 }
                 return false
