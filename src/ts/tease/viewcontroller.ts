@@ -1,15 +1,20 @@
-declare const mdc
+declare const mdc, storage
 import { isNullOrUndefined, isBoolean } from 'util'
 import ActionController from './actioncontroller'
 import ExitController from './exitcontroller'
 import ImageController from './imagecontroller'
 import StrokingController from './strokingcontroller'
 import TeaseEvent from './teaseEvent'
+import { timingSafeEqual } from 'crypto';
 
 export default class ViewController {
     buffer: HTMLImageElement
     noBroadcast: number[] = []
     actionController: ActionController
+    announcer = {
+        card: new Audio(),
+        image: new Audio()
+    }
     exitController: ExitController
     imageController: ImageController
     strokingController: StrokingController
@@ -27,6 +32,13 @@ export default class ViewController {
             throw new Error(`Could not find element '${viewID}' as View Element.`)
         else
             this.viewID = 'img' + viewID
+
+        if (storage.get('tease.setup.announcecard')) {
+            this.announcer.card.src = `${__dirname}/../../audio/card.ogg`
+        }
+        if (storage.get('tease.setup.announceimage')) {
+            this.announcer.image.src = `${__dirname}/../../audio/slidechange.ogg`
+        }
     }
 
     public nextSlide() {
@@ -55,20 +67,24 @@ export default class ViewController {
         
         if (!runaction) {
             console.info(`<!> Broadcast of index ${this.index}. Runaction is false.`)
+            this.announcer.image.play()
             return
         }
         let info = this.imageController.cil[this.index]
         if (isNullOrUndefined(info)) {
             console.debug(`<!> Broadcast of index ${this.index}; is picture`)
             this.actionController.exec(new TeaseEvent('picture', undefined, 'view'))
+            this.announcer.image.play()
         } else if (info.ignored) {
             console.debug(`<!> Broadcast of index ${this.index}; is ignored cared`)
             this.imageController.cil[this.index].ignored = false
             this.snackbar('This card is ignored.')
+            this.announcer.image.play()
             this.noBroadcast.push(this.index)
         } else if (this.noBroadcast.indexOf(this.index) == -1) {
             console.debug(`<!> Broadcast of index ${this.index}; is card`)
             this.noBroadcast.push(this.index)
+            this.announcer.card.play()
             let ctis = this.imageController.cards[info['cardindex']]
             console.debug(`Found card at index ${this.index}:\n`, ctis)
             let catname = this.imageController.categories[info['category']].name

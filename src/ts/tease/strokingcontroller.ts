@@ -5,6 +5,7 @@ import {isNumber, isBoolean, isNull, isNullOrUndefined} from 'util'
 
 export default class StrokingController {
     carousel: HTMLAudioElement[] = []
+    change: boolean = false
     chastised: boolean = false
     instantupdate: boolean = false
     interval = []
@@ -41,7 +42,7 @@ export default class StrokingController {
     }
 
     init() {
-        this.updateTicker()
+        this.updateTicker(true)
         this.interval[1] = setInterval(() => this.slideTimeInterval(), 500)
         this.instantupdate = storage.get('settings.instanttickerupdate') || false
     }
@@ -63,10 +64,13 @@ export default class StrokingController {
                 this.slidetiming += 0.5
     }
 
-    updateTicker() {
-        clearInterval(this.interval[0])
-        let interval = this.slidetime * 1000 / this.strokerate
-        this.interval[0] = setInterval(() => this.tickerInterval(), interval)
+    updateTicker(force: boolean = false) {
+        if (this.change || force) {
+            clearInterval(this.interval[0])
+            let interval = this.slidetime * 1000 / this.strokerate
+            this.interval[0] = setInterval(() => this.tickerInterval(), interval)
+            this.change = false
+        }
         this.viewController.info.nextStrokeCount(true)
         this.viewController.info.nextSlideTime(true)
     }
@@ -82,6 +86,8 @@ export default class StrokingController {
             console.warn(`[StrokingController/setStrokerate] Tried to set strokerate to '${n}' with typeof '${typeof n}'.`)
             return this.strokerate
         }
+
+        this.change = true
 
         switch(modifier) {
             case '+':
@@ -120,6 +126,8 @@ export default class StrokingController {
         if (!isNumber(n))
             return this.slidetime
         
+        this.change = true
+
         switch (modifier) {
             case '+':
                 this.slidetime += n
