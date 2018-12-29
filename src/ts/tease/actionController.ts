@@ -649,8 +649,8 @@ export default class ActionController {
             $('#info-position').text(action.data.action)
         },
         setslide: (action: Action) => {
-            let mod = this.numbermod(this.viewController.index, action.data.action.modifier, action.data.action.value)
-            this.viewController.jumpSlide(mod)
+            let mod = this.numbermod(this.viewController.index, action.data.action.modifier, parseInt(action.data.action.value, 10) - (action.data.delay > 0 ? 1 : 0))
+            this.viewController.jumpSlide(mod, false, false)
         },
         slidetime: (action: Action) => {
             let timing = action.data.action

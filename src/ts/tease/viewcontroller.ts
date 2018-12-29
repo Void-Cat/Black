@@ -47,9 +47,12 @@ export default class ViewController {
         }
     }
 
-    broadcastSlide(runaction: boolean = true) : void {
+    broadcastSlide(runaction: boolean = true, rundelay: boolean = true) : void {
         $('#info-slide > td').text(this.index + 1)
-        this.actionController.delay()
+        
+        if (rundelay)
+            this.actionController.delay()
+        
         if (!runaction) {
             console.info(`<!> Broadcast of index ${this.index}. Runaction is false.`)
             return
@@ -100,7 +103,7 @@ export default class ViewController {
         } else console.warn('[ViewController/previousSlide] Tried to switch to slide with index below 0.')
     }
 
-    public jumpSlide(n: number, broadcast: boolean = true) {
+    public jumpSlide(n: number, broadcast: boolean = true, delay: boolean = true) {
         if (n > this.imageController.length && this.imageController.unending)
             this.imageController.extend(n)
         if (n < this.imageController.length && n >= 0) {
@@ -109,10 +112,7 @@ export default class ViewController {
             $(this.viewID).attr('src', this.imageController.images[n])
             if (this.strokingController !== null && this.strokingController !== undefined)
                 this.strokingController.slidetiming = 0
-            if (broadcast)
-                this.broadcastSlide()
-            else
-                this.broadcastSlide(false)
+            this.broadcastSlide(broadcast, delay)
             if (this.index + 1 < this.imageController.length)
                 this.buffer.src = this.imageController.images[this.index + 1]
         } else console.warn(`[ViewController/jumpSlide] Tried to jump to slide ${n}, but was out of bounds.`)
