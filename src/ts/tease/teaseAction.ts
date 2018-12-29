@@ -174,6 +174,7 @@ export default class Action {
             case 'on':
             case 'position':
             case 'stop':
+            case 'supermode':
             default:
                 this.data.action = action
                 break

@@ -93,6 +93,18 @@
             width: 100vw;
             z-index: 0;
         }
+
+        .supermode {
+            background: linear-gradient(238deg, #fd8800, #fd008f, #9700fd, #003dfd, #05c7e6, #4bd58d);
+            background-size: 1200% 1200%;
+            animation: supermode 13s ease infinite;
+        }
+
+        @keyframes supermode {
+            0% { background-position: 0% 50% }
+            50% { background-position: 100% 50% }
+            100% { background-position: 0% 50% }
+        }
     </style>
 </head>
 <body class="mdc-typography" style="background-color: black;">

@@ -1,11 +1,10 @@
-declare const mdc, storage
+declare const mdc, storage, theme
 import { isNullOrUndefined, isBoolean } from 'util'
 import ActionController from './actioncontroller'
 import ExitController from './exitcontroller'
 import ImageController from './imagecontroller'
 import StrokingController from './strokingcontroller'
 import TeaseEvent from './teaseEvent'
-import { timingSafeEqual } from 'crypto';
 
 export default class ViewController {
     buffer: HTMLImageElement
@@ -318,6 +317,39 @@ export default class ViewController {
                 this.mood.state -= 1
                 this.mood._update()
             }
+        }
+    }
+
+    public supermode = {
+        _active: false,
+        _audio: new Audio(`${__dirname}/../../audio/supermode.ogg`),
+        _interval: null,
+        _theme: 0,
+        _timeout: null,
+        end: () => {
+            this.supermode._active = false
+            $('body').removeClass('supermode')
+            this.actionController.exec(new TeaseEvent('supermode', 'end', 'supermode'))
+            this.supermode._audio.pause()
+            this.supermode._audio.currentTime = 0
+            clearInterval(this.supermode._interval)
+            theme.setTheme(this.supermode._theme)
+            this.strokingController.mute(false)
+        },
+        start: () => {
+            this.supermode._audio.volume = 0.45
+            this.supermode._active = true
+            this.supermode._theme = theme.getTheme()
+            setTimeout(() => {
+                $('body').addClass('supermode')
+                this.supermode._interval = setInterval(() => {
+                    $('#tease-menu-changetheme').trigger('click')
+                }, 1400)
+            }, 16500)
+            this.strokingController.mute(true)
+            this.supermode._audio.play()
+            this.supermode._timeout = setTimeout(() => this.supermode.end(), 184000)
+            this.actionController.exec(new TeaseEvent('supermode', 'start', 'supermode'))
         }
     }
 }

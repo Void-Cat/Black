@@ -8,6 +8,7 @@ import { isNullOrUndefined, isArray } from 'util'
 import GoalController from './goalcontroller'
 import ExitController from './exitcontroller'
 import Tease, { Card } from './tease';
+import { type } from 'os';
 
 export default class ActionController {
     actions = {
@@ -27,7 +28,11 @@ export default class ActionController {
             },
             key: [],
             picture: [],
-            instant: []
+            instant: [],
+            supermode: {
+                start: [],
+                end: []
+            }
         },
         until: {
             any: [],
@@ -45,7 +50,11 @@ export default class ActionController {
             key: [],
             picture: [],
             instant: [],
-            end: []
+            end: [],
+            supermode: {
+                start: [],
+                end: []
+            }
         },
         delayed: {
             fors: {},
@@ -89,6 +98,7 @@ export default class ActionController {
                 this.actions.fors[action.data.fors.type].push(id)
                 break
             case 'cum':
+            case 'supermode':
                 this.actions.fors.cum[action.data.fors.value[0]].push(id)
                 break
             case 'instruction':
@@ -119,6 +129,7 @@ export default class ActionController {
                 this.actions.until[action.data.until.type].push(id)
                 break
             case 'cum':
+            case 'supermode':
                 this.actions.until.cum[action.data.until.value[0]].push(id)
                 break
             case 'instruction':
@@ -264,7 +275,9 @@ export default class ActionController {
         console.debug(`[ActionController] Exec was called. Event:`, event)
 
         // Start by getting cards that always fire
-        let cards = this.actions.fors.any
+        let cards = []
+        if (event.type === 'picture' || event.type === 'card')
+            cards = this.actions.fors.any
 
         // Gather up eligable cards by FORS parameter
         switch (event.type) {
@@ -281,6 +294,8 @@ export default class ActionController {
                 if (event.value.indexOf('mistress') !== -1 || event.value.indexOf('master') !== -1)
                     cards = cards.concat(this.actions.fors.instruction.mistress)
                 break
+            case 'supermode':
+                cards = cards.concat(this.actions.fors.supermode[event.value])
         }
         // Filter eligible cards by looking wether or not they're currently active
         for (let i = 0; i < cards.length; i++) {
@@ -321,7 +336,9 @@ export default class ActionController {
         }
 
         // Clean all cards by UNTIL
-        cards = this.actions.until.any
+        cards = []
+        if (event.type === 'card' || event.type === 'picture')
+            cards = this.actions.until.any
 
         // Gather up eligable cleanup cards by UNTIL parameter
         switch (event.type) {
@@ -337,6 +354,9 @@ export default class ActionController {
                 cards = cards.concat(this.actions.until.instruction.any).concat(this.actions.until.instruction.instruction[event.type])
                 if (event.value.indexOf('mistress') != -1 || event.value.indexOf('master') != -1)
                     cards = cards.concat(this.actions.until.instruction.mistress)
+                break
+            case 'supermode':
+                cards = cards.concat(this.actions.until.supermode[event.value])
         }
 
         // Filter eligible cards by looking whether or not they're currently active
