@@ -403,7 +403,7 @@ export default class ActionController {
             if (isNullOrUndefined(action))
                 console.warn(`[ActionController/Exec] Tried to remove missing action with id '${key}'`)
             else {
-                if (action.data.clean && action.data.until.type !== 'instant')
+                if (action.data.clean && !action.data.flags.includes('no_clean') && action.data.until.type !== 'instant')
                     this.cleanup(action)
                 this.remove(key)
             }
