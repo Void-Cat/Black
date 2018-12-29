@@ -659,8 +659,13 @@ export default class ActionController {
             $('#info-position').text(action.data.action)
         },
         setslide: (action: Action) => {
+            let preJumpIndex = this.viewController.index
             let mod = this.numbermod(this.viewController.index, action.data.action.modifier, parseInt(action.data.action.value, 10) - (action.data.delay > 0 ? 1 : 0))
             this.viewController.jumpSlide(mod, false, false)
+            if (action.data.flags.includes('redraw'))
+                this.viewController.clearNoBroadcast(preJumpIndex + (this.viewController.index > preJumpIndex ? 1 : -1), this.viewController.index - (this.viewController.index > preJumpIndex ? 1 : -1))
+            if (action.data.flags.includes('redraw_self'))
+                this.viewController.clearNoBroadcast(action.data.index, -1)
         },
         slidetime: (action: Action) => {
             let timing = action.data.action

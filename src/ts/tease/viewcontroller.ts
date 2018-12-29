@@ -86,12 +86,24 @@ export default class ViewController {
         }
     }
 
-    public clearNoBroadcast(slide: number) {
-        for (let i = 0; i < this.noBroadcast.length; i++)
-            if (this.noBroadcast[i] >= slide) {
-                this.noBroadcast.splice(i, 1)
-                i--;
-            }
+    public clearNoBroadcast(fromSlide: number, toSlide?: number) {
+        let mod = 1
+
+        if (toSlide === null || toSlide === undefined)
+            toSlide = this.index
+        else if (toSlide === -1 && this.noBroadcast.includes(fromSlide)) {
+            this.noBroadcast.splice(this.noBroadcast.indexOf(fromSlide), 1)
+            return
+        } else if (toSlide === -1)
+            return
+
+        if (fromSlide > toSlide)
+            mod = -1
+        
+        for (let i = fromSlide; i !== toSlide; i += mod) {
+            if (this.noBroadcast.includes(i))
+                this.noBroadcast.splice(this.noBroadcast.indexOf(i), 1)
+        }
     }
 
     public previousSlide() {
