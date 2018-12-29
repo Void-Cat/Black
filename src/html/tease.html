@@ -389,7 +389,7 @@
                         <i class="material-icons mdc-button__icon" aria-hidden="true">play_arrow</i>
                         Resume Tease
                     </button>
-                    <button id="quit-button" type="button" class="mdc-button mdc-dialog__button mdc-button--secondary" onclick="tease.exitController.exitTease('userexit')" data-mdc-dialog-action="close" style="width: 100%;">
+                    <button id="quit-button" type="button" class="mdc-button mdc-dialog__button mdc-button--secondary" onclick="if (!tease.exitController.exitTease('userexit')) tease.viewController.snackbar('A card is preventing you from quitting.')" data-mdc-dialog-action="close" style="width: 100%;">
                         <i class="material-icons mdc-button__icon" aria-hidden="true">exit_to_app</i>
                         Quit Tease
                     </button>

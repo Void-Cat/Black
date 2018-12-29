@@ -15,9 +15,9 @@ export default class ExitController {
 
     constructor(startState?: boolean) {
         if (isBoolean(startState))
-            this.cua[-1] = (new cu(-1, startState, 0))
+            this.addCU(-1, startState, -1)
         else
-            this.cua[-1] = (new cu(-1, true, 0))
+            this.addCU(-1, true, -1)
     }
 
     /** Add an exit-controlunit to the controlunit-array (this.cua) */
@@ -27,20 +27,21 @@ export default class ExitController {
         if (!isNullOrUndefined(this.cua[id]))
             return false
 
-        // Create cua
+        // Create cu
         this.cua[id] = new cu(id, allows, priority)
 
         // Update highest priority allow/block
-        if (allows)
+        if (allows) {
             if (this.highestAllow.length == 0 || this.cua[this.highestAllow[0]].priority == priority)
                 this.highestAllow.push(id)
             else if (this.cua[this.highestAllow[0]].priority < priority)
                 this.highestAllow = [id]
-        else
+        } else {
             if (this.highestBlock.length == 0 || this.cua[this.highestBlock[0]].priority == priority)
                 this.highestBlock.push(id)
             else if (this.cua[this.highestBlock[0]].priority < priority)
                 this.highestBlock = [id]
+        }
 
         // Return success
         return true
@@ -82,6 +83,7 @@ export default class ExitController {
     public allowed() : boolean {
         let allows = this.highestAllow.length
         let blocks = this.highestBlock.length
+        
         if (blocks == 0)
             return true
         else if (allows == 0)
@@ -107,14 +109,14 @@ export default class ExitController {
         if (this.cua[id].allows) {
             let index = this.highestAllow.indexOf(id)
             if (index != -1) {
-                this.highestAllow.slice(index, index)
+                this.highestAllow.splice(index, 1)
                 if (this.highestAllow.length == 0)
                     this.updateHighest(true, this.cua[id].priority - 1)
             }
         } else {
             let index = this.highestBlock.indexOf(id)
             if (index != -1) {
-                this.highestBlock.slice(index, index)
+                this.highestBlock.splice(index, 1)
                 if (this.highestBlock.length == 0)
                     this.updateHighest(false, this.cua[id].priority - 1)
             }

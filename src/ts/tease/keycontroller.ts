@@ -66,7 +66,10 @@ export default class KeyController {
         Mousetrap.bind(this.keymap['strokedown'], () => this.strokingController.setStrokerate(1, '-'))
         Mousetrap.bind(this.keymap['timeup'], () => this.strokingController.setSlidetime(1, '+'))
         Mousetrap.bind(this.keymap['timedown'], () => this.strokingController.setSlidetime(1, '-'))
-        Mousetrap.bind(this.keymap['exit'], () => this.exitController.exitTease('userexit'))
+        Mousetrap.bind(this.keymap['exit'], () => {
+            if (!this.exitController.exitTease('userexit'))
+                this.viewController.snackbar('A card is preventing you from quitting.')
+        })
         Mousetrap.bind(this.keymap['mute'], () => this.strokingController.mute())
     }
 }

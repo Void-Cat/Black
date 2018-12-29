@@ -137,7 +137,7 @@ export default class Tease {
     
     constructor() {
         this.imageController = new ImageController(0, (storage.get('tease.setup.infinite') || false))
-        this.exitController = new ExitController(storage.get('tease.setup.blockexit'))
+        this.exitController = new ExitController(!storage.get('tease.setup.blockexit'))
         this.viewController = new ViewController(this.imageController, this.exitController, '#view')
         this.goalController = new GoalController(storage.get('tease.setup.goal'), this.exitController, this.viewController, storage.get('tease.setup.goalx'))
         this.strokingController = new StrokingController(this.viewController)
