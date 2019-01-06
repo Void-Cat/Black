@@ -98,23 +98,19 @@
         <p id="cardText-helptext" class="mdc-text-field-helptext" aria-hidden="true">
             The instruction(s) on the card. (CTIS behaviour comes later)
         </p>
-        <div id="genderSelect" class="mdc-select" role="listbox" tabindex="0">
-            <div class="mdc-select__surface" tabindex="0">
-                <div class="mdc-select__label">Gender</div>
-                <div class="mdc-select__selected-text"></div>
-                <div class="mdc-select__bottom-line"></div>
-            </div>
-            <div class="mdc-simple-menu mdc-select__menu">
-                <ul class="mdc-list mdc-simple-menu__items">
-                    <li class="mdc-list-item" role="option" id="gender-neutral" aria-selected tabindex="0">Neutral</li>
-                    <li class="mdc-list-item" role="option" id="gender-male" tabindex="0">Male</li>
-                    <li class="mdc-list-item" role="option" id="gender-female" tabindex="0">Female</li>
-                    <li class="mdc-list-item" role="option" id="gender-transsexual" tabindex="0">Transsexual</li>
-                    <li class="mdc-list-item" role="option" id="gender-straightcouple" tabindex="0">Straight Couple</li>
-                    <li class="mdc-list-item" role="option" id="gender-gaycouple" tabindex="0">Gay Couple</li>
-                    <li class="mdc-list-item" role="option" id="gender-lesbiancouple" tabindex="0">Lesbian Couple</li>
-                </ul>
-            </div>
+        <div id="genderSelect" class="mdc-select">
+            <i class="mdc-select__dropdown-icon"></i>
+            <select class="mdc-select__native-control">
+                <option value="gender-neutral">Neutral</option>
+                <option value="gender-male">Male</option>
+                <option value="gender-female">Female</option>
+                <option value="gender-transsexual">Transsexual</option>
+                <option value="gender-straightcouple">Straight Couple</option>
+                <option value="gender-gaycouple">Gay Couple</option>
+                <option value="gender-lesbiancouple">Lesbian Couple</option>
+            </select>
+            <label class="mdc-floating-label mdc-floating-label--float-above"></label>
+            <div class="mdc-line-ripple"></div>
         </div>
         <br>
         <div class="mdc-text-field" data-mdc-auto-init="MDCTextField">
