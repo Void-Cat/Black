@@ -406,10 +406,11 @@
                         Quit Tease
                     </button>
                 </footer>
-                <div>
-                    <span id="imagePath"></span>
-                </div>
             </div>
+        </div>
+        <div class="mdc-typography--caption" style="bottom: 2px; left: 2px; position: fixed; color: lightgray;">
+            <span id="imagePath"></span><br>
+            <span id="slideInfo"></span>
         </div>
         <div class="mdc-dialog__scrim"></div>
     </div>
@@ -442,7 +443,6 @@
         import Tease from '../ts/tease/tease.ts'
         import TeaseEvent from '../ts/tease/teaseEvent.ts'
         const { dialog } = require('electron').remote
-        //import * as Mousetrap from 'mousetrap'
         var tease = new Tease()
         
         var theme = new Theme({

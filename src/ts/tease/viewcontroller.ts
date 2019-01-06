@@ -60,6 +60,7 @@ export default class ViewController {
 
     broadcastSlide(runaction: boolean = true, rundelay: boolean = true) : void {
         $('#info-slide > td').text(this.index + 1)
+        $('#imagePath').text(this.imageController.images[this.index])
         
         if (rundelay)
             this.actionController.delay()
@@ -72,16 +73,19 @@ export default class ViewController {
         let info = this.imageController.cil[this.index]
         if (isNullOrUndefined(info)) {
             console.debug(`<!> Broadcast of index ${this.index}; is picture`)
+            $('#slideInfo').text('Picture')
             this.actionController.exec(new TeaseEvent('picture', undefined, 'view'))
             this.announcer.image.play()
         } else if (info.ignored) {
             console.debug(`<!> Broadcast of index ${this.index}; is ignored cared`)
+            $('#slideInfo').text(`Card - ${this.imageController.categories[info['category']].name} (IGNORED)`)
             this.imageController.cil[this.index].ignored = false
             this.snackbar('This card is ignored.')
             this.announcer.image.play()
             this.noBroadcast.push(this.index)
         } else if (this.noBroadcast.indexOf(this.index) == -1) {
             console.debug(`<!> Broadcast of index ${this.index}; is card`)
+            $('#slideInfo').text(`Card - ${this.imageController.categories[info['category']].name}`)
             this.noBroadcast.push(this.index)
             this.announcer.card.play()
             let ctis = this.imageController.cards[info['cardindex']]
@@ -98,6 +102,7 @@ export default class ViewController {
                 this.actionController.exec(new TeaseEvent('instant', undefined, 'view'))
         } else {
             console.debug(`<!> Broadcast of index ${this.index}; is nobroadcast`)
+            $('#slideInfo').text(`Card - ${this.imageController.categories[info['category']].name} (NO BROADCAST)`)
         }
     }
 
