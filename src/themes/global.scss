@@ -110,6 +110,19 @@ main {
     }
 }
 
+.mdc-text-field--textarea {
+    .mdc-floating-label {
+        background-color: initial;
+        margin: 0;
+        padding: 0;
+    }
+    .mdc-notched-outline > .mdc-notched-outline__notch > .mdc-floating-label {
+        background-color: initial;
+        margin: 0;
+        padding: 0;
+    }
+}
+
 ::-webkit-scrollbar {
     width: 5px;
 }
