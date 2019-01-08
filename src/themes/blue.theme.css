@@ -7297,6 +7297,10 @@ main {
   opacity: 1;
   padding-top: 4px; }
 
+.mdc-select__native-control option {
+  background-color: #F5F5F5;
+  color: black; }
+
 ::-webkit-scrollbar {
   width: 5px; }
 

@@ -103,6 +103,13 @@ main {
     padding-top: 4px;
 }
 
+.mdc-select__native-control {
+    option {
+        background-color: $mdc-theme-surface;
+        color: $mdc-theme-on-surface;
+    }
+}
+
 ::-webkit-scrollbar {
     width: 5px;
 }
