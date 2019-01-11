@@ -1,5 +1,5 @@
 /* global $, dialog, mdc, Image, fs, storage */
-function setStep (step, bw) {
+function setStep (step) {
     $('.box').slideUp(200, () => {
         $('#cardMaker-' + step).slideDown(200)
     })
@@ -9,6 +9,7 @@ if (typeof pngImage === 'undefined') var pngImage
 
 var genderSelect = new mdc.select.MDCSelect($('#genderSelect')[0])
 
+//#region Image Functions
 function createFit (srcWidth, srcHeight) { // Create a fit for the card image
     let orientation, ratio
     ratio = 1
@@ -136,6 +137,7 @@ function generateImage () {
     $('#sneakPeek').append(canvas)
     return canvas.toDataURL('image/png')
 }
+//#endregion
 
 var settings = {} // type, convert, cardType, imgPath, saveLoc, deckImage, author
 
@@ -162,8 +164,35 @@ if (storage.get('cardMaker.load')) { // load, saveLoc, gender, author, deckName,
 }
 
 $(document).ready(() => {
+    $('.mdc-text-field').each((i, el) => {
+        mdc.textField.MDCTextField.attachTo(el)
+    })
+    $('.mdc-radio').each((i, el) => {
+        mdc.radio.MDCRadio.attachTo(el)
+    })
+    $('.mdc-switch').each((i, el) => {
+        mdc.switchControl.MDCSwitch.attachTo(el)
+    })
+    $('.mdc-button').each((i, el) => {
+        mdc.ripple.MDCRipple.attachTo(el)
+    })
     mdc.autoInit()
 })
+
+function saveSettings() {
+    if (settings.load) {
+        storage.set('cardMaker', {
+            type: settings.type,
+            convert: settings.convert,
+            load: settings.load,
+            saveLoc: settings.saveLoc,
+            gender: settings.gender,
+            author: settings.author,
+            deckName: settings.deckName,
+            deckImage: settings.deckImage.src
+        })
+    }
+}
 
 // Setup
 settings.cardImage = new Image()
@@ -171,7 +200,24 @@ settings.genderImage = new Image()
 settings.tagImage = new Image()
 settings.tagImage.src = `file://${__dirname}/cardmaker/tag.png`
 
-// First step
+function updateNextButton() {
+    // Step 1: CTIS type, save location
+    if (['cti1', 'ctis'].indexOf(settings.type) !== -1 &&
+        typeof settings.saveLoc === 'string' &&
+        settings.saveLoc !== '')
+        $('#step-0-next').prop('disabled', false)
+    else
+        $('#step-0-next').prop('disabled', true)
+
+    // Step 2: card image
+    if (typeof settings.cardImage.src === 'string' &&
+        settings.cardImage.src !== '')
+        $('#step-1-next').prop('disabled', false)
+    else
+        $('#step-1-next').prop('disabled', true)
+}
+
+//#region First step
 $('#saveSettings').change(() => {
     settings.load = $('#saveSettings').is(':checked')
 })
@@ -186,6 +232,7 @@ $('#cardtype-cti1, #cardtype-ctis').click((event) => {
         if (settings.convert === true) $('#saveLocField').slideUp(200)
         $('#convert-cti1-field').slideDown(200)
     }
+    updateNextButton()
 })
 
 $('#convert-cti1-field').click((event) => {
@@ -213,12 +260,18 @@ $('#saveLocBtn').click(() => {
             $('#getSaveLoc').text('nowhere')
             settings.saveLoc = undefined
         }
+        updateNextButton()
     })
 })
 
-$('#step-0-next').click(() => setStep(1))
+$('#step-0-next').click(() => {
+    if (!$('#step-0-next').is(':disabled'))
+        saveSettings()
+        setStep(1)
+})
+//#endregion
 
-// Second step
+//#region Second step
 $('#browsePictureBtn').click(() => {
     dialog.showOpenDialog({
         title: 'Select Card Image',
@@ -239,6 +292,7 @@ $('#browsePictureBtn').click(() => {
             $('#browsePictureLabel').fadeOut(100)
             $('#cardInfo').slideUp(200)
         }
+        updateNextButton()
     })
 })
 
@@ -316,17 +370,21 @@ $('#deckName').change(() => {
 $('#step-1-prev').click(() => setStep(0))
 
 $('#step-1-next').click(() => {
-    if (settings.convert && settings.type === 'ctis') {
-        setStep(3)
-    } else {
-        let uri = generateImage()
-        setStep(2)
-        let matches = uri.match(/^data:.+\/(.+);base64,(.*)$/)
-        pngImage = Buffer.alloc(matches[2].length, matches[2], 'base64')
+    if (!$('#step-1-next').is(':disabled')) {
+        if (settings.convert && settings.type === 'ctis') {
+            setStep(3)
+        } else {
+            let uri = generateImage()
+            setStep(2)
+            let matches = uri.match(/^data:.+\/(.+);base64,(.*)$/)
+            pngImage = Buffer.alloc(matches[2].length, matches[2], 'base64')
+        }
+        saveSettings()
     }
 })
+//#endregion
 
-// Third step / Sneak Peek
+//#region Third step / Sneak Peek
 $('#step-2-prev').click(() => {
     setStep(1)
     $('#sneakPeek').empty()
@@ -334,8 +392,10 @@ $('#step-2-prev').click(() => {
 
 $('#step-2-next').click(() => {
     if (settings.type === 'ctis') {
+        saveSettings()
         setStep(3)
     } else {
+        saveSettings()
         let getF = fs.readdirSync(settings.saveLoc)
         let n = 1
         getF.forEach((file) => {
@@ -346,8 +406,9 @@ $('#step-2-next').click(() => {
         setStep(4)
     }
 })
+//#endregion
 
-// Fourth Step / CTIS hopdaflop
+//#region Fourth Step / CTIS hopdaflop
 $('#addAction').click(() => {
     let n = $('.action-block').length
     $('<table id="action-' + n + '" class="action-block" style="font-family: monospace; background-color: rgba(0, 0, 0, 0.2); width: 50%;"><tbody><tr><td>&nbsp;&nbsp;&nbsp;&nbsp;{</td><td></td></tr><tr class="action-row"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;start:</td><td><input type="text" name="start" /></td><td>,</td></tr><tr class="action-row"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type:</td><td><input type="text" name="type" /></td><td>,</td></tr><tr class="action-row"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;conditional:</td><td><input type="text" name="conditional" /></td><td>,</td></tr><tr class="action-row"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for:</td><td><input type="text" name="fors" /></td><td>,</td></tr><tr class="action-row"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;action:</td><td><input type="text" name="action" /></td><td>,</td></tr><tr class="action-row"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;until:</td><td><input type="text" name="until" /></td><td>,</td></tr><tr><td class="lae">&nbsp;&nbsp;&nbsp;&nbsp;}</td><td></td></tr></tbody></table>').insertAfter($('.action-block')[$('.action-block').length - 1])
@@ -388,6 +449,7 @@ $('#step-3-prev').click(() => {
 })
 
 $('#step-3-next').click(() => {
+    saveSettings()
     let ctisactions = {
         actions: []
     }
@@ -451,18 +513,4 @@ $('#step-3-next').click(() => {
         $('#CTISWrong').slideDown(200)
     }
 })
-
-$('#cardMaker-4').find('button').click(() => {
-    if (settings.load) {
-        storage.set('cardMaker', {
-            type: settings.type,
-            convert: settings.convert,
-            load: settings.load,
-            saveLoc: settings.saveLoc,
-            gender: settings.gender,
-            author: settings.author,
-            deckName: settings.deckName,
-            deckImage: settings.deckImage.src
-        })
-    }
-})
+//#endregion
