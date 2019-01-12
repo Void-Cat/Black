@@ -1,143 +1,149 @@
 <!DOCTYPE html>
 <div id="newprofile" class="mdc-elevation--z3 box" style="display: none;">
-  <h1 class="mdc-typography--headline5">Create a new profile</h1>
-  <p class="mdc-typography--body2" style="margin-bottom: 0;">Start off by setting information about yourself.</p>
-  <div class="mdc-text-field" data-mdc-auto-init="MDCTextField" style="margin-top: 5px;">
-    <input id="realName" type="text" class="mdc-text-field__input">
-    <label class="mdc-text-field__label">Your first name</label>
-  </div>
-  <br>
-
-  <div class="mdc-form-field">
-    <p class="mdc-typography--body1">Do you have a penis? (Are you male?)</p>
-    <div class="mdc-radio">
-      <input class="mdc-radio__native-control" type="radio" id="genderReal-true" name="genderReal">
-      <div class="mdc-radio__background">
-        <div class="mdc-radio__outer-circle"></div>
-        <div class="mdc-radio__inner-circle"></div>
-      </div>
+    <h1 class="mdc-typography--headline5">Create a new profile</h1>
+    <p class="mdc-typography--body2" style="margin-bottom: 0;">Start off by setting information about yourself.</p>
+    <div class="mdc-text-field" data-mdc-auto-init="MDCTextField" style="margin-top: 5px;">
+        <input id="realName" type="text" class="mdc-text-field__input">
+        <label class="mdc-floating-label">Your first name</label>
+        <div class="mdc-line-ripple"></div>
     </div>
-    <label id="genderReal-true-label" for="genderReal-true">Yes</label>
-    &nbsp;
-    <div class="mdc-radio" data-mdc-auto-init="MDCRadio">
-      <input class="mdc-radio__native-control" type="radio" id="genderReal-false" name="genderReal">
-      <div class="mdc-radio__background">
-        <div class="mdc-radio__outer-circle"></div>
-        <div class="mdc-radio__inner-circle"></div>
-      </div>
+    <br>
+    
+    <div class="mdc-form-field">
+        <p class="mdc-typography--body1">Do you have a penis? (Are you male?)</p>
+        <div class="mdc-radio">
+            <input class="mdc-radio__native-control" type="radio" id="genderReal-true" name="genderReal">
+            <div class="mdc-radio__background">
+                <div class="mdc-radio__outer-circle"></div>
+                <div class="mdc-radio__inner-circle"></div>
+            </div>
+        </div>
+        <label id="genderReal-true-label" for="genderReal-true">Yes</label>
+        &nbsp;
+        <div class="mdc-radio" data-mdc-auto-init="MDCRadio">
+            <input class="mdc-radio__native-control" type="radio" id="genderReal-false" name="genderReal">
+            <div class="mdc-radio__background">
+                <div class="mdc-radio__outer-circle"></div>
+                <div class="mdc-radio__inner-circle"></div>
+            </div>
+        </div>
+        <label id="genderReal-false-label" for="genderReal-false">No</label>
     </div>
-    <label id="genderReal-false-label" for="genderReal-false">No</label>
-  </div>
-
-  <p class="mdc-typography--body1">Where are your punishments cards located?</p>
-  <div class="mdc-form-field">
-    <button type="button" id="setPunishmentButton" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
-    <label id="setPunishmentLabel" class="box" style="margin-left: 5px; background-color: rgba(0, 0, 0, 0.2); border-radius: 5px; display: none;"></label>
-  </div>
-
-  <hr>
-  <p class="mdc-typography--body2">Now answer some questions about your mistress:</p>
-
-  <p class="mdc-typography--body1" style="margin-bottom: 0;">My mistress calls me a:</p>
-  <div class="mdc-text-field" data-mdc-auto-init="MDCTextField" style="margin-top: 5px;">
-    <input type="text" class="mdc-text-field__input" id="genderNick">
-    <label for="genderNick" class="mdc-text-field__label">Boy/Girl/Pet/Slave/Other</label>
-  </div>
-  <p class="mdc-typography--caption" style="margin: 0;">As in: "You've been a good <span id="genderNick-example" style="color: var(--mdc-theme-accent);">slave</span>."</p>
-  <br>
-
-  <!--<p class="mdc-typography--body1" style="margin-bottom: 0;">She also has a nickname for me, namely:</p>
-  <div id="nickname-textfield" class="mdc-text-field" data-mdc-auto-init="MDCTextField" style="margin-top: 5px;">
-    <input type="text" class="mdc-text-field__input" id="nickname">
-    <label for="nickname" class="mdc-text-field__label">Nickname</label>
-  </div>
-  <p class="mdc-typography--caption" style="margin: 0;">Your nickname can be changed by CTIS cards.</p>
-  <div class="mdc-form-field">
-    <div class="mdc-checkbox">
-      <input type="checkbox" id="noNickname" class="mdc-checkbox__native-control"/>
-      <div class="mdc-checkbox__background">
-        <svg class="mdc-checkbox__checkmark" viewbox="0 0 24 24">
-          <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
-        </svg>
-        <div class="mdc-checkbox__mixedmark"></div>
-      </div>
+    
+    <p class="mdc-typography--body1">Where are your punishments cards located?</p>
+    <div class="mdc-form-field">
+        <button type="button" id="setPunishmentButton" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
+        <label id="setPunishmentLabel" class="box" style="margin-left: 5px; background-color: rgba(0, 0, 0, 0.2); border-radius: 5px; display: none;"></label>
     </div>
-    <label for="noNickname">Don't use nicknames.</label>
-  </div>-->
-  <hr>
-  <button type="button" id="saveProfile" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Save Profile</button>
-</div>
-
-<div id="editProfile" class="mdc-elevation--z3 box" style="display: none;">
-  <h1 class="mdc-typography--headline5">Edit your profile</h1>
-  <p class="mdc-typography--body1">Values you can edit:</p>
-  <div class="mdc-text-field mdc-text-field--upgraded" data-mdc-auto-init="MDCTextField" style="margin-top: 5px;">
-    <input id="edit-realname" type="text" class="mdc-text-field__input">
-    <label class="mdc-text-field__label mdc-text-field__label--float-above" for="edit-realname">Your first name</label>
-  </div>
-  <br><br>
-  <div class="mdc-form-field">
-    <p class="mdc-typography--body1">Do you have a penis? (Are you male?)</p>
-    <div class="mdc-radio">
-      <input class="mdc-radio__native-control" type="radio" id="edit-genderReal-true" name="genderReal">
-      <div class="mdc-radio__background">
-        <div class="mdc-radio__outer-circle"></div>
-        <div class="mdc-radio__inner-circle"></div>
-      </div>
+    
+    <hr>
+    <p class="mdc-typography--body2">Now answer some questions about your mistress:</p>
+    
+    <p class="mdc-typography--body1" style="margin-bottom: 0;">My mistress calls me a:</p>
+    <div class="mdc-text-field" data-mdc-auto-init="MDCTextField" style="margin-top: 5px;">
+        <input type="text" class="mdc-text-field__input" id="genderNick">
+        <label for="genderNick" class="mdc-floating-label">Boy/Girl/Pet/Slave/Other</label>
+        <div class="mdc-line-ripple"></div>
     </div>
-    <label id="edit-genderReal-true-label" for="edit-genderReal-true">Yes</label>
-    &nbsp;
-    <div class="mdc-radio" data-mdc-auto-init="MDCRadio">
-      <input class="mdc-radio__native-control" type="radio" id="edit-genderReal-false" name="genderReal">
-      <div class="mdc-radio__background">
-        <div class="mdc-radio__outer-circle"></div>
-        <div class="mdc-radio__inner-circle"></div>
-      </div>
+    <p class="mdc-typography--caption" style="margin: 0;">As in: "You've been a good <span id="genderNick-example" style="color: var(--mdc-theme-accent);">slave</span>."</p>
+    <br>
+    
+    <!--<p class="mdc-typography--body1" style="margin-bottom: 0;">She also has a nickname for me, namely:</p>
+        <div id="nickname-textfield" class="mdc-text-field" data-mdc-auto-init="MDCTextField" style="margin-top: 5px;">
+            <input type="text" class="mdc-text-field__input" id="nickname">
+            <label for="nickname" class="mdc-floating-label">Nickname</label>
+            <div class="mdc-line-ripple"></div>
+        </div>
+        <p class="mdc-typography--caption" style="margin: 0;">Your nickname can be changed by CTIS cards.</p>
+        <div class="mdc-form-field">
+            <div class="mdc-checkbox">
+                <input type="checkbox" id="noNickname" class="mdc-checkbox__native-control"/>
+                <div class="mdc-checkbox__background">
+                    <svg class="mdc-checkbox__checkmark" viewbox="0 0 24 24">
+                        <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+                    </svg>
+                    <div class="mdc-checkbox__mixedmark"></div>
+                </div>
+            </div>
+            <label for="noNickname">Don't use nicknames.</label>
+        </div>-->
+        <hr>
+        <button type="button" id="saveProfile" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Save Profile</button>
     </div>
-    <label id="edit-genderReal-false-label" for="edit-genderReal-false">No</label>
-  </div>
-  <br><br>
-  <p class="mdc-typography--body1">Where are your punishments cards located?</p>
-  <div class="mdc-form-field">
-    <button type="button" id="editPunishmentButton" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
-    <label id="editPunishmentLabel" class="box" style="margin-left: 5px; background-color: rgba(0, 0, 0, 0.2); border-radius: 5px; display: none;"></label>
-  </div>
-  <br><br>
-  <p class="mdc-typography--body1" style="margin-bottom: 0;">My mistress calls me a:</p>
-  <div class="mdc-text-field mdc-text-field--upgraded" data-mdc-auto-init="MDCTextField" style="margin-top: 5px;">
-    <input type="text" class="mdc-text-field__input" id="edit-genderNick">
-    <label for="genderNick" class="mdc-text-field__label mdc-text-field__label--float-above">Boy/Girl/Pet/Slave/Other</label>
-  </div>
-  <p class="mdc-typography--caption" style="margin: 0;">As in: "You've been a good <span id="edit-genderNick-example" style="color: var(--mdc-theme-accent);">slave</span>."</p>
-  <br>
-  <button type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" id="edit-saveProfileBtn">Save Profile</button>
-  &nbsp;
-  <button type="button" class="mdc-button mdc-button--raised mdc-button--accent mdc-ripple" data-mdc-auto-init="MDCRipple" id="cancelEdit">Cancel Editing</button>
-  &nbsp;
-  <button type="button" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" id="deleteProfileBtn">Delete Profile</button>
-  <hr>
-  <p class="mdc-typography--body1">Values you can reset:</p>
-  <span class="mdc-typography--caption">Clicking any of the buttons below will reset the associated value instantly, with no way to undo so.</span><br>
-  <br>
-  <button type="button" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="resetVal('sublevel')">Reset Submission Level (sublevel)</button>
-  <br><br>
-  <button type="button" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="resetVal('cumming')">Reset Cumming Statistics</button>
-  <br><br>
-  <button type="button" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="resetVal('teases')">Reset Tease Statistics</button>
-  <br><br>
-  <button type="button" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="resetVal('punishments')">Reset Punishment Statistics</button>
-</div>
-
-<div id="profile" class="mdc-elevation--z3 box">
-  <h1 class="mdc-typography--headline5">Your profile</h1>
-  <p class="mdc-typography--body1">Your real name is <span class="profile-card profile-name-real"></span>.</p>
-  <p class="mdc-typography--body1">Your nickname from mistress is <span class="profile-card profile-name-nick"></span>.</p>
-  <p class="mdc-typography--body1">Your submission level is <span class="profile-card profile-sublevel"></span>.<br>
-  <span class="mdc-typography--caption">Submission level between 5 and -5. 5 is completely submissive, -5 is completely defiant.</span></p>
-  <p class="mdc-typography--body1">Your gender is <span class="profile-gender-real"></span>,</p>
-  <p class="mdc-typography--body1">But to mistress you're just a <span class="profile-card profile-gender-nick"></span>.</p>
-  <br>
-  <button type="button" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" id="editProfileBtn">Edit Profile</button>
-</div>
-
-<script src="./js/profile.js" charset="utf-8"></script>
+    
+    <div id="editProfile" class="mdc-elevation--z3 box" style="display: none;">
+        <h1 class="mdc-typography--headline5">Edit your profile</h1>
+        <p class="mdc-typography--body1">Values you can edit:</p>
+        <div class="mdc-text-field mdc-text-field--upgraded" data-mdc-auto-init="MDCTextField" style="margin-top: 5px;">
+            <input id="edit-realname" type="text" class="mdc-text-field__input">
+            <label class="mdc-floating-label mdc-floating-label--float-above" for="edit-realname">Your first name</label>
+            <div class="mdc-line-ripple"></div>
+        </div>
+        <br><br>
+        <div class="mdc-form-field">
+            <p class="mdc-typography--body1">Do you have a penis? (Are you male?)</p>
+            <div class="mdc-radio">
+                <input class="mdc-radio__native-control" type="radio" id="edit-genderReal-true" name="genderReal">
+                <div class="mdc-radio__background">
+                    <div class="mdc-radio__outer-circle"></div>
+                    <div class="mdc-radio__inner-circle"></div>
+                </div>
+            </div>
+            <label id="edit-genderReal-true-label" for="edit-genderReal-true">Yes</label>
+            &nbsp;
+            <div class="mdc-radio" data-mdc-auto-init="MDCRadio">
+                <input class="mdc-radio__native-control" type="radio" id="edit-genderReal-false" name="genderReal">
+                <div class="mdc-radio__background">
+                    <div class="mdc-radio__outer-circle"></div>
+                    <div class="mdc-radio__inner-circle"></div>
+                </div>
+            </div>
+            <label id="edit-genderReal-false-label" for="edit-genderReal-false">No</label>
+        </div>
+        <br><br>
+        <p class="mdc-typography--body1">Where are your punishments cards located?</p>
+        <div class="mdc-form-field">
+            <button type="button" id="editPunishmentButton" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
+            <label id="editPunishmentLabel" class="box" style="margin-left: 5px; background-color: rgba(0, 0, 0, 0.2); border-radius: 5px; display: none;"></label>
+        </div>
+        <br><br>
+        <p class="mdc-typography--body1" style="margin-bottom: 0;">My mistress calls me a:</p>
+        <div class="mdc-text-field mdc-text-field--upgraded" data-mdc-auto-init="MDCTextField" style="margin-top: 5px;">
+            <input type="text" class="mdc-text-field__input" id="edit-genderNick">
+            <label for="genderNick" class="mdc-floating-label mdc-floating-label--float-above">Boy/Girl/Pet/Slave/Other</label>
+            <div class="mdc-line-ripple"></div>
+        </div>
+        <p class="mdc-typography--caption" style="margin: 0;">As in: "You've been a good <span id="edit-genderNick-example" style="color: var(--mdc-theme-accent);">slave</span>."</p>
+        <br>
+        <button type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" id="edit-saveProfileBtn">Save Profile</button>
+        &nbsp;
+        <button type="button" class="mdc-button mdc-button--raised mdc-button--accent mdc-ripple" data-mdc-auto-init="MDCRipple" id="cancelEdit">Cancel Editing</button>
+        &nbsp;
+        <button type="button" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" id="deleteProfileBtn">Delete Profile</button>
+        <hr>
+        <p class="mdc-typography--body1">Values you can reset:</p>
+        <span class="mdc-typography--caption">Clicking any of the buttons below will reset the associated value instantly, with no way to undo so.</span><br>
+        <br>
+        <button type="button" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="resetVal('sublevel')">Reset Submission Level (sublevel)</button>
+        <br><br>
+        <button type="button" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="resetVal('cumming')">Reset Cumming Statistics</button>
+        <br><br>
+        <button type="button" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="resetVal('teases')">Reset Tease Statistics</button>
+        <br><br>
+        <button type="button" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="resetVal('punishments')">Reset Punishment Statistics</button>
+    </div>
+    
+    <div id="profile" class="mdc-elevation--z3 box">
+        <h1 class="mdc-typography--headline5">Your profile</h1>
+        <p class="mdc-typography--body1">Your real name is <span class="profile-card profile-name-real"></span>.</p>
+        <p class="mdc-typography--body1">Your nickname from mistress is <span class="profile-card profile-name-nick"></span>.</p>
+        <p class="mdc-typography--body1">Your submission level is <span class="profile-card profile-sublevel"></span>.<br>
+            <span class="mdc-typography--caption">Submission level between 5 and -5. 5 is completely submissive, -5 is completely defiant.</span></p>
+            <p class="mdc-typography--body1">Your gender is <span class="profile-gender-real"></span>,</p>
+            <p class="mdc-typography--body1">But to mistress you're just a <span class="profile-card profile-gender-nick"></span>.</p>
+            <br>
+            <button type="button" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple" id="editProfileBtn">Edit Profile</button>
+        </div>
+        
+        <script src="./js/profile.js" charset="utf-8"></script>
+        
