@@ -3,7 +3,7 @@
 // Function for cleaning the storage
 function cleanStorage(newVersion) {
     // Cleaning storage for 1.7.0
-    let del = ['teaseslave', 'profile.name.nick', 'settings.cardratio', 'teaseParams']
+    let del = ['teaseslave', 'profile.name.nick', 'settings.cardratio', 'teaseParams', 'teaseExit']
     del.forEach((ldel) => {
         storage.delete(ldel)
     })
