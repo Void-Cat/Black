@@ -1,356 +1,611 @@
 <!DOCTYPE html>
-<html style="background-color: black; color: white; transition: background-color 1s;">
-  <head>
+<html lang="en">
+<head>
     <meta charset="utf-8">
-    <title>Black Tease</title>
-    <link rel="stylesheet" href="../css/material-components-web/material-components-web.min.css">
+    <title>Black - Tease</title>
     <link rel="stylesheet" href="../css/material-icons/material-icons.css">
-    <!-- <link rel="stylesheet" href="../css/black.css?v=1"> -->
+    <link rel="stylesheet" href="../css/material-components-web/material-components-web.min.css">
     <link rel="stylesheet" id="theme">
-  </head>
-  <body class="mdc-typography mdc-theme--dark">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'">
+    <style>
+        html {
+            background-color: black;
+        }
+        html, body, #tease {
+            height: 100vh;
+            width: 100vw;
+        }
+        
+        #leftBar {
+            left: 0;
+            overflow: auto;
+            top: 0;
+        }
+        
+        #rightBar {
+            overflow: auto;
+            right: 0;
+            top: 80px;
+        }
+        
+        .sidebar {
+            bottom: 0;
+            margin: 3px 3px 0 3px;
+            max-width: 200px;
+            min-width: 100px;
+            position: fixed;
+            width: 15%;
+            z-index: 1;
+        }
+        
+        .sidebar-controls {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            text-align: right;
+            z-index: 2;
+        }
+        
+        th {
+            text-align: left;
+        }
+        td {
+            text-align: right;
+        }
+        
+        .sidebar-smaller {
+            max-height: 28px !important;
+        }
 
-    <header style="background-color: initial; -webkit-app-region: no-drag;">
-      <div style="background-color: rgba(0, 0, 0, 0.3); border-radius: 0.5rem; padding-right: 5px;">
-        <i id="menu-btn" class="native-btn material-icons" style="display: inline;">menu</i>
-        &nbsp;
-        <h1 class="mdc-typography--subheading1 slideInfo" style="margin: 0; display: inline; vertical-align: top; cursor: default;">Black</h1>
-      </div><br>
-    </header>
+        #startcards {
+            margin-bottom: 10px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+        }
 
-    <div id="contact" style="position: absolute; padding: 10px 20%; top: 24px; width: 60%; z-index: 2;"></div>
+        #startcards > img {
+            margin: 3px;
+            max-height: 500px;
+        }
+        
+        #topBar {
+            top: 0;
+            height: 5%;
+            max-height: 5%;
+            position: fixed;
+        }
+        
+        #view {
+            display: block;
+            left: 50%;
+            max-height: calc(100vh - 100px);
+            max-width: calc(100vw - 450px);
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        #view-container {
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            width: 100vw;
+            z-index: 0;
+        }
 
-    <div id="leftPanel" style="position: fixed; top: 24px; background-color: rgba(0, 0, 0, 0.3); padding: 10px; border-bottom-right-radius: 0.25rem;">
-      <div id="slideInfo">
-        <h1 class="mdc-typography--subheading1" style="margin: 0; cursor: default;">
-          Strokecount:&nbsp;<span id="strokeCountDisplay"></span><span id="chastityDisplay" style="color: red; display: none;">&nbsp;In Chastity</span><br>
-          Slidetime:&nbsp;<span id="slideTimeDisplay"></span><br>
-          Slide&nbsp;<span id="slideNumberDisplay"></span><br>
-        </h1>
-        <h1 class="mdc-typography--subheading1" style="margin: 0; cursor: default;">
-          Mistress Mood:&nbsp;<span id="moodDisplay" class="material-icons" style="vertical-align: middle;">thumbs_up_down</span>
-        </h1>
-      </div>
-      <div id="instructionDisplay" style="cursor: default;">
-        <h1 id="instructionHead" class="mdc-typography--subheading1">Instructions:</h1>
-        <h1 class="mdc-typography--body2">Position:&nbsp;<span id="position" class="mdc-typography--body1">Free</span></h1>
-      </div>
-    </div>
+        .supermode {
+            background: linear-gradient(238deg, #fd8800, #fd008f, #9700fd, #003dfd, #05c7e6, #4bd58d);
+            background-size: 1200% 1200%;
+            animation: supermode 13s ease infinite;
+        }
 
-    <div id="rightPanel" style="position: fixed; right: 0px; top: 24px; background-color: rgba(0, 0, 0, 0.3); padding: 10px; border-bottom-left-radius: 0.25rem; z-index: 1;">
-      <div id="itemlist">
-        <button id="keyDisplay" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" disabled>Keys: 0</button>
-      </div>
-    </div>
-
-    <aside class="mdc-drawer mdc-drawer--temporary">
-      <nav class="mdc-drawer__drawer">
-        <header class="mdc-drawer__header">
-          <div class="mdc-drawer__header-content mdc-theme--text-primary-on-primary mdc-theme--primary-bg">Black Tease</div>
-        </header>
-        <nav class="mdc-drawer__content mdc-list-group">
-          <div class="mdc-list">
-            <a class="mdc-list-item" onclick="$('#full-button').trigger('click')">
-              <i class="material-icons mdc-list-item__graphic" aria-hidden="true">flare</i>I Came!
-            </a>
-            <a class="mdc-list-item" onclick="$('#edge-button').trigger('click')">
-              <i class="material-icons mdc-list-item__graphic" aria-hidden="true">format_color_reset</i>I Edged!
-            </a>
-            <a class="mdc-list-item" onclick="$('#ruin-button').trigger('click')">
-              <i class="material-icons mdc-list-item__graphic" aria-hidden="true">bubble_chart</i>I Ruined My Orgasm!
-            </a>
-          </div>
-
-          <hr class="mdc-list-divider">
-
-          <div class="mdc-list">
-            <a class="mdc-list-item" id="toggleInstructions" onclick="$('#instructionDisplay').fadeToggle(200)">
-              <i class="material-icons mdc-list-item__graphic" aria-hidden="true">view_agenda</i>Toggle Instruction Display
-            </a>
-            <a class="mdc-list-item" id="toggleItems" onclick="$('#itemlist').fadeToggle(200)">
-              <i class="material-icons mdc-list-item__graphic" aria-hidden="true">dns</i>Toggle Item Display
-            </a>
-            <a class="mdc-list-item" onclick="$('#controlbar').slideToggle(200)">
-              <i class="material-icons mdc-list-item__graphic" aria-hidden="true">settings_ethernet</i>Toggle Control Bar
-            </a>
-            <a class="mdc-list-item" onclick="$('#slideInfo').fadeToggle(200)">
-              <i class="material-icons mdc-list-item__graphic" aria-hidden="true">info</i>Toggle Slide Information
-            </a>
-          </div>
-
-          <hr class="mdc-list-divider">
-
-          <div class="mdc-list">
-            <a id="theme-btn" class="mdc-list-item">
-              <i class="material-icons mdc-list-item__graphic" aria-hidden="true">color_lens</i>Change Theme
-            </a>
-            <a id="exit-button" class="mdc-list-item">
-              <i class="material-icons mdc-list-item__graphic" aria-hidden="true">exit_to_app</i>Exit Tease
-            </a>
-          </div>
-        </nav>
-      </nav>
-    </aside>
-
-    <main style="overflow: hidden;">
-      <div id="pre-start" style="margin: 20px auto 0 auto; text-align: center;">
-        <h1 class="mdc-typography--title">Press the button to start the Tease!</h1>
-        <button type="button" class="mdc-button mdc-button--raised mdc-button--primary" id="startTease">Start Tease</button>
-        <hr>
-        <h1 class="mdc-typography--subheading1">The following CTIS cards will load take action before the first slide:</h1>
-        <div id="CTIS-preStart"></div>
-      </div>
-      <div id="mainImage-div" style="padding: 20px 0 0 0; text-align: center; display: none;">
-        <img id="mainImage" style="max-height: 90vh; max-width: 90%;" />
-      </div>
+        @keyframes supermode {
+            0% { background-position: 0% 50% }
+            50% { background-position: 100% 50% }
+            100% { background-position: 0% 50% }
+        }
+    </style>
+</head>
+<body class="mdc-typography" style="background-color: black;">
+    
+    <main id="preTease" style="text-align: center;">
+        <h1 class="mdc-typograpy--title">Your tease is ready.</h1>
+        <div id="startcards-container" style="display: none;">
+            <h1 class="mdc-typography--subtitle2">The following cards will be active from the start:</h1>
+            <div id="startcards"></div>
+        </div>
+        <h1 id="no-startcards" class="mdc-typography--subtitle2" style="display: none;">No cards will be active right from the start.</h1>
+        <button class="mdc-button mdc-button--primary mdc-button--raised" block-focus onclick="tease.start()">Start Tease</button>
     </main>
+    
+    <main id="tease" style="display: none;">
+        <div id="leftBar" class="sidebar">
+            <div id="info-card" class="mdc-card">
+                <div class="mdc-card__media mdc-card__media--16-9" card-bg="../img/sidebarimage1.jpg">
+                    <div class="sidebar-controls">
+                        <i class="material-icons native-btn" visibility>visibility_off</i>
+                        <i class="material-icons native-btn" unfold="less">unfold_less</i>
+                        <i class="material-icons native-btn" expand="less">expand_less</i>
+                    </div>
+                    <div class="mdc-card__media-content" style="padding: 2px;">Information</div>
+                </div>
+                <div class="mdc-card__body">
+                    <table style="padding: 0 5px; width: 100%;">
+                        <tbody>
+                            <tr id="info-slide">
+                                <th>Slide</th>
+                                <td>0</td>
+                            </tr>
+                            <tr id="info-strokes">
+                                <th>Strokes</th>
+                                <td>10</td>
+                            </tr>
+                            <tr id="info-slidetime">
+                                <th>Slidetime</th>
+                                <td>10</td>
+                            </tr>
+                            <tr id="info-paused" style="display: none;">
+                                <th>Paused</th>
+                                <td class="material-icons" style="float: right; padding-right: 0; width: 22px;">pause</td>
+                            </tr>
+                            <tr id="info-muted" style="display: none;">
+                                <th>Muted</th>
+                                <td class="material-icons" style="float: right; padding-right: 0; width: 22px;">volume_off</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="status-card" class="mdc-card" style="margin-top: 10px;">
+                <div class="mdc-card__media mdc-card__media--16-9" card-bg="../img/sidebarimage2.jpg">
+                    <div class="sidebar-controls">
+                        <i class="material-icons native-btn" visibility>visibility_off</i>
+                        <i class="material-icons native-btn" unfold="less">unfold_less</i>
+                        <i class="material-icons native-btn" expand="less">expand_less</i>
+                    </div>
+                    <div class="mdc-card__media-content" style="padding: 2px;">Status</div>
+                </div>
+                <div class="mdc-card__body" style="padding: 0 5px;">
+                    <h1 id="info-chastity" class="mdc-typography--subtitle2" style="display: none;"><b>In Chastity</b></h1>
+                    <h1 class="mdc-typography--subtitle2"><b>Cumming</b><br>&nbsp;&nbsp;<span id="info-cumming">Not Allowed</span></h1>
+                    <h1 class="mdc-typography--subtitle2"><b>Mood</b><br>&nbsp;&nbsp;<span id="info-mood" class="material-icons">thumbs_up_down</span></h1>
+                    <h1 class="mdc-typography--subtitle2" style="margin-bottom: 0;"><b>Position</b></h1>
+                    <div id="info-position-container" style="margin-left: 3px;">
+                        <span id="info-position" class="mdc-typography--body2">Free</span>
+                    </div>
+                    <div id="info-instructions-container">
+                        <h1 class="mdc-typography--subtitle2" style="margin-bottom: 2px;"><b>Instructions</b></h1>
+                        <div id="info-instructions" class="mdc-typography--body2" style="margin-left: 3px;">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="items-card" class="mdc-card" style="margin-top: 10px;">
+                <div class="mdc-card__media mdc-card__media--16-9" card-bg="../img/sidebarimage3.jpg">
+                    <div class="sidebar-controls">
+                        <i class="material-icons native-btn" visibility>visibility_off</i>
+                        <i class="material-icons native-btn" unfold="less">unfold_less</i>
+                        <i class="material-icons native-btn" expand="less">expand_less</i>
+                    </div>
+                    <div class="mdc-card__media-content" style="padding: 2px;">Items</div>
+                </div>
+                <div class="mdc-card__body" style="padding: 0 5px;">
+                    <div id="info-items"></div>
+                </div>
+                <div class="mdc-card__actions">
+                    <button class="mdc-button mdc-button--primary" block-focus disabled style="width: 100%;" onclick="tease.viewController.items.useKey()">
+                        <span id="info-keys">0</span>&nbsp;Keys
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="topBar">
+            
+        </div>
+        
+        <div id="view-container">
+            <img id="view" src="" />
+        </div>
+        
+        <div id="rightBar" class="sidebar">
+            <div id="orgasms-card" class="mdc-card">
+                <div class="mdc-card__media mdc-card__media--16-9" card-bg="../img/sidebarimage4.jpg">
+                    <div class="sidebar-controls">
+                        <i class="material-icons native-btn" visibility>visibility_off</i>
+                        <i class="material-icons native-btn" unfold="less">unfold_less</i>
+                        <i class="material-icons native-btn" expand="less">expand_less</i>
+                    </div>
+                    <div class="mdc-card__media-content" style="padding: 2px;">Orgasms</div>
+                </div>
+                <div class="mdc-card__actions" style="display: block;">
+                    <button id="cumming_btn-full" block-focus class="mdc-button" style="width: 100%;" onclick="cumEvent('full')">
+                        <i class="material-icons mdc-button__icon">flare</i>I Came
+                    </button>
+                    <button id="cumming_btn-ruin" block-focus class="mdc-button" style="margin-top: 5px; width: 100%;" onclick="cumEvent('ruin')">
+                        <i class="material-icons mdc-button__icon">bubble_chart</i>I Ruined
+                    </button>
+                    <button id="cumming_btn-edge" block-focus class="mdc-button" style="margin-top: 5px; width: 100%;" onclick="cumEvent('edge')">
+                        <i class="material-icons mdc-button__icon">format_color_reset</i>I Edged
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="contact-element" class="mdc-dialog" role="alertdialog" aria-labelledby="contact-label" aria-describedby="contact-description">
+            <div class="mdc-dialog__container">
+                <div class="mdc-dialog__surface">
+                    <h2 class="mdc-dialog__title">
+                        <i id="contact-icon" class="material-icons" style="vertical-align: sub;"></i>
+                        <span id="contact-label"></span>
+                    </h2>
+                    <section id="contact-description" class="mdc-dialog__content" style="color: var(--mdc-theme-text-secondary-on-dark);"></section>
+                    <footer id="contact-footer-message" class="mdc-dialog__actions" style="display: none; text-align: right;">
+                        <button id="contact-dismiss" class="mdc-button mdc-button--primary">Dismiss</button>
+                    </footer>
+                    <footer id="contact-footer-prompt" class="mdc-dialog__actions" style="display: none;">
+                        <div class="mdc-text-field" style="width: 80%; margin-bottom: 10px;">
+                            <input type="text" id="contact-prompt" class="mdc-text-field__input">
+                            <label for="contact-prompt" class="mdc-floating-label mdc-floating-label--float-above">Input</label>
+                            <div class="mdc-line-ripple"></div>
+                        </div>
+                        <button id="contact-submit" class="mdc-button mdc-button--primary" style="float: right; margin: 10px 0;">Submit</button>
+                    </footer>
+                    <footer id="contact-footer-options" class="mdc-dialog__actions" style="display: none;">
+                    </footer>
+                </div>
+            </div>
+            <div class="mdc-dialog__scrim"></div>
+        </div>
+    </main>
+    
+    <!-- Key Usage -->
+    <div id="key-use" class="mdc-dialog mdc-dialog--stacked" role="alertdialog" aria-modal="true" aria-labelledby="key-use-title" aria-describedby="key-use-content">
+        <div class="mdc-dialog__container">
+            <div class="mdc-dialog__surface">
+                <h2 id="key-use-title" class="mdc-dialog__title">Unlock Item</h2>
+                <div id="key-use-content" class="mdc-dialog__content">
+                    <h2 id="key-use-noitems" class="mdc-typography--subtitle2">No items to unlock!</h2>
+                    <ul id="key-use-list" class="mdc-list mdc-list--two-line" role="listbox"></ul>
+                </div>
+                <footer class="mdc-dialog__actions">
+                    <button type="button" class="mdc-button mdc-dialog__button" style="width: 100%;" data-mdc-dialog-action="close">Leave</button>
+                    <button id="key-use-button" type="button" disabled style="width: 100%;" class="mdc-button mdc-button--primary mdc-dialog__button mdc-dialog__button--default">
+                        <i class="material-icons mdc-button__icon" style="vertical-align: sub;">lock_open</i>
+                        Unlock
+                    </button>
+                </footer>
+            </div>
+        </div>
+        <div class="mdc-dialog__scrim"></div>
+    </div>
 
-    <footer id="controlbar" class="frame" style="padding-bottom: 8px; width: 100%; display: flex; font-size: 35px;">
-      <section style="flex: 1; text-align: center;">
-        <button id="previous-button" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">skip_previous</button>
-        <button id="pause-play" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">pause</button>
-        <button id="next-button" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">skip_next</button>
-      </section>
-      <section style="flex: 3; text-align: center;">
-        <button id="strokedown-button" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">arrow_downward</button>
-        &nbsp;<i class="material-icons">pan_tool</i>&nbsp;
-        <button id="strokeup-button" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">arrow_upward</button>
-        &nbsp;&nbsp;<b>|</b>&nbsp;&nbsp;
-        <button id="timedown-button" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">arrow_downward</button>
-        &nbsp;<i class="material-icons">access_time</i>&nbsp;
-        <button id="timeup-button" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">arrow_upward</button>
-        &nbsp;&nbsp;<b>|</b>&nbsp;&nbsp;
-        <button id="full-button" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">flare</button>
-        &nbsp;<button id="edge-button" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">format_color_reset</button>
-        &nbsp;<button id="ruin-button" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple material-icons" data-mdc-auto-init="MDCRipple">bubble_chart</button>
-      </section>
-    </footer>
-
-    <img id="preload" style="width: 0; height: 0;" />
-
-    <!-- Scripts -->
-    <script type="text/javascript">
-      /* global Image, alert */
-      const $ = require('jquery')
-      const mdc = require('material-components-web/dist/material-components-web.min.js')
-      const Theme = require('../js/catworks/themer.js')
-      const Store = require('electron-store')
-      const {BrowserWindow, globalShortcut} = require('electron').remote
-      const {TeaseSlave} = require('../js/tease.js')
-
-      // Store Setup
-      var storage = new Store()
-
-      // Tease slave
-      var teaseSlave = new TeaseSlave(storage.get('teaseslave'))
-
-      // Theme Setup
-      var theme = new Theme({
-        themelist: [
-          // 'red',
-          'red.dark',
-          // 'blue',
-          'blue.dark',
-          // 'green',
-          'green.dark',
-          // 'yellow',
-          'yellow.dark',
-          // 'purple',
-          'purple.dark',
-          // 'black',
-          'black.dark'
-        ],
-        active: storage.get('theme.index'),
-        path: '../themes/'
-      })
-      if (theme.active === -1) {
-        theme.setTheme('red.dark')
-      } else {
-        theme.setTheme(theme.active)
-      }
-      $('#theme-btn').on('click', _ => {
-        if (theme.active === theme.themelist.length - 1) {
-          theme.setTheme(0)
-        } else {
-          theme.setTheme(theme.active + 1)
-        }
-      })
-
-      $(document).ready(_ => {
-        // Tease Buttons
-        $('#exit-button').click(_ => {
-          teaseSlave.exit('user')
-        })
-
-        $('#pause-play').click(_ => {
-          teaseSlave.slideControl.pause()
-        })
-
-        $('#pause-play').change(_ => {
-          if (teaseSlave.slideControl.core.pause) {
-            $('#pause-play').text('play_arrow')
-          } else {
-            $('#pause-play').text('pause')
-          }
-        })
-
-        $('#next-button').click(_ => {
-          teaseSlave.slideControl.next()
-          if (teaseSlave.slideControl.core.current + 1 === teaseSlave.fileList.length) {
-            $('#next-button').prop('disabled', true)
-          } else {
-            $('#next-button').prop('disabled', false)
-          }
-        })
-
-        $('#previous-button').click(_ => {
-          teaseSlave.slideControl.previous()
-          if (teaseSlave.slideControl.core.current + 1 === 1) {
-            $('#previous-button').prop('disabled', true)
-          } else {
-            $('#previous-button').prop('disabled', false)
-          }
-        })
-
-        $('#strokeup-button').click(_ => {
-          teaseSlave.slideControl.core.strokes++
-          $('#strokeCountDisplay').trigger('change')
-        })
-
-        $('#strokedown-button').click(_ => {
-          if (teaseSlave.slideControl.core.strokes > 0) teaseSlave.slideControl.core.strokes--
-          $('#strokeCountDisplay').trigger('change')
-          if (teaseSlave.slideControl.core.strokes <= 0) {
-            $('#strokedown-button').prop('disabled', true)
-          } else {
-            $('#strokedown-button').prop('disabled', false)
-          }
-        })
-
-        $('#timeup-button').click(_ => {
-          teaseSlave.slideControl.core.time += 1000
-          $('#slideTimeDisplay').trigger('change')
-        })
-
-        $('#timedown-button').click(_ => {
-          if (teaseSlave.slideControl.core.time > 1000) teaseSlave.slideControl.core.time -= 1000
-          $('#slideTimeDisplay').trigger('change')
-          if (teaseSlave.slideControl.core.time <= 1000) {
-            $('#timedown-button').prop('disabled', true)
-          } else {
-            $('#timedown-button').prop('disabled', false)
-          }
-        })
-
-        $('#full-button').click(_ => {
-          teaseSlave.cumControl.update('full')
-        })
-
-        $('#ruin-button').click(_ => {
-          teaseSlave.cumControl.update('ruin')
-        })
-
-        $('#edge-button').click(_ => {
-          teaseSlave.cumControl.update('edge')
-        })
-
-        $('#keyDisplay').click((e) => {
-          if (teaseSlave.itemControl.keys > 0) {
-            if ($('#keyDisplay').hasClass('keySel')) {
-              $('#keyDisplay').removeClass('keySel')
-              $('.ctisitem').removeClass('keR')
-            } else {
-              $('#keyDisplay').addClass('keySel')
-              $('.ctisitem').addClass('keR')
-            }
-          }
-        })
-
-        $('#keyDisplay').on('unlock', (e, item) => {
-          if ($('#keyDisplay').hasClass('keySel') && teaseSlave.itemControl.keys > 0) {
-            teaseSlave.slideControl.heraut(teaseSlave.slideControl.core.current, 'key')
-            teaseSlave.itemControl.useKey(item)
-          }
-          $('#keyDisplay.keySel').removeClass('keySel')
-          $('.ctisitem.keR').removeClass('keR')
-        })
-
-        $('#strokeCountDisplay').change(_ => {
-          if ($('#strokeCountDisplay').text().indexOf('(') !== -1) {
-            let old = $('#strokeCountDisplay').text().split('(')[1].split(')')[0]
-            if (parseInt(old, 10) === teaseSlave.slideControl.core.strokes) {
-              $('#strokeCountDisplay').text(teaseSlave.slideControl.core.strokes)
-            } else {
-              $('#strokeCountDisplay').text(teaseSlave.slideControl.core.strokes + ' (' + old + ')')
-            }
-          } else {
-            let old = $('#strokeCountDisplay').text()
-            $('#strokeCountDisplay').text(teaseSlave.slideControl.core.strokes + ' (' + old + ')')
-          }
-        })
-
-        $('#slideTimeDisplay').change(_ => {
-          if ($('#slideTimeDisplay').text().indexOf('(') !== -1) {
-            let old = $('#slideTimeDisplay').text().split('(')[1].split('s)')[0]
-            if (parseInt(old, 10) === teaseSlave.slideControl.core.time / 1000) {
-              $('#slideTimeDisplay').text(teaseSlave.slideControl.core.time / 1000 + 's')
-            } else {
-              $('#slideTimeDisplay').text(teaseSlave.slideControl.core.time / 1000 + 's (' + old + 's)')
-            }
-          } else {
-            let old = $('#slideTimeDisplay').text().split('s')[0]
-            $('#slideTimeDisplay').text(teaseSlave.slideControl.core.time / 1000 + 's (' + old + 's)')
-          }
-        })
-
-        $('#startTease').click(_ => {
-          $('#pre-start').fadeOut(100, _ => {
-            console.log('<tease.html / [#startTease]>\nTease starting.')
-            teaseSlave.init()
-            $('#mainImage-div').fadeIn(100)
-          })
-        })
-
-        $('#mainImage').change(_ => {
-          // console.debug('<tease.html / [#mainImage]> #mainImage changed setting strokeCountDisplay, slideTimeDisplay and slideNumberDisplay')
-          $('#strokeCountDisplay').text(teaseSlave.slideControl.core.strokes)
-          $('#slideTimeDisplay').text((teaseSlave.slideControl.core.time / 1000) + 's')
-          $('#slideNumberDisplay').text((teaseSlave.slideControl.core.current + 1) + ' / ' + teaseSlave.fileList.length)
-          if (teaseSlave.slideControl.core.current + 1 === 1) {
-            $('#previous-button').prop('disabled', true)
-          } else {
-            $('#previous-button').prop('disabled', false)
-          }
-          if (teaseSlave.slideControl.core.current + 1 === teaseSlave.fileList.length) {
-            $('#next-button').prop('disabled', true)
-          } else {
-            $('#next-button').prop('disabled', false)
-          }
-        })
-
-        mdc.autoInit()
-
-        let startCards = teaseSlave.preInit()
-        let startCardsImages = []
-        startCards.forEach((src, i) => {
-          startCardsImages.push(new Image())
-          startCardsImages[i].src = src
-        })
-        startCardsImages.forEach((img) => {
-          $('#CTIS-preStart').append(img)
-        })
-
-        if (storage.get('teaseParams.ditched').length > 0) {
-          let ditched = storage.get('teaseParams.ditched')
-          let string = 'For the following categories no cards were found:\n'
-          for (var i = 0; i < ditched.length; i++) string += ' - ' + ditched[i] + '\n'
-          setTimeout(_ => alert(string), 500)
-        }
-
-        let drawer = new mdc.drawer.MDCTemporaryDrawer($('.mdc-drawer--temporary')[0])
-        $('#menu-btn').click(_ => { drawer.open = true })
-        if (BrowserWindow && globalShortcut && teaseSlave) {}
-      })
+    <!-- Menu -->
+    <button id="menuButton" class="mdc-fab" aria-label="Menu" onclick="menu.open()" style="position: fixed; right: 15px; top: 15px;">
+        <span class="mdc-fab__icon material-icons">menu</span>
+    </button>
+    
+    <div id="tease-menu" class="mdc-dialog mdc-dialog--stacked" role="alertdialog" aria-modal="true" aria-labelledby="tease-menu-title" aria-describedby="tease-menu-content">
+        <div class="mdc-dialog__container">
+            <div class="mdc-dialog__surface">
+                <h2 class="mdc-dialog__title" id="tease-menu-title">Tease Menu</h2>
+                <div id="tease-menu-content" class="mdc-dialog__content">
+                    <ul class="mdc-list" id="tease-menu-menu">
+                        <li class="mdc-list-item" id="tease-menu-keybinds" onclick="keybinds.show()">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">keyboard</span>
+                            Key Binds
+                        </li>
+                        <li class="mdc-list-item" id="tease-menu-showinfo" style="display: none;" onclick="$('#info-card').slideDown(200); $(this).slideUp(200)">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">visibility</span>
+                            Show Information
+                        </li>
+                        <li class="mdc-list-item" id="tease-menu-showstatus" style="display: none;" onclick="$('#status-card').slideDown(200); $(this).slideUp(200)">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">visibility</span>
+                            Show Status
+                        </li>
+                        <li class="mdc-list-item" id="tease-menu-showitems" style="display: none;" onclick="$('#items-card').slideDown(200); $(this).slideUp(200)">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">visibility</span>
+                            Show Items
+                        </li>
+                        <li class="mdc-list-item" id="tease-menu-showorgasms" style="display: none;" onclick="$('#orgasms-card').slideDown(200); $(this).slideUp(200)">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">visibility</span>
+                            Show Orgasms
+                        </li>
+                        <li class="mdc-list-item" id="tease-menu-changetheme" onclick="nextTheme()">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">color_lens</span>
+                            Change Theme
+                        </li>
+                        <!-- <li class="mdc-list-item" id="tease-menu-savedeck" onclick="saveTease()">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">save</span>
+                            Save Tease As Deck File
+                        </li> -->
+                    </ul>
+                    <ul class="mdc-list mdc-list--two-line" id="tease-menu-keybinds-menu" style="display: none;">
+                        <li class="mdc-list-item" onclick="keybinds.change('next');">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">skip_next</span>
+                            <span class="mdc-list-item__text">
+                                <span class="mdc-list-item__primary-text">Next Slide</span>
+                                <span keybind-key="next" class="mdc-list-item__secondary-text">Right</span>
+                            </span>
+                        </li>
+                        <li class="mdc-list-item" onclick="keybinds.change('previous')">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">skip_previous</span>
+                            <span class="mdc-list-item__text">
+                                <span class="mdc-list-item__primary-text">Previous Slide</span>
+                                <span keybind-key="previous" class="mdc-list-item__secondary-text">Left</span>
+                            </span>
+                        </li>
+                        <li class="mdc-list-item" onclick="keybinds.change('pause')">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">pause</span>
+                            <span class="mdc-list-item__text">
+                                <span class="mdc-list-item__primary-text">Pause Tease</span>
+                                <span keybind-key="pause" class="mdc-list-item__secondary-text">Space</span>
+                            </span>
+                        </li>
+                        <li class="mdc-list-item" onclick="keybinds.change('strokeup')">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">vertical_align_top</span>
+                            <span class="mdc-list-item__text">
+                                <span class="mdc-list-item__primary-text">Stroke Count Up</span>
+                                <span keybind-key="strokeup" class="mdc-list-item__secondary-text">Up</span>
+                            </span>
+                        </li>
+                        <li class="mdc-list-item" onclick="keybinds.change('strokedown')">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">vertical_align_bottom</span>
+                            <span class="mdc-list-item__text">
+                                <span class="mdc-list-item__primary-text">Stroke Count Down</span>
+                                <span keybind-key="strokedown" class="mdc-list-item__secondary-text">Down</span>
+                            </span>
+                        </li>
+                        <li class="mdc-list-item" onclick="keybinds.change('timeup')">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">fast_forward</span>
+                            <span class="mdc-list-item__text">
+                                <span class="mdc-list-item__primary-text">Slide Time Up</span>
+                                <span keybind-key="timeup" class="mdc-list-item__secondary-text">Pageup</span>
+                            </span>
+                        </li>
+                        <li class="mdc-list-item" onclick="keybinds.change('timedown')">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">fast_rewind</span>
+                            <span class="mdc-list-item__text">
+                                <span class="mdc-list-item__primary-text">Slide Time Down</span>
+                                <span keybind-key="timedown" class="mdc-list-item__secondary-text">Pagedown</span>
+                            </span>
+                        </li>
+                        <li class="mdc-list-item" onclick="keybinds.change('mute')">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">volume_off</span>
+                            <span class="mdc-list-item__text">
+                                <span class="mdc-list-item__primary-text">Mute</span>
+                                <span keybind-key="mute" class="mdc-list-item__secondary-text">M</span>
+                            </span>
+                        </li>
+                        <li class="mdc-list-item mdc-list-item--disabled">
+                            <span class="mdc-list-item__graphic material-icons" aria-hidden="true">exit_to_app</span>
+                            <span class="mdc-list-item__text">
+                                <span class="mdc-list-item__primary-text">Exit</span>
+                                <span keybind-key="exit" class="mdc-list-item__secondary-text">Escape</span>
+                            </span>
+                        </li>
+                        <li class="mdc-list-item mdc-button mdc-button--primary" onclick="keybinds.hide()">
+                            <span class="mdc-list-item__graphic material-icons">arrow_back</span>
+                            <span class="mdc-list-item__text">
+                                <span class="mdc-list-item__primary-text">Back To Menu</span>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+                <footer class="mdc-dialog__actions">
+                    <button type="button" class="mdc-button mdc-dialog__button mdc-button--primary mdc-dialog__button--default" style="width: 100%;" data-mdc-dialog-action="close">
+                        <i class="material-icons mdc-button__icon" aria-hidden="true">play_arrow</i>
+                        Resume Tease
+                    </button>
+                    <button id="quit-button" type="button" class="mdc-button mdc-dialog__button mdc-button--secondary" onclick="if (!tease.exitController.exitTease('userexit')) tease.viewController.snackbar('A card is preventing you from quitting.')" data-mdc-dialog-action="close" style="width: 100%;">
+                        <i class="material-icons mdc-button__icon" aria-hidden="true">exit_to_app</i>
+                        Quit Tease
+                    </button>
+                </footer>
+            </div>
+        </div>
+        <div class="mdc-typography--caption" style="bottom: 2px; left: 2px; position: fixed; color: lightgray;">
+            <span id="imagePath"></span><br>
+            <span id="slideInfo"></span>
+        </div>
+        <div class="mdc-dialog__scrim"></div>
+    </div>
+    
+    <!-- Snackbar -->
+    
+    <div class="mdc-snackbar" aria-live="assertive" aria-atomic="true" aria-hidden="true">
+        <div class="mdc-snackbar__text"></div>
+        <div class="mdc-snackbar__action-wrapper">
+            <button type="button" class="mdc-snackbar__action-button"></button>
+        </div>
+    </div>
+    
+    <!-- <event-catcher style="display: none;"></event-catcher> -->
+    
+    <!-- Script -->
+    
+    <script>
+        const Store = require('electron-store')
+        const $ = require('jquery')
+        const mdc = require('material-components-web/dist/material-components-web')
+        const { isNullOrUndefined, isNull, isObject, isBoolean, isString, isNumber, isArray } = require('util')
+        const fs = require('fs')
+        
+        var storage = new Store()
     </script>
-  </body>
+    <!-- <script src="../ts/tease/tease.ts" type="module"></script> -->
+    <script>
+        import Theme from '../js/catworks/themer.js'
+        import Tease from '../ts/tease/tease.ts'
+        import TeaseEvent from '../ts/tease/teaseEvent.ts'
+        const { dialog } = require('electron').remote
+        var tease = new Tease()
+        
+        var theme = new Theme({
+            active: storage.get('theme.index'),
+            path: '../themes/',
+            themelist: [
+            // 'red',
+            'red.dark',
+            // 'blue',
+            'blue.dark',
+            // 'green',
+            'green.dark',
+            // 'yellow',
+            'yellow.dark',
+            // 'purple',
+            'purple.dark',
+            // 'black',
+            'black.dark'
+            ]
+        })
+        theme.setTheme(storage.get('theme.index') || 0)
+        if (theme.active < 0 || theme.active >= theme.themelist.length) theme.setTheme(0)
+        function nextTheme() {
+            let nextTheme = storage.get('theme.index') + 1
+            if (nextTheme < 0 || nextTheme >= theme.themelist.length)
+            theme.setTheme(0)
+            else
+            theme.setTheme(nextTheme)
+        }
+        
+        let ripples = []
+        $('.mdc-button, .mdc-fab').each((i, el) => {
+            ripples.push(new mdc.ripple.MDCRipple($(el)[0]))
+        })
+        
+        let menu = new mdc.dialog.MDCDialog($('#tease-menu')[0])
+
+        $('[block-focus]').on('click', function() { this.blur() })
+
+        $('[keybind-key]').each((i, el) => {
+            let key = tease.keyController.keymap[$(el).attr('keybind-key')]
+            $(el).text(key[0].toUpperCase() + key.slice(1))
+        })
+        let keybinds = {
+            change: (binding) => {
+                let known = ['next', 'previous', 'pause', 'strokeup', 'strokedown', 'timeup', 'timedown', 'mute'].indexOf(binding) !== -1
+                if (!known)
+                    return console.warn('[Tease.HTML/keybinds] Tried to change unknown binding.')
+                
+                tease.keyController.pause(true)
+
+                $(document).on('keydown', (event) => {
+                    $(document).off('keydown')
+
+                    let key = event.key.toLowerCase()
+                    if (key.match(/arrow[a-z]+/gi) !== null)
+                        key = key.slice(5)
+                    else if (key === ' ')
+                        key = 'space'
+                    
+                    tease.keyController.changeKey(binding, key)
+                    $(`[keybind-key="${binding}"]`).text(key[0].toUpperCase() + key.slice(1))
+
+                    tease.keyController.pause(false)
+                })
+                $(`[keybind-key="${binding}"]`).text('Press a key...')
+            },
+            hide: () => {
+                $('#tease-menu-menu, #quit-button').slideDown(200)
+                $('#tease-menu-keybinds-menu').slideUp(200)
+                $('#tease-menu-title').text('Tease Menu')
+            },
+            show: () => {
+                $('#tease-menu-menu, #quit-button').slideUp(200)
+                $('#tease-menu-keybinds-menu').slideDown(200)
+                $('#tease-menu-title').text('Key Binds')
+            }
+        }
+
+        function cumEvent(type) {
+            let event = new TeaseEvent('cum', type)
+            tease.actionController.exec(event)
+            tease.goalController.handleEvent(event)
+        }
+
+        function saveTease() {
+            dialog.showSaveDialog({
+                title: 'Save Tease',
+                defaultPath: 'custom-tease.deck',
+                filters: [{name: 'Deck files', extensions: ['deck']}]
+            }, (path) => {
+                let content = JSON.stringify({
+                    categories: tease.imageController.categories,
+                    cards: tease.imageController.cards,
+                    cil: tease.imageController.cil,
+                    images: tease.imageController.images,
+                    startcards: tease.imageController.startcards
+                })
+                try {
+                    fs.writeFile(path, content, (err) => {
+                        if (err)
+                            throw err
+                        
+                        menu.close()
+                        tease.viewController.snackbar('Tease save to deck file.')
+                    })
+                } catch (err) {
+                    alert('Failed to save tease. Check the console for more detail.')
+                    console.error(err)
+                }
+            })
+        }
+        
+        $('[card-bg]').each((i, el) => {
+            $(el).css('background', `linear-gradient(var(--mdc-theme--halfopacity), var(--mdc-theme--halfopacity)), url(${$(el).attr('card-bg')})`)
+        })
+        
+        $('[unfold]').click((data) => {
+            let el = data.currentTarget
+            let sidebar = $(el).parent().parent()
+            if ($(el).attr('unfold') == 'less') {
+                $(el).attr('unfold', 'more').text('unfold_more')
+                $(sidebar).addClass('sidebar-smaller')
+            } else {
+                $(el).attr('unfold', 'less').text('unfold_less')
+                $(sidebar).removeClass('sidebar-smaller')
+            }
+        })
+        
+        $('[expand]').click((data) => {
+            let el = data.currentTarget
+            let card = $(el).parent().parent().parent()
+            let unfold = $(el).siblings('[unfold]')
+            if ($(el).attr('expand') == 'less') {
+                $(el).attr('expand', 'more').text('expand_more')
+                if ($(unfold).attr('unfold') == 'less') {
+                    $(unfold).click()
+                    $(unfold).prop('reunfold', true)
+                }
+                $(unfold).hide()
+                $(card).children('.mdc-card__body, .mdc-card__actions').slideUp(200)
+            } else {
+                $(el).attr('expand', 'less').text('expand_less')
+                if ($(unfold).prop('reunfold')) {
+                    $(unfold).click()
+                    $(unfold).removeProp('reunfold')
+                }
+                $(unfold).show()
+                $(card).children('.mdc-card__body, .mdc-card__actions').slideDown(200)
+            }
+        })
+        
+        $('[visibility]').click((data) => {
+            let el = data.currentTarget
+            let card = $(el).parent().parent().parent()
+            $(card).slideUp(200)
+            $(`#tease-menu-show${$(card).attr('id').split('-')[0]}`).slideDown(200)
+        })
+        
+        $(document).ready(() => {
+            tease.ready()
+            mdc.autoInit()
+        })
+    </script>
+</body>
 </html>

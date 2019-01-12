@@ -1,76 +1,79 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="utf-8">
     <title>Black CTIS Viewer</title>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'">
     <link rel="stylesheet" href="./css/material-icons/material-icons.css">
     <link rel="stylesheet" href="./css/material-components-web/material-components-web.min.css">
     <link rel="stylesheet" id="theme">
-  </head>
-  <body class="mdc-typography">
+</head>
+<body class="mdc-typography">
     <header id="appheader" class="frame" style="text-align: center;">
-      <div style="float: left;">
-        <i id="menu-btn" class="native-btn material-icons" style="display: inline;">menu</i>
-        <i id="home-btn" class="native-btn material-icons" onclick="swapper.swap('home')" style="display: inline;">home</i>
-      </div>
-      <h1 class="mdc-typography--subheading1" style="display: inline; cursor: default; margin: 0; vertical-align: top;">Black</h1>
-      <div style="float: right;">
-        <i id="theme-btn" class="native-btn material-icons">color_lens</i>
-        <i id="min-btn" class="native-btn material-icons">remove</i>
-        <i id="max-btn" class="native-btn material-icons">fullscreen</i>
-        <i id="close-btn" class="native-btn material-icons">close</i>
-      </div>
+        <div style="float: left;">
+            <i id="menu-btn" class="native-btn material-icons" style="display: inline;">menu</i>
+            <i id="home-btn" class="native-btn material-icons" onclick="swapper.swap('home')" style="display: inline;">home</i>
+        </div>
+        <h1 class="mdc-typography--subtitle1" style="display: inline; cursor: default; margin: 0; vertical-align: top;">Black</h1>
+        <div style="float: right;">
+            <i id="theme-btn" class="native-btn material-icons">color_lens</i>
+            <i id="min-btn" class="native-btn material-icons">remove</i>
+            <i id="max-btn" class="native-btn material-icons">fullscreen</i>
+            <i id="close-btn" class="native-btn material-icons">close</i>
+        </div>
     </header>
+    
+    <aside class="mdc-drawer mdc-drawer--modal">
+        <div class="mdc-drawer__header mdc-theme--primary-bg">
+            <h3 class="mdc-drawer__title mdc-theme--text-primary-on-primary">Black CTIS</h3>
+        </div>
+        <div class="mdc-drawer__content">
+            <nav class="mdc-list">
+                <a class="mdc-list-item mdc-list-item--activated" aria-selected="true" onclick="swapper.swap('home')">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">home</i>
+                    <span class="mdc-list-item__text">Start</span>
+                </a>
+                <a class="mdc-list-item" onclick="swapper.swap('setup')">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">dashboard</i>
+                    <span class="mdc-list-item__text">Tease Setup</span>
+                </a>
+                <a class="mdc-list-item" onclick="swapper.swap('cardmaker')">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">create</i>
+                    <span class="mdc-list-item__text">Card Maker</span>
+                </a>
+                <a class="mdc-list-item" onclick="swapper.swap('stats')">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">assessment</i>
+                    <span class="mdc-list-item__text">Statistics</span>
+                </a>
+                <a class="mdc-list-item" onclick="swapper.swap('profile')">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">person</i>
+                    <span class="mdc-list-item__text">Profile</span>
+                </a>
+            
+                <hr class="mdc-list-divider">
 
-    <aside class="mdc-drawer mdc-drawer--temporary">
-      <nav class="mdc-drawer__drawer">
-        <header class="mdc-drawer__header">
-          <div class="mdc-drawer__header-content mdc-theme--text-primary-on-primary mdc-theme--primary-bg">Black CTIS</div>
-        </header>
-        <nav class="mdc-drawer__content mdc-list-group">
-          <div class="mdc-list">
-            <a class="mdc-list-item mdc-list-item--selected" onclick="swapper.swap('home')">
-              <i class="material-icons mdc-list-item__graphic" aria-hidden="true">home</i>Start
-            </a>
-            <a class="mdc-list-item" onclick="swapper.swap('setup')">
-              <i class="material-icons mdc-list-item__graphic" aria-hidden="true">dashboard</i>Teasing Dashboard
-            </a>
-            <a class="mdc-list-item" onclick="swapper.swap('cardmaker')">
-              <i class="material-icons mdc-list-item__graphic" aria-hidden="true">create</i>Card Maker
-            </a>
-            <a class="mdc-list-item" onclick="swapper.swap('stats')">
-              <i class="material-icons mdc-list-item__graphic" aria-hidden="true">assessment</i>Statistics
-            </a>
-            <a class="mdc-list-item" onclick="swapper.swap('profile')">
-              <i class="material-icons mdc-list-item__graphic" aria-hidden="true">person</i>Profile
-            </a>
-          </div>
-
-          <hr class="mdc-list-divider">
-
-          <div class="mdc-list">
-            <a class="mdc-list-item" onclick="swapper.swap('settings')">
-              <i class="material-icons mdc-list-item__graphic" aria-hidden="true">settings</i>Settings
-            </a>
-            <a class="mdc-list-item" onclick="swapper.swap('about')">
-              <i class="material-icons mdc-list-item__graphic" aria-hidden="true">info</i>About
-            </a>
-          </div>
-
-          <hr class="mdc-list-divider">
-
-          <div class="mdc-list mdc-list--non-interactive">
-            <span class="mdc-list-item">Black made by Simon</span>
-          </div>
-        </nav>
-      </nav>
+                <a class="mdc-list-item" onclick="swapper.swap('settings')">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">settings</i>
+                    <span class="mdc-list-item__text">Settings</span>
+                </a>
+                <a class="mdc-list-item" onclick="swapper.swap('about')">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">info</i>
+                    <span class="mdc-list-item__text">About</span>
+                </a>
+            
+                <hr class="mdc-list-divider">
+            
+                <span class="mdc-list-item">Black made by Simon</span>
+            </nav>
+        </div>
     </aside>
-
+    <div class="mdc-drawer-scrim"></div>
+    
     <main id="swapper">
-
+        
     </main>
-
+    
     <!-- Scripts -->
     <script src="./js/main.js" charset="utf-8"></script>
-  </body>
+</body>
 </html>

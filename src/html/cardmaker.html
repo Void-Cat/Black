@@ -1,256 +1,309 @@
 <!DOCTYPE html>
+<!-- Card Maker Setup -->
 <div id="cardMaker-0" class="mdc-elevation--z3 box">
-  <h1 class="mdc-typography--title">Cardmaker</h1>
-  <div class="mdc-form-field">
-    <div class="mdc-checkbox">
-      <input id="saveSettings" type="checkbox" class="mdc-checkbox__native-control" />
-      <div class="mdc-checkbox__background">
-        <svg class="mdc-checkbox__checkmark" viewbox="0 0 24 24">
-          <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
-        </svg>
-        <div class="mdc-checkbox__mixedmark"></div>
-      </div>
-    </div>
-    <label for="saveSettings">Save configuration for later use</label>
-  </div>
-  <h1 class="mdc-typography--subheading1">Step 1</h1>
-  <h1 class="mdc-typography--body1">Select a card type to create:</h1>
-  <div class="mdc-form-field">
-    <div class="mdc-radio">
-      <input class="mdc-radio__native-control" type="radio" id="cardtype-cti1" name="cardtype">
-      <div class="mdc-radio__background">
-        <div class="mdc-radio__outer-circle"></div>
-        <div class="mdc-radio__inner-circle"></div>
-      </div>
-    </div>
-    <label for="cardtype-cti1">CTI 1</label>
-    &nbsp;&nbsp;
-    <div class="mdc-radio mdc-radio">
-      <input class="mdc-radio__native-control" type="radio" id="cardtype-ctis" name="cardtype" />
-      <div class="mdc-radio__background">
-        <div class="mdc-radio__outer-circle"></div>
-        <div class="mdc-radio__inner-circle"></div>
-      </div>
-    </div>
-    <label for="cardtype-ctis">CTI S (script)</label>
-  </div>
-  <br>
-  <div id="convert-cti1-field" class="mdc-form-field" style="display: none;">
-    <div class="mdc-checkbox">
-      <input id="convert-cti1" type="checkbox" class="mdc-checkbox__native-control" />
-      <div class="mdc-checkbox__background">
-        <svg class="mdc-checkbox__checkmark" viewbox="0 0 24 24">
-          <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
-        </svg>
-        <div class="mdc-checkbox__mixedmark"></div>
-      </div>
-    </div>
-    <label for="convert-cti1">Convert a CTI 1 card</label>
-  </div>
-  <br>
-  <div id="saveLocField">
-    <span class="mdc-typography--body1">Select a location to save the card</span><br>
-    <button id="saveLocBtn" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
-    <label id="saveLocLabel" class="path-box" style="display: none;"></label>
-  </div>
-  <br>
-  <div style="display: flex;">
-    <button id="step-0-prev" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" style="float: left;" disabled>Previous</button>
-    <button id="switchBatch" type="button" class="mdc-button mdc-button--raised mdc-button--secondary mdc-ripple" data-mdc-auto-init="MDCRipple" style="margin: 0 auto;" onclick="swapper.swap('batch')">Batch Creator</button>
-    <button id="step-0-next" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" style="float: right;">Next</button>
-  </div>
-</div>
+    <h1 class="mdc-typography--headline5">Cardmaker</h1>
 
-<div id="cardMaker-1" class="mdc-elevation--z3 box" style="display: none;">
-  <h1 class="mdc-typography--title">Cardmaker</h1>
-  <h1 class="mdc-typography--subheading1">Step 2</h1>
-  <div>
-    <span class="mdc-typography--body1">Select an image: (or if you're converting, the original card)</span><br>
-    <button id="browsePictureBtn" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
-    <label id="browsePictureLabel" class="path-box" style="display: none;"></label>
-  </div>
-  <br>
-  <div id="cardInfo" style="display: none;">
-    <div class="mdc-text-field" data-mdc-auto-init="MDCTextField">
-      <input id="cardType" type="text" class="mdc-text-field__input" />
-      <label for="cardType" class="mdc-text-field__label">Card type</label>
-    </div>
-    <p id="cardType-helptext" class="mdc-text-field-helptext" aria-hidden="true">
-      For instance: 'Nice Mistress', 'Chance to Cum', 'Bondage', 'Stroke It', etc.
-    </p>
+    <!-- Save Configuration Checkbox -->
     <div class="mdc-form-field">
-      <div class="mdc-checkbox">
-        <input id="useSpecial" type="checkbox" class="mdc-checkbox__native-control" />
-        <div class="mdc-checkbox__background">
-          <svg class="mdc-checkbox__checkmark" viewbox="0 0 24 24">
-            <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
-          </svg>
-          <div class="mdc-checkbox__mixedmark"></div>
+        <div class="mdc-checkbox">
+            <input id="saveSettings" type="checkbox" class="mdc-checkbox__native-control" />
+            <div class="mdc-checkbox__background">
+                <svg class="mdc-checkbox__checkmark" viewbox="0 0 24 24">
+                    <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
+                </svg>
+                <div class="mdc-checkbox__mixedmark"></div>
+            </div>
         </div>
-      </div>
-      <label for="useSpecial">Make 'special' card (White background /w black text)</label>
+        <label for="saveSettings">Save configuration for later use</label>
+    </div>
+
+    <h1 class="mdc-typography--subtitle1">Step 1</h1>
+    <h1 class="mdc-typography--body1">Select a card type to create:</h1>
+
+    <!-- CTI Type Radio Buttons -->
+    <div class="mdc-form-field">
+        <div class="mdc-radio">
+            <input class="mdc-radio__native-control" type="radio" id="cardtype-cti1" name="cardtype">
+            <div class="mdc-radio__background">
+                <div class="mdc-radio__outer-circle"></div>
+                <div class="mdc-radio__inner-circle"></div>
+            </div>
+        </div>
+        <label for="cardtype-cti1">CTI 1</label>
+        &nbsp;&nbsp;
+        <div class="mdc-radio mdc-radio">
+            <input class="mdc-radio__native-control" type="radio" id="cardtype-ctis" name="cardtype" />
+            <div class="mdc-radio__background">
+                <div class="mdc-radio__outer-circle"></div>
+                <div class="mdc-radio__inner-circle"></div>
+            </div>
+        </div>
+        <label for="cardtype-ctis">CTI S (script)</label>
     </div>
     <br>
-    <div class="mdc-text-field mdc-text-field--textarea" data-mdc-auto-init="MDCTextField">
-      <textarea id="cardText" class="mdc-typography--body1 mdc-text-field__input" rows="3"></textarea>
-      <label for="cardText" class="mdc-text-field__label">Card Text</label>
-    </div>
-    <p id="cardText-helptext" class="mdc-text-field-helptext" aria-hidden="true">
-      The instruction(s) on the card. (CTIS behaviour comes later)
-    </p>
-    <div id="genderSelect" class="mdc-select" role="listbox" tabindex="0">
-      <div class="mdc-select__surface" tabindex="0">
-        <div class="mdc-select__label">Gender</div>
-        <div class="mdc-select__selected-text"></div>
-        <div class="mdc-select__bottom-line"></div>
-      </div>
-      <div class="mdc-simple-menu mdc-select__menu">
-        <ul class="mdc-list mdc-simple-menu__items">
-          <li class="mdc-list-item" role="option" id="gender-neutral" aria-selected tabindex="0">Neutral</li>
-          <li class="mdc-list-item" role="option" id="gender-male" tabindex="0">Male</li>
-          <li class="mdc-list-item" role="option" id="gender-female" tabindex="0">Female</li>
-          <li class="mdc-list-item" role="option" id="gender-transsexual" tabindex="0">Transsexual</li>
-          <li class="mdc-list-item" role="option" id="gender-straightcouple" tabindex="0">Straight Couple</li>
-          <li class="mdc-list-item" role="option" id="gender-gaycouple" tabindex="0">Gay Couple</li>
-          <li class="mdc-list-item" role="option" id="gender-lesbiancouple" tabindex="0">Lesbian Couple</li>
-        </ul>
-      </div>
+
+    <!-- Convert CTI1 to CTIS Checkbox -->
+    <div id="convert-cti1-field" class="mdc-form-field" style="display: none;">
+        <div class="mdc-checkbox">
+            <input id="convert-cti1" type="checkbox" class="mdc-checkbox__native-control" />
+            <div class="mdc-checkbox__background">
+                <svg class="mdc-checkbox__checkmark" viewbox="0 0 24 24">
+                    <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
+                </svg>
+                <div class="mdc-checkbox__mixedmark"></div>
+            </div>
+        </div>
+        <label for="convert-cti1">Convert a CTI 1 card</label>
     </div>
     <br>
-    <div class="mdc-text-field" data-mdc-auto-init="MDCTextField">
-      <input type="text" id="author" class="mdc-text-field__input" />
-      <label for="author" class="mdc-text-field__label">Author Name</label>
+
+    <!-- File Save Location Field -->
+    <div id="saveLocField">
+        <span class="mdc-typography--body1">Select a location to save the card</span><br>
+        <button id="saveLocBtn" class="mdc-button mdc-button--raised mdc-button--primary" data-mdc-auto-init="MDCRipple">Browse</button>
+        <label id="saveLocLabel" class="path-box" style="display: none;"></label>
     </div>
-    <p id="author-helptext" class="mdc-text-field-helptext" aria-hidden="true">
-      Your handle. (Defaults to anonymous if left empty.)
-    </p>
-    <div class="mdc-text-field" data-mdc-auto-init="MDCTextField">
-      <input type="text" id="deckName" class="mdc-text-field__input" />
-      <label for="deckName" class="mdc-text-field__label">Deck Name</label>
+    <br>
+
+    <!-- Next/Batch Buttons-->
+    <div style="display: flex;">
+        <button id="switchBatch" type="button" class="mdc-button mdc-button--raised mdc-button--secondary" data-mdc-auto-init="MDCRipple" style="margin: 0 auto;" onclick="swapper.swap('batch')">Batch Creator</button>
+        <button id="step-0-next" disabled type="button" class="mdc-button mdc-button--raised mdc-button--primary" data-mdc-auto-init="MDCRipple" style="float: right;">Next</button>
     </div>
-    <p id="deckName-helptext" class="mdc-text-field-helptext" aria-hidden="true">
-      The name of the deck your card belongs to.
-    </p>
+</div>
+
+<!-- Card Visual Setup -->
+<div id="cardMaker-1" class="mdc-elevation--z3 box" style="display: none;">
+    <h1 class="mdc-typography--headline5">Cardmaker</h1>
+    <h1 class="mdc-typography--subtitle1">Step 2</h1>
+
+    <!-- Image Selection Field -->
     <div>
-      <span class="mdc-typography--body1">Select a deck image. (Will automatically fade and resize. Square images work best.)</span><br>
-      <button id="deckImageBtn" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Browse</button>
-      <label id="deckImageLabel" class="path-box" style="display: none;"></label>
+        <span class="mdc-typography--body1">Select an image: (or if you're converting, the original card)</span><br>
+        <button id="browsePictureBtn" class="mdc-button mdc-button--raised mdc-button--primary" data-mdc-auto-init="MDCRipple">Browse</button>
+        <label id="browsePictureLabel" class="path-box" style="display: none;"></label>
     </div>
-    <br><br>
-  </div>
-  <div style="width: 90%; margin: 0 auto; height: 40px;">
-    <button id="step-1-prev" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" style="float: left;">Previous</button>
-    <button id="step-1-next" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" style="float: right;">Next (Takes a sec.)</button>
-  </div>
+    <br>
+
+    <!-- Card Info Area -->
+    <div id="cardInfo" style="display: none;">
+        <!-- Card Type Text Field -->
+        <div class="mdc-text-field">
+            <input id="cardType" type="text" class="mdc-text-field__input" />
+            <label for="cardType" class="mdc-floating-label">Card type</label>
+            <div class="mdc-line-ripple"></div>
+        </div>
+        <p id="cardType-helper-text" class="mdc-text-field-helper-text" aria-hidden="true">
+            For instance: 'Nice Mistress', 'Chance to Cum', 'Bondage', 'Stroke It', etc.
+        </p>
+
+        <!-- Special Card Checkbox -->
+        <div class="mdc-form-field">
+            <div class="mdc-checkbox">
+                <input id="useSpecial" type="checkbox" class="mdc-checkbox__native-control" />
+                <div class="mdc-checkbox__background">
+                    <svg class="mdc-checkbox__checkmark" viewbox="0 0 24 24">
+                        <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
+                    </svg>
+                    <div class="mdc-checkbox__mixedmark"></div>
+                </div>
+            </div>
+            <label for="useSpecial">Make 'special' card (White background with black text)</label>
+        </div>
+        <br>
+
+        <!-- Card Text Text Field -->
+        <div class="mdc-text-field mdc-text-field--fullwidth mdc-text-field--textarea mdc-text-field--outlined">
+            <textarea id="cardText" class="mdc-text-field__input" rows="3"></textarea>
+            <div class="mdc-notched-outline">
+                <div class="mdc-notched-outline__leading"></div>
+                <div class="mdc-notched-outline__notch">
+                    <label for="cardText" class="mdc-floating-label">Card Text</label>
+                </div>
+                <div class="mdc-notched-outline__trailing"></div>
+            </div>
+        </div>
+        <p id="cardText-helper-text" class="mdc-text-field-helper-text" aria-hidden="true">
+            The instruction(s) on the card. (CTIS behaviour comes later)
+        </p>
+
+        <!-- Gender Selection Dropdown -->
+        <div id="genderSelect" class="mdc-select">
+            <!-- <i class="mdc-select__dropdown-icon"></i> -->
+            <select class="mdc-select__native-control">
+                <option value="gender-neutral" selected>Neutral</option>
+                <option value="gender-male">Male</option>
+                <option value="gender-female">Female</option>
+                <option value="gender-transsexual">Transsexual</option>
+                <option value="gender-straightcouple">Straight Couple</option>
+                <option value="gender-gaycouple">Gay Couple</option>
+                <option value="gender-lesbiancouple">Lesbian Couple</option>
+            </select>
+            <label class="mdc-floating-label mdc-floating-label--float-above">Gender</label>
+            <div class="mdc-line-ripple"></div>
+        </div>
+        <br><br>
+
+        <!-- Author Name Text Field -->
+        <div class="mdc-text-field">
+            <input type="text" id="author" class="mdc-text-field__input" />
+            <label for="author" class="mdc-floating-label">Author Name</label>
+            <div class="mdc-line-ripple"></div>
+        </div>
+        <p id="author-helper-text" class="mdc-text-field-helper-text" aria-hidden="true">
+            Your handle. (Defaults to anonymous if left empty.)
+        </p>
+
+        <!-- Deck Name Text Field -->
+        <div class="mdc-text-field">
+            <input type="text" id="deckName" class="mdc-text-field__input" />
+            <label for="deckName" class="mdc-floating-label">Deck Name</label>
+            <div class="mdc-line-ripple"></div>
+        </div>
+        <p id="deckName-helper-text" class="mdc-text-field-helper-text" aria-hidden="true">
+            The name of the deck your card belongs to.
+        </p>
+
+        <!-- Deck Image Selection Field -->
+        <div>
+            <span class="mdc-typography--body1">Select a deck image. (Will automatically fade and resize. Square images work best.)</span><br>
+            <button id="deckImageBtn" class="mdc-button mdc-button--raised mdc-button--primary" data-mdc-auto-init="MDCRipple">Browse</button>
+            <label id="deckImageLabel" class="path-box" style="display: none;"></label>
+        </div>
+        <br><br>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div style="width: 90%; margin: 0 auto; height: 40px;">
+        <button id="step-1-prev" type="button" class="mdc-button mdc-button--raised mdc-button--primary" data-mdc-auto-init="MDCRipple" style="float: left;">Previous</button>
+        <button id="step-1-next" disabeld type="button" class="mdc-button mdc-button--raised mdc-button--primary" data-mdc-auto-init="MDCRipple" style="float: right;">Next (Takes a sec.)</button>
+    </div>
 </div>
 
+<!-- Card Sneak Peek -->
 <div id="cardMaker-2" class="mdc-elevation--z3 box" style="display: none;">
-  <h1 class="mdc-typography--title">Cardmaker</h1>
-  <h1 class="mdc-typography--subheading1">Sneak Peek</h1>
-  <br>
-  <div id="sneakPeek" style="text-align: center;"></div>
-  <br>
-  <div style="width: 90%; margin: 0 auto; height: 40px;">
-    <button id="step-2-prev" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" style="float: left;">Previous</button>
-    <button id="step-2-next" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" style="float: right;">Next</button>
-  </div>
-</div>
+    <h1 class="mdc-typography--headline5">Cardmaker</h1>
+    <h1 class="mdc-typography--subtitle1">Sneak Peek</h1>
+    <br>
 
-<div id="cardMaker-3" class="mdc-elevation--z3 box" style="display: none;">
-  <h1 class="mdc-typography--title">Cardmaker</h1>
-  <h1 class="mdc-typography--subheading1">Adding CTI Script</h1>
-  <br>
-  <div class="mdc-form-field">
-    <label for="advancedMode" class="mdc-switch-label">Advanced mode&nbsp;&nbsp;</label>
-    <div class="mdc-switch">
-      <input type="checkbox" id="advancedMode" class="mdc-switch__native-control" />
-      <div class="mdc-switch__background">
-        <div class="mdc-switch__knob"></div>
-      </div>
+    <!-- Sneak Peek Area -->
+    <div id="sneakPeek" style="text-align: center;"></div>
+    <br>
+
+    <!-- Navigation Buttons -->
+    <div style="width: 90%; margin: 0 auto; height: 40px;">
+        <button id="step-2-prev" type="button" class="mdc-button mdc-button--raised mdc-button--primary" data-mdc-auto-init="MDCRipple" style="float: left;">Previous</button>
+        <button id="step-2-next" type="button" class="mdc-button mdc-button--raised mdc-button--primary" data-mdc-auto-init="MDCRipple" style="float: right;">Next</button>
     </div>
-  </div>
-  <br>
-  <br>
-  <style media="screen">
-      .action-row > td {
-        display: inline-block;
-      }
-      .action-row > td > input {
-        background-color: rgba(0, 0, 0, 0.2);
-        border: none;
-        color: white;
-      }
-  </style>
-  <div id="action-basic">
-    <table style="font-family: monospace; background-color: rgba(0, 0, 0, 0.2); width: 50%;">
-      <tr>
-        <td>{</td><td></td>
-      </tr>
-      <tr>
-        <td>&nbsp;&nbsp;actions: [</td><td></td>
-      </tr>
-    </table>
-    <table id="action-0" class="action-block" style="font-family: monospace; background-color: rgba(0, 0, 0, 0.2); width: 50%;">
-      <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;{</td><td></td>
-      </tr>
-      <tr class="action-row">
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;start:</td><td><input type="text" name="start" /></td><td>,</td>
-      </tr>
-      <tr class="action-row">
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type:</td><td><input type="text" name="type" /></td><td>,</td>
-      </tr>
-      <tr class="action-row">
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;conditional:</td><td><input type="text" name="conditional" /></td><td>,</td>
-      </tr>
-      <tr class="action-row">
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for:</td><td><input type="text" name="fors" /></td><td>,</td>
-      </tr>
-      <tr class="action-row">
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;action:</td><td><input type="text" name="action" /></td><td>,</td>
-      </tr>
-      <tr class="action-row">
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;until:</td><td><input type="text" name="until" /></td><td>,</td>
-      </tr>
-      <tr>
-        <td class="lae">&nbsp;&nbsp;&nbsp;&nbsp;}</td><td></td>
-      </tr>
-    </table>
-    <table style="font-family: monospace; background-color: rgba(0, 0, 0, 0.2); width: 50%;">
-      <tr>
-        <td>&nbsp;&nbsp;]</td><td></td>
-      </tr>
-      <tr>
-        <td>}</td><td></td>
-      </tr>
-    </table><br>
-    <div style="margin: 5px 0;">
-      <button type="button" id="addAction" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple">Add Action</button>
-      <button type="button" id="removeAction" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple">Remove Action</button>
-      <button type="button" id="resetAction" class="mdc-button mdc-button--raised mdc-ripple" data-mdc-auto-init="MDCRipple">Clear All Actions</button>
-    </div><br>
-    <p id="CTISWrong" style="color: red; display: none;">Something in this CTIS config is wrong.</p>
-    <p>If you want to know what to put in those boxes, read <a onclick="shell.openExternal('https://github.com')">this</a>!</p>
-  </div>
-  <div id="action-advanced" style="display: none;">
-    <textarea id="adv-act" rows="15" cols="80" style="font-family: monospace; color: white; background-color: rgba(0, 0, 0, 0.2);"></textarea>
-  </div>
-  <br>
-  <div style="width: 90%; margin: 0 auto; height: 40px;">
-    <button id="step-3-prev" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" style="float: left;">Previous</button>
-    <button id="step-3-next" type="button" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" style="float: right;">Next</button>
-  </div>
 </div>
 
+<!-- Card CTI Script Setup -->
+<div id="cardMaker-3" class="mdc-elevation--z3 box" style="display: none;">
+    <h1 class="mdc-typography--headline5">Cardmaker</h1>
+    <h1 class="mdc-typography--subtitle1">Adding CTI Script</h1>
+    <br>
+
+    <!-- Advanced Mode Switch -->
+    <div class="mdc-switch">
+        <div class="mdc-switch__track"></div>
+        <div class="mdc-switch__thumb-underlay">
+            <div class="mdc-switch__thumb">
+                <input type="checkbox" id="advancedMode" class="mdc-switch__native-control" role="switch" />
+            </div>
+        </div>
+    </div>
+    <label for="advancedMode" class="mdc-switch-label">Advanced mode</label>
+    <br><br>
+
+    <!-- Action CSS -->
+    <style media="screen">
+        .action-row > td {
+            display: inline-block;
+        }
+        .action-row > td > input {
+            background-color: rgba(0, 0, 0, 0.2);
+            border: none;
+            color: white;
+        }
+    </style>
+
+    <!-- Simple Action Area -->
+    <div id="action-basic">
+        <table style="font-family: monospace; background-color: rgba(0, 0, 0, 0.2); width: 50%;">
+            <tr>
+                <td>{</td><td></td>
+            </tr>
+            <tr>
+                <td>&nbsp;&nbsp;actions: [</td><td></td>
+            </tr>
+        </table>
+        <table id="action-0" class="action-block" style="font-family: monospace; background-color: rgba(0, 0, 0, 0.2); width: 50%;">
+            <tr>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;{</td><td></td>
+            </tr>
+            <tr class="action-row">
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;start:</td><td><input type="text" name="start" /></td><td>,</td>
+            </tr>
+            <tr class="action-row">
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type:</td><td><input type="text" name="type" /></td><td>,</td>
+            </tr>
+            <tr class="action-row">
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;conditional:</td><td><input type="text" name="conditional" /></td><td>,</td>
+            </tr>
+            <tr class="action-row">
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for:</td><td><input type="text" name="fors" /></td><td>,</td>
+            </tr>
+            <tr class="action-row">
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;action:</td><td><input type="text" name="action" /></td><td>,</td>
+            </tr>
+            <tr class="action-row">
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;until:</td><td><input type="text" name="until" /></td><td>,</td>
+            </tr>
+            <tr>
+                <td class="lae">&nbsp;&nbsp;&nbsp;&nbsp;}</td><td></td>
+            </tr>
+        </table>
+        <table style="font-family: monospace; background-color: rgba(0, 0, 0, 0.2); width: 50%;">
+            <tr>
+                <td>&nbsp;&nbsp;]</td><td></td>
+            </tr>
+            <tr>
+                <td>}</td><td></td>
+            </tr>
+        </table><br>
+        <div style="margin: 5px 0;">
+            <button type="button" id="addAction" class="mdc-button mdc-button--raised mdc-button--primary" data-mdc-auto-init="MDCRipple">Add Action</button>
+            <button type="button" id="removeAction" class="mdc-button mdc-button--raised" data-mdc-auto-init="MDCRipple">Remove Action</button>
+            <button type="button" id="resetAction" class="mdc-button mdc-button--raised" data-mdc-auto-init="MDCRipple">Clear All Actions</button>
+        </div><br>
+        <p id="CTISWrong" style="color: red; display: none;">Something in this CTIS config is wrong.</p>
+        <p>If you want to know what to put in those boxes, read <a onclick="shell.openExternal('https://github.com/Void-Cat/black/wiki')">this</a>!</p>
+    </div>
+
+    <!-- Advanced Action Text Field -->
+    <div id="action-advanced" style="display: none;">
+        <textarea id="adv-act" rows="15" cols="80" style="font-family: monospace; color: white; background-color: rgba(0, 0, 0, 0.2);"></textarea>
+    </div>
+    <br>
+
+    <!-- Navigation Buttons -->
+    <div style="width: 90%; margin: 0 auto; height: 40px;">
+        <button id="step-3-prev" type="button" class="mdc-button mdc-button--raised mdc-button--primary" data-mdc-auto-init="MDCRipple" style="float: left;">Previous</button>
+        <button id="step-3-next" type="button" class="mdc-button mdc-button--raised mdc-button--primary" data-mdc-auto-init="MDCRipple" style="float: right;">Next</button>
+    </div>
+</div>
+
+<!-- Tease Making End -->
 <div id="cardMaker-4" class="mdc-elevation--z3 box" style="display: none;">
-  <h1 class="mdc-typography--title">File has been made.</h1>
-  <p class="mdc-typography--body1">
-    Your file has succesfully been made! It was put where you asked:<br>
-    <span id="getSaveLoc">%saveloc%</span>
-  </p>
-  <br>
-  <button type="button" id="step-4-home" class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="swapper.swap('home')">Back to Home</button>
-  <button type="button" id="step-4-reload" class="mdc-button mdc-button--raised mdc-button--accent mdc-ripple" data-mdc-auto-init="MDCRipple" onclick="swapper.reload()">Create another card</button>
+    <h1 class="mdc-typography--headline5">File has been made.</h1>
+    <p class="mdc-typography--body1">
+        Your file has succesfully been made! It was put where you asked:<br>
+        <span id="getSaveLoc">%saveloc%</span>
+    </p>
+    <br>
+    <button type="button" id="step-4-home" class="mdc-button mdc-button--raised mdc-button--primary" data-mdc-auto-init="MDCRipple" onclick="swapper.swap('home')">Back to Home</button>
+    <button type="button" id="step-4-reload" class="mdc-button mdc-button--raised mdc-button--accent" data-mdc-auto-init="MDCRipple" onclick="swapper.reload()">Create another card</button>
 </div>
-
+        
 <script src="./js/cardmaker.js" charset="utf-8"></script>
+        

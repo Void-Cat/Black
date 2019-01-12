@@ -18,7 +18,7 @@ function Theme (param) {
         document.querySelector('body').classList.remove('mdc-theme--dark')
       }
       document.getElementById('theme').setAttribute('href', this.path + name + '.theme.css')
-      this.active = param.themelist.indexOf(name)
+      this.active = this.themelist.indexOf(name)
       storage.set('theme.index', this.themelist.indexOf(name))
       return name
     }
