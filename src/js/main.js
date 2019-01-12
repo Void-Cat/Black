@@ -44,11 +44,15 @@ swapper.start('continue', 'home')
 swapper.onswap((loc) => {
     if (loc === 'teaseend')
     theme.setTheme(storage.get('theme.index'))
+    drawer.open = false;
 })
 
 var drawer = new mdc.drawer.MDCDrawer(document.querySelector('.mdc-drawer'))
 $('#menu-btn').click(() => {
     drawer.open = true;
+})
+$('aside.mdc-drawer--modal').find('a.mdc-list-item').click(() => {
+    drawer.open = false;
 })
 
 $('#theme-btn').click(() => {
