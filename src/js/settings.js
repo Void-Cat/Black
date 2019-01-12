@@ -84,7 +84,7 @@ $('#autoReport').change(_ => {
     }
 })
 
-if (storage.get('settings.autoReport')) $('#autoReport').trigger('click')
+if (storage.get('settings.autoReport')) $('#autoReport').prop('checked', true)
 
 if (storage.get('settings.autoReportPath') !== undefined) {
     $('#autoReportPathLabel').text(storage.get('settings.autoReportPath'))
