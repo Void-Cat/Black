@@ -1,12 +1,13 @@
 /* global $, currentVersion, storage */
 
 // Function for cleaning the storage
-function cleanStorage() {
+function cleanStorage(newVersion) {
     // Cleaning storage for 1.7.0
     let del = ['teaseslave', 'profile.name.nick', 'settings.cardratio', 'teaseParams']
     del.forEach((ldel) => {
         storage.delete(ldel)
     })
+    storage.set('version', newVersion)
 }
 
 // Asynchronous function to check wether a new version is available.
@@ -23,8 +24,9 @@ function checkVersion () {
         })
         if (newVersion[0] > oldVersion[0] || (newVersion[0] === oldVersion[0] && newVersion[1] > oldVersion[1]) || (newVersion[0] === oldVersion[0] && newVersion[1] === oldVersion[1] && newVersion[2] > oldVersion[2])) {
             vfd.resolve(newVersion.join('.'))
-            cleanStorage()
         } else {
+            if (storage.get('version') !== oldVersion.join('.'))
+                cleanStorage(oldVersion.join('.'))
             vfd.reject('isCurrent:' + oldVersion.join('.'))
         }
     }).fail((err) => {
