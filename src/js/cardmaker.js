@@ -177,6 +177,7 @@ $(document).ready(() => {
         mdc.ripple.MDCRipple.attachTo(el)
     })
     mdc.autoInit()
+    updateNextButton()
 })
 
 function saveSettings() {
