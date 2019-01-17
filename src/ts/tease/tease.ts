@@ -74,20 +74,6 @@ function Count(obj: Array<any>, value: any) {
     return count;
 }
 
-// function retrieveFiles(path: string, recursive: boolean, pattern?: string) {
-//     let files = []
-//     fs.readdirSync(path, (err, files) => {
-//         if (err) console.warn(err)
-//         files.forEach(file => {
-//             let stat = fs.lstatSync(path + '/' + file)
-//             if ((stat.isDirectory() || stat.isSymbolicLink()) && recursive) {
-//                 files = files.concat(retrieveFiles(path + '/' + file, true, pattern))
-//             }
-//         });
-//     })
-//     return files
-// }
-
 function Values(obj: object) {
     let ret = []
     for (let i in obj) {
@@ -241,7 +227,7 @@ export default class Tease {
         pushAction: (data: object) => {
             let keys = Object.keys(data)
             
-            if (!keys.includes('type') || !keys.includes('action'))
+            if (keys.indexOf('type') === -1 || keys.indexOf('action') === -1)
                 console.debug(`[Tease/Debug] Can't create Action. Missing TYPE or ACTION parameter(s).`)
 
             data = Object.assign({

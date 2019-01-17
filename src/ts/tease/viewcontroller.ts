@@ -111,7 +111,7 @@ export default class ViewController {
 
         if (toSlide === null || toSlide === undefined)
             toSlide = this.index
-        else if (toSlide === -1 && this.noBroadcast.includes(fromSlide)) {
+        else if (toSlide === -1 && this.noBroadcast.indexOf(fromSlide) !== -1) {
             this.noBroadcast.splice(this.noBroadcast.indexOf(fromSlide), 1)
             return
         } else if (toSlide === -1)
@@ -121,7 +121,7 @@ export default class ViewController {
             mod = -1
         
         for (let i = fromSlide; i !== toSlide; i += mod) {
-            if (this.noBroadcast.includes(i))
+            if (this.noBroadcast.indexOf(i) !== -1)
                 this.noBroadcast.splice(this.noBroadcast.indexOf(i), 1)
         }
     }

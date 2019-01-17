@@ -679,9 +679,9 @@ export default class ActionController {
             let preJumpIndex = this.viewController.index
             let mod = this.numbermod(this.viewController.index, action.data.action.modifier, parseInt(action.data.action.value, 10) - (action.data.delay > 0 ? 1 : 0))
             this.viewController.jumpSlide(mod, false, false)
-            if (action.data.flags.includes('redraw'))
+            if (action.data.flags.indexOf('redraw') !== -1)
                 this.viewController.clearNoBroadcast(preJumpIndex + (this.viewController.index > preJumpIndex ? 1 : -1), this.viewController.index - (this.viewController.index > preJumpIndex ? 1 : -1))
-            if (action.data.flags.includes('redraw_self'))
+            if (action.data.flags.indexOf('redraw_self') !== -1)
                 this.viewController.clearNoBroadcast(action.data.index, -1)
         },
         slidetime: (action: Action) => {
