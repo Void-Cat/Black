@@ -78,17 +78,21 @@ main {
     width: 100vw;
 }
 
-.mdc-button:not(.mdc-button--primary):not(.mdc-button--secondary):not([disabled]) {
+.mdc-button:not(.mdc-button--primary):not(.mdc-button--secondary):not(.mdc-button--raised):not(:disabled) {
+    color: $mdc-theme-primary;
+}
+
+.mdc-button--raised:not(.mdc-button--primary):not(.mdc-button--secondary):not(:disabled) {
     background-color: $mdc-theme-background;
     color: $mdc-theme-on-background;
 }
 
-.mdc-button--primary:not([disabled]) {
+.mdc-button--primary:not(:disabled) {
     background-color: $mdc-theme-primary;
     color: $mdc-theme-on-primary;
 }
 
-.mdc-button--secondary:not([disabled]) {
+.mdc-button--secondary:not(:disabled) {
     background-color: $mdc-theme-secondary;
     color: $mdc-theme-on-secondary;
 }
@@ -108,6 +112,24 @@ main {
         background-color: $mdc-theme-surface;
         color: $mdc-theme-on-surface;
     }
+}
+
+.mdc-snackbar {
+    background: transparent;
+    transform: initial;
+    margin: 0 auto;
+    .mdc-snackbar__surface {
+        background-color: $mdc-theme-surface;
+        .mdc-snackbar__label {
+            color: $mdc-theme-on-surface;
+        }
+    }
+}
+.mdc-snackbar__action {
+    color: $mdc-theme-primary;
+}
+.mdc-snackbar__action::before, .mdc-snackbar__action::after {
+    background-color: $mdc-theme-primary;
 }
 
 .mdc-text-field--textarea {

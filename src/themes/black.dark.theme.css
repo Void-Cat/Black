@@ -7296,15 +7296,18 @@ main {
   overflow-y: auto;
   width: 100vw; }
 
-.mdc-button:not(.mdc-button--primary):not(.mdc-button--secondary):not([disabled]) {
+.mdc-button:not(.mdc-button--primary):not(.mdc-button--secondary):not(.mdc-button--raised):not(:disabled) {
+  color: black; }
+
+.mdc-button--raised:not(.mdc-button--primary):not(.mdc-button--secondary):not(:disabled) {
   background-color: #212121;
   color: white; }
 
-.mdc-button--primary:not([disabled]) {
+.mdc-button--primary:not(:disabled) {
   background-color: black;
   color: white; }
 
-.mdc-button--secondary:not([disabled]) {
+.mdc-button--secondary:not(:disabled) {
   background-color: white;
   color: black; }
 
@@ -7319,6 +7322,21 @@ main {
 .mdc-select__native-control option {
   background-color: #3b3b3b;
   color: white; }
+
+.mdc-snackbar {
+  background: transparent;
+  transform: initial;
+  margin: 0 auto; }
+  .mdc-snackbar .mdc-snackbar__surface {
+    background-color: #3b3b3b; }
+    .mdc-snackbar .mdc-snackbar__surface .mdc-snackbar__label {
+      color: white; }
+
+.mdc-snackbar__action {
+  color: black; }
+
+.mdc-snackbar__action::before, .mdc-snackbar__action::after {
+  background-color: black; }
 
 .mdc-text-field--textarea .mdc-floating-label {
   background-color: initial;

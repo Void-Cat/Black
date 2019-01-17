@@ -38,6 +38,7 @@ export default class ViewController {
         if (storage.get('tease.setup.announceimage')) {
             this.announcer.image.src = `${__dirname}/../../audio/slidechange.ogg`
         }
+        this.snackbarElement.closeOnEscape = false
     }
 
     public nextSlide() {
@@ -150,14 +151,39 @@ export default class ViewController {
         } else console.warn(`[ViewController/jumpSlide] Tried to jump to slide ${n}, but was out of bounds.`)
     }
 
-    public snackbar(message: string, multiLine = false, buttonText?: string, buttonAction?, buttonMultiLine?: boolean) {
-        this.snackbarElement.show({
-            actionHandler: buttonAction,
-            actionOnBottom: buttonMultiLine,
-            actionText: buttonText,
-            message: message || 'No message provided.',
-            multiline: (isBoolean(multiLine) ? multiLine : false)
+    private snackbarQueue = []
+    private snackbarQueueRunning = false
+    private runSnackbarQueue() : void {
+        this.snackbarQueueRunning = true
+
+        if (!this.snackbarElement.isOpen && this.snackbarQueue.length > 0) {
+            let item = this.snackbarQueue.shift()
+            
+            this.snackbarElement.labelText = item.message
+            if (typeof item.buttonText === 'string' && item.buttonAction != null) {
+                this.snackbarElement.actionButtonText = item.buttonText
+                $('.mdc-snackbar__action').click(item.buttonAction)
+                $('.mdc-snackbar__actions').show()
+            } else $('.mdc-snackbar__actions').hide()
+            if (item.stacked)
+                $('.mdc-snackbar').addClass('mdc-snackbar--stacked')
+            else
+                $('.mdc-snackbar').removeClass('mdc-snackbar--stacked')
+
+            this.snackbarElement.open()
+            setTimeout(() => this.runSnackbarQueue(), this.snackbarElement.timeoutMs + 500)
+        } else if (this.snackbarQueue.length == 0) this.snackbarQueueRunning = false
+    }
+
+    public snackbar(message: string, buttonText?: string, buttonAction?: Function, stacked: boolean = false) {
+        this.snackbarQueue.push({
+            message: message,
+            buttonText: buttonText,
+            buttonAction: buttonAction,
+            stacked: stacked
         })
+        if (!this.snackbarQueueRunning)
+            this.runSnackbarQueue()
     }
 
     public info = {
