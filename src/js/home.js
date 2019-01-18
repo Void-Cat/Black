@@ -3,7 +3,7 @@
 // Function for cleaning the storage
 function cleanStorage(newVersion) {
     // Cleaning storage for 1.7.0
-    let del = ['teaseslave', 'profile.name.nick', 'settings.cardratio', 'teaseParams', 'teaseExit']
+    let del = ['teaseslave', 'profile.name.nick', 'settings.cardratio', 'teaseParams', 'teaseExit', 'winBounds']
     del.forEach((ldel) => {
         storage.delete(ldel)
     })
@@ -41,7 +41,7 @@ if (storage.get('profile') === undefined) {
     $('#aboutusr-fail').show()
 } else {
     let aboutusr = [
-        storage.get('profile.name.nick'),
+        storage.get('profile.name.real'),
         storage.get('profile.sublevel'),
         storage.get('stats.lastTease.cumming.full'),
         storage.get('stats.total.cumming.full')

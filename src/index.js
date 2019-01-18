@@ -6,7 +6,7 @@ let storage = new Store()
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
-  app.quit()
+    app.quit()
 }
 
 if (storage.get('settings.disableHardwareAcceleration') === true) app.disableHardwareAcceleration()
@@ -16,54 +16,56 @@ if (storage.get('settings.disableHardwareAcceleration') === true) app.disableHar
 let mainWindow
 
 const createWindow = () => {
-  // Create the browser window.
-  let options = {
-    backgroundColor: '#191919',
-    frame: false,
-    icon: `${__dirname}/icons/png/64x64.png`,
-    show: false
-  }
-
-  mainWindow = new BrowserWindow(Object.assign(options, storage.get('windowBoundaries') || { width: 800, height: 600 }))
-
-  // and load the main.html of the app.
-  mainWindow.loadURL(`file://${__dirname}/main.html`)
-
-  // Show the window when ready.
-  mainWindow.once('ready-to-show', () => {
-    mainWindow.show()
-  })
-
-  // Save the window boundries on close
-  mainWindow.on('close', () => {
-    storage.set('windowBoundaries', mainWindow.getBounds())
-  })
-
-  // Emitted when the window is closed.
-  mainWindow.on('closed', () => {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    mainWindow = null
-  })
+    // Create the browser window.
+    let options = {
+        backgroundColor: '#191919',
+        frame: false,
+        icon: `${__dirname}/icons/png/64x64.png`,
+        show: false
+    }
+    
+    mainWindow = new BrowserWindow(Object.assign(options, storage.get('windowBoundaries') || { width: 800, height: 600 }))
+    
+    // and load the main.html of the app.
+    mainWindow.loadURL(`file://${__dirname}/main.html`)
+    
+    // Show the window when ready.
+    mainWindow.once('ready-to-show', () => {
+        mainWindow.show()
+    })
+    
+    // Save the window boundries on close
+    mainWindow.on('close', () => {
+        storage.set('windowBoundaries', mainWindow.getBounds())
+    })
+    
+    // Emitted when the window is closed.
+    mainWindow.on('closed', () => {
+        // Dereference the window object, usually you would store windows
+        // in an array if your app supports multi windows, this is the time
+        // when you should delete the corresponding element.
+        mainWindow = null
+    })
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
-  protocol.registerFileProtocol('atom', (request, callback) => {
-    let url = path.normalize(request.url.substring(8))
-    callback({path: url})
-  }, (err) => {
-    if (err) console.error(err)
-  })
-
-  createWindow()
-
-  // Register globalShortcut for reload and devTools
-  globalShortcut.register('CommandOrControl+Shift+C', () => mainWindow.openDevTools())
-  globalShortcut.register('CommandOrControl+Shift+R', () => mainWindow.reload())
+    protocol.registerFileProtocol('local', (request,callback) => { 
+        const url = request.url.substr(8)
+        callback({path: path.normalize(url)}) 
+    }, (error) => { 
+        if (error) { 
+            console.log('failed to register protocol')
+        }
+    })
+    
+    createWindow()
+    
+    // Register globalShortcut for reload and devTools
+    globalShortcut.register('CommandOrControl+Shift+C', () => mainWindow.openDevTools())
+    globalShortcut.register('CommandOrControl+Shift+R', () => mainWindow.reload())
 })
 
 // Code for unregistering globalShortcuts when the app will quits
@@ -71,19 +73,19 @@ app.on('will-quit', () => globalShortcut.unregisterAll())
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
+    // On OS X it is common for applications and their menu bar
+    // to stay active until the user quits explicitly with Cmd + Q
+    if (process.platform !== 'darwin') {
+        app.quit()
+    }
 })
 
 app.on('activate', () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) {
-    createWindow()
-  }
+    // On OS X it's common to re-create a window in the app when the
+    // dock icon is clicked and there are no other windows open.
+    if (mainWindow === null) {
+        createWindow()
+    }
 })
 
 // In this file you can include the rest of your app's specific main process

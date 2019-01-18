@@ -78,7 +78,9 @@ export default class ImageController {
                     this.images.push(this.getImage())
                 this.length++
             }
+            this.cleanList()
         } else {
+            let current = this.length
             while (this.length < n) {
                 // Card or image
                 if (Math.random() < this.cardratio) {
@@ -99,6 +101,19 @@ export default class ImageController {
                     this.images.push(this.getImage())
                 this.length++
             }
+            this.cleanList(current)
+        }
+    }
+
+    cleanList(start: number = 0) : void {
+        if (start < 0)
+            start = 0
+        
+        for (let i = start; i < this.images.length; i++) {
+            let path = this.images[i].replace(/\\/gi, '/')
+            if (path.indexOf('local://') !== 0)
+                path = 'local://' + path
+            this.images[i] = path
         }
     }
 
