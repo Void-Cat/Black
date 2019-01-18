@@ -53,7 +53,7 @@ const createWindow = () => {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
     protocol.registerFileProtocol('local', (request,callback) => { 
-        const url = request.url.substr(8)
+        const url = request.url.substr(9)
         callback({path: path.normalize(url)}) 
     }, (error) => { 
         if (error) { 

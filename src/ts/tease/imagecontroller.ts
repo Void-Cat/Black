@@ -111,8 +111,8 @@ export default class ImageController {
         
         for (let i = start; i < this.images.length; i++) {
             let path = this.images[i].replace(/\\/gi, '/')
-            if (path.indexOf('local://') !== 0)
-                path = 'local://' + path
+            if (path.indexOf('local:///') !== 0)
+                path = 'local:///' + path
             this.images[i] = path
         }
     }

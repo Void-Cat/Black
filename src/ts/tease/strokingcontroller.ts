@@ -2,6 +2,7 @@ declare const storage
 import ViewController from './viewcontroller'
 import * as fs from 'fs'
 import {isNumber, isBoolean, isNull, isNullOrUndefined} from 'util'
+import * as path from 'path'
 
 export default class StrokingController {
     carousel: HTMLAudioElement[] = []
@@ -22,18 +23,18 @@ export default class StrokingController {
         let audiosrc
         switch (storage.get('tease.setup.tickersound')) {
             case 'metronome':
-                audiosrc = `${__dirname}/../../audio/metronome.ogg`
+                audiosrc = `local:///${__dirname}/../../audio/metronome.ogg`
                 break
 
             case 'custom':
-                audiosrc = storage.get('tease.setup.customticker')
+                audiosrc = `local:///${storage.get('tease.setup.customticker')}`
                 break
             
             case 'default':
             default:
-                audiosrc = `${__dirname}/../../audio/ticker.ogg`
+                audiosrc = `local:///${__dirname}/../../audio/ticker.ogg`
         }
-        if (!fs.existsSync(audiosrc))
+        if (!fs.existsSync(audiosrc.substring(9)))
             throw new Error(`Ticker at source '${audiosrc}' could not be found.`)
         for (let i = 0; i < 6; i++) {
             this.carousel.push(new Audio())
