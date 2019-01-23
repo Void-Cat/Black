@@ -1,4 +1,5 @@
 declare const storage, isNullOrUndefined, fs
+var {app} = require('electron').remote
 import {Card} from './tease'
 
 export default class ImageController {
@@ -111,8 +112,10 @@ export default class ImageController {
         
         for (let i = start; i < this.images.length; i++) {
             let path = this.images[i].replace(/\\/gi, '/')
-            if (path.indexOf('local:///') !== 0)
+            if (app.isPackaged)
                 path = 'local:///' + path
+            else
+                path = 'file:///' + path
             this.images[i] = path
         }
     }

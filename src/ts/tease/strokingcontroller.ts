@@ -2,7 +2,7 @@ declare const storage
 import ViewController from './viewcontroller'
 import * as fs from 'fs'
 import {isNumber, isBoolean, isNull, isNullOrUndefined} from 'util'
-import * as path from 'path'
+var {app} = require('electron').remote
 
 export default class StrokingController {
     carousel: HTMLAudioElement[] = []
@@ -21,20 +21,22 @@ export default class StrokingController {
         this.viewController = viewController
         this.slidetime = this.strokerate = storage.get('tease.setup.slidetime')
         let audiosrc
+        let prefix = (app.isPackaged ? 'local:///' : 'file:///')
+
         switch (storage.get('tease.setup.tickersound')) {
             case 'metronome':
-                audiosrc = `local:///${__dirname}/../../audio/metronome.ogg`
+                audiosrc = `${prefix}${__dirname}/../../audio/metronome.ogg`
                 break
 
             case 'custom':
-                audiosrc = `local:///${storage.get('tease.setup.customticker')}`
+                audiosrc = `${prefix}${storage.get('tease.setup.customticker')}`
                 break
             
             case 'default':
             default:
-                audiosrc = `local:///${__dirname}/../../audio/ticker.ogg`
+                audiosrc = `${prefix}${__dirname}/../../audio/ticker.ogg`
         }
-        if (!fs.existsSync(audiosrc.substring(9)))
+        if (!fs.existsSync(audiosrc.substring(app.isPackaged ? 9 : 8)))
             throw new Error(`Ticker at source '${audiosrc}' could not be found.`)
         for (let i = 0; i < 6; i++) {
             this.carousel.push(new Audio())

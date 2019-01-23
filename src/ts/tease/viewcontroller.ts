@@ -1,11 +1,11 @@
 declare const mdc, storage, theme
-import { isNullOrUndefined, isBoolean } from 'util'
+import { isNullOrUndefined } from 'util'
 import ActionController from './actioncontroller'
 import ExitController from './exitcontroller'
 import ImageController from './imagecontroller'
 import StrokingController from './strokingcontroller'
 import TeaseEvent from './teaseEvent'
-import * as path from 'path'
+var {app} = require('electron').remote
 
 export default class ViewController {
     buffer: HTMLImageElement
@@ -33,11 +33,12 @@ export default class ViewController {
         else
             this.viewID = 'img' + viewID
 
+        let protocol = (app.isPackaged ? 'local:///' : 'file:///')
         if (storage.get('tease.setup.announcecard')) {
-            this.announcer.card.src = `local:///${__dirname}/../../audio/card.ogg`
+            this.announcer.card.src = `${protocol}${__dirname}/../../audio/card.ogg`
         }
         if (storage.get('tease.setup.announceimage')) {
-            this.announcer.image.src = `local:///${__dirname}/../../audio/slidechange.ogg`
+            this.announcer.image.src = `${protocol}${__dirname}/../../audio/slidechange.ogg`
         }
         this.snackbarElement.closeOnEscape = false
     }
