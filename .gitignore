@@ -3,3 +3,4 @@
 /notes/
 /out/
 tsconfig.json
+*.legacy.*
