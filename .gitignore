@@ -4,3 +4,4 @@
 /out/
 tsconfig.json
 *.legacy.*
+*.future.*
