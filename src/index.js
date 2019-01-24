@@ -55,7 +55,7 @@ const createWindow = () => {
 
 app.on('ready', () => {
     protocol.registerFileProtocol('local', (request, callback) => { 
-        let url = request.url.substr(9)
+        let url = request.url.substr(9).replace(/%20/gi, ' ')
         callback({ path: path.normalize(url) })
     }, (error) => { 
         if (error) { 

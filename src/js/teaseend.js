@@ -97,7 +97,7 @@ $('#punishmentButton').click(_ => {
     } else {
         storage.set('stats.total.punishments', storage.get('stats.total.punishments') + 1)
         let punishment = pick[Math.floor(Math.random() * pick.length)]
-        $('#punishmentDisplay').prepend('<img src="' + path + '/' + punishment + '" class="punishment-card" />')
+        $('#punishmentDisplay').prepend(`<img src="local:///${path + '/' + punishment}" class="punishment-card" />`)
         $('#punishmentDisplay').slideDown(200)
         if (punish > 0) punish--
         $('.punishment').text(punish)
