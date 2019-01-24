@@ -2,6 +2,7 @@ import { app, BrowserWindow, protocol, globalShortcut } from 'electron'
 import Store from 'electron-store'
 
 const path = require('path')
+const url = require('url')
 let storage = new Store()
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -51,14 +52,16 @@ const createWindow = () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
+
 app.on('ready', () => {
-    protocol.registerFileProtocol('local', (request,callback) => { 
-        const url = request.url.substr(9)
-        callback({path: path.normalize(url)}) 
+    protocol.registerFileProtocol('local', (request, callback) => { 
+        let url = request.url.substr(9).replace(/%20/gi, ' ')
+        callback({ path: path.normalize(url) })
     }, (error) => { 
         if (error) { 
-            console.log('failed to register protocol')
+            console.warn(`Failed to register protocol 'local'.`)
         }
+        console.log(`Protocol 'local' registered.`)
     })
     
     createWindow()

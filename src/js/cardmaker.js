@@ -1,8 +1,15 @@
-/* global $, dialog, mdc, Image, fs, storage */
+/* global $, dialog, app, mdc, Image, fs, storage */
 function setStep (step) {
     $('.box').slideUp(200, () => {
         $('#cardMaker-' + step).slideDown(200)
     })
+}
+
+function localize(path) {
+    if (path.indexOf(':///') === -1)
+        return 'local:///' + path
+    else
+        return path.replace(/^[a-z]+:\/+/gi, 'local:///')
 }
 
 if (typeof pngImage === 'undefined') var pngImage
@@ -155,8 +162,8 @@ if (storage.get('cardMaker.load')) { // load, saveLoc, gender, author, deckName,
     $('#convert-cti1').prop('checked', settings.convert)
     let dil = settings.deckImage
     settings.deckImage = new Image()
-    settings.deckImage.src = dil
-    $('#deckImageLabel').text(settings.deckImage.src)
+    settings.deckImage.src = localize(dil)
+    $('#deckImageLabel').text(settings.deckImage.src.substr(9))
     $('#deckImageLabel').fadeIn(100)
 } else {
     settings.deckImage = new Image()
@@ -199,7 +206,7 @@ function saveSettings() {
 settings.cardImage = new Image()
 settings.genderImage = new Image()
 settings.tagImage = new Image()
-settings.tagImage.src = `file://${__dirname}/cardmaker/tag.png`
+settings.tagImage.src = `local:///${__dirname}/cardmaker/tag.png`
 
 function updateNextButton() {
     // Step 1: CTIS type, save location
@@ -255,7 +262,7 @@ $('#saveLocBtn').click(() => {
             $('#saveLocLabel').text(path)
             $('#saveLocLabel').fadeIn(100)
             $('#getSaveLoc').text(path)
-            settings.saveLoc = path[0]
+            settings.saveLoc = localize(path[0])
         } else {
             $('#saveLocLabel').fadeOut(100)
             $('#getSaveLoc').text('nowhere')
@@ -282,12 +289,12 @@ $('#browsePictureBtn').click(() => {
         ],
         properties: ['openFile']
     }, (path) => {
-        if (path !== undefined) path = path[0]
+        if (path !== undefined) path = localize(path[0])
         console.debug('<cardmaker.html / [#browsePictureBtn]> Image selected, path is', path)
         if (path !== '' && path !== undefined) {
             $('#browsePictureLabel').text(path)
             $('#browsePictureLabel').fadeIn(100)
-            settings.cardImage.src = path
+            settings.cardImage.src = localize(path)
             if (!settings.convert) $('#cardInfo').slideDown(200)
         } else {
             $('#browsePictureLabel').fadeOut(100)
@@ -328,9 +335,9 @@ $('#author').change(() => {
 genderSelect.listen('MDCSelect:change', () => {
     settings.gender = genderSelect.value.split('-')[1] || 'neutral'
     if (settings.useSpecial) {
-        settings.genderImage.src = `file://${__dirname}/cardmaker/gendericons/` + settings.gender + `-inverse.png`
+        settings.genderImage.src = `local:///${__dirname}/cardmaker/gendericons/` + settings.gender + `-inverse.png`
     } else {
-        settings.genderImage.src = `file://${__dirname}/cardmaker/gendericons/` + settings.gender + `.png`
+        settings.genderImage.src = `local:///${__dirname}/cardmaker/gendericons/` + settings.gender + `.png`
     }
 })
 
@@ -348,12 +355,12 @@ $('#deckImageBtn').click(() => {
         if (path !== '' && path !== undefined) {
             $('#deckImageLabel').text(path)
             $('#deckImageLabel').fadeIn(100)
-            settings.deckImage.src = path
+            settings.deckImage.src = localize(path)
         } else {
             if (settings.type === 'ctis') {
-                settings.deckImage.src = `file://${__dirname}/cardmaker/ctis-logo.png`
+                settings.deckImage.src = `local:///${__dirname}/cardmaker/ctis-logo.png`
             } else {
-                settings.deckImage.src = `file://${__dirname}/cardmaker/cti1-logo.png`
+                settings.deckImage.src = `local:///${__dirname}/cardmaker/cti1-logo.png`
             }
             $('#deckImageLabel').fadeOut(100)
         }

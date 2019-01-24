@@ -3,15 +3,15 @@ var cards = {}
 var images = {free: [], taken: []}
 var settings = storage.get('batchCardMaker')
 var deckImage = new Image()
-deckImage.src = `file://${__dirname}/cardmaker/cti1-logo.png`
+deckImage.src = `local:///${__dirname}/cardmaker/cti1-logo.png`
 var tagImage = new Image()
-tagImage.src = `file://${__dirname}/cardmaker/tag.png`
+tagImage.src = `local:///${__dirname}/cardmaker/tag.png`
 if (typeof settings === 'object' && settings.save === true) {
     $('#bcc-save').prop('checked', true)
     if (settings.type != null) {
         $('#bcc-type-' + settings.type.substr(3, 1)).prop('checked', true)
         if (settings.type === 'ctis') $('#bcc-convert').parents('.mdc-form-field').show()
-        deckImage.src = `file://${__dirname}/cardmaker/${settings.type}-logo.png`
+        deckImage.src = `local:///${__dirname}/cardmaker/${settings.type}-logo.png`
     }
     if (settings.convert === true) storage.set('batchCardMaker.convert', false)
     if (settings.imageFolder != null) {
@@ -28,7 +28,7 @@ if (typeof settings === 'object' && settings.save === true) {
     if (settings.author != null) $('#bcc-author').val(settings.author)
     if (settings.deckName != null) $('#bcc-deck-name').val(settings.deckName)
     if (settings.deckImage != null) {
-        deckImage.src = settings.deckImage
+        deckImage.src = localize(settings.deckImage)
         $('#bcc-deck-image-label').text(settings.deckImage).fadeIn(200)
         $('#bcc-deck-image').removeClass('mdc-button--primary')
     }
@@ -122,8 +122,8 @@ function cardMaker (card, canvas, callback) {
     let image = new Image()
     let gender = new Image()
     let gendersrc = (card.gender || 'neutral') + (card.special ? '-inverse' : '')
-    gender.src = `file://${__dirname}/cardmaker/gendericons/${gendersrc}.png`
-    image.src = card.image
+    gender.src = `local:///${__dirname}/cardmaker/gendericons/${gendersrc}.png`
+    image.src = localize(card.image)
     image.onload = () => {
         console.debug(`Origial card image size: ${image.width}x${image.height}`)
         let cardImageDimensions = createFitA(image.width, image.height)
@@ -277,11 +277,11 @@ $('#swapper').ready(() => {
         if ($('#bcc-type-1').is(':checked')) {
             settings('type', 'cti1')
             //$('#bcc-convert').prop('checked', false).parents('.mdc-form-field').slideUp(200)
-            if (deckImage.src === `file://${__dirname}/cardmaker/ctis-logo.png`) deckImage.src = `file://${__dirname}/cardmaker/cti1-logo.png`
+            if (deckImage.src === `local:///${__dirname}/cardmaker/ctis-logo.png`) deckImage.src = `local:///${__dirname}/cardmaker/cti1-logo.png`
         } else if ($('#bcc-type-s').is(':checked')) {
             settings('type', 'ctis')
             //$('#bcc-convert').parents('.mdc-form-field').slideDown(200)
-            if (deckImage.src === `file://${__dirname}/cardmaker/cti1-logo.png`) deckImage.src = `file://${__dirname}/cardmaker/ctis-logo.png`
+            if (deckImage.src === `local:///${__dirname}/cardmaker/cti1-logo.png`) deckImage.src = `local:///${__dirname}/cardmaker/ctis-logo.png`
         } else settings('type', undefined)
         $('#bcc-0-next').trigger('settingsUpdate')
     })
@@ -378,12 +378,12 @@ $('#swapper').ready(() => {
             if (path !== '' && path != null) {
                 $('#bcc-deck-image-label').text(path).fadeIn(200)
                 $('#bcc-deck-image.mdc-button--primary').removeClass('mdc-button--primary')
-                deckImage.src = path[0].split('\\').join('/')
-                settings('deckImage', path[0].split('\\').join('/'))
+                deckImage.src = localize(path[0].split('\\').join('/'))
+                settings('deckImage', localize(path[0].split('\\').join('/')))
             } else {
                 $('#bcc-deck-image-label').fadeOut(200)
                 $('#bcc-deck-image:not(.mdc-button--primary)').addClass('mdc-button--primary')
-                deckImage.src = './cardmaker/' + (settings('type') || 'cti1') + '-logo.png'
+                deckImage.src = localize('./cardmaker/' + (settings('type') || 'cti1') + '-logo.png')
                 settings('deckImage', undefined)
             }
         })
