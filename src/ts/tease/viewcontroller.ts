@@ -44,7 +44,8 @@ export default class ViewController {
     }
 
     public nextSlide() {
-        if (this.index + 20 < this.imageController.length && this.imageController.unending) {
+        if (this.index + 20 > this.imageController.length && this.imageController.unending) {
+            console.debug(`[ViewController/nextSlide] Extending because ${this.index} + 20 = ${this.index + 20} < ${this.imageController.length}`)
             this.imageController.extend()
             this.nextSlide()
         } else if (this.index + 1 < this.imageController.length) {
