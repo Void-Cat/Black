@@ -124,7 +124,7 @@
     <div class="mdc-select" id="cardModeSelectionContainer">
         <select class="mdc-select__native-control" id="cardModeSelection">
             <option value="none" disabled selected></option>
-            <option value="percentage">Percentages</option>
+            <!-- <option value="percentage">Percentages</option> -->
             <option value="manual">Manual</option>
             <!-- <option value="premade">Pre-made Deck</option> -->
         </select>
@@ -136,6 +136,21 @@
     <!-- Card Selection -->
     <div id="cardMode">
         <div id="cardMode-percentage" style="display: none;">
+            <h1 class="mdc-typography--subtitle1" style="margin-bottom: -15px;">Card to Image Ratio (<span id="cardRatioLabel"></span>%)</h1>
+            <div style="width: 80%;" id="cardRatioSlider" class="mdc-slider mdc-slider--discrete" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="10" aria-label="Card Ratio">
+                <div class="mdc-slider__track-container">
+                    <div class="mdc-slider__track"></div>
+                </div>
+                <div class="mdc-slider__thumb-container">
+                    <div class="mdc-slider__pin">
+                        <span class="mdc-slider__pin-value-marker"></span>
+                    </div>
+                    <svg class="mdc-slider__thumb" width="21" height="21">
+                        <circle cx="10.5" cy="10.5" r="7.875"></circle>
+                    </svg>
+                    <div class="mdc-slider__focus-ring"></div>
+                </div>
+            </div>
             <div id="cardMode-percentage-list" class="mdc-list">
     
             </div>
