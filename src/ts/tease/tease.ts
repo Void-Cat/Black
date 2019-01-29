@@ -50,7 +50,7 @@ export default class Tease {
     keyController: KeyController
     
     constructor() {
-        this.imageController = new ImageController(0, (storage.get('tease.setup.infinite') || false))
+        this.imageController = new ImageController(0, (storage.get('tease.setup.infinite', false) && storage.get('tease.setup.goal', 'end') !== 'end'))
         this.exitController = new ExitController(!storage.get('tease.setup.blockexit'))
         this.viewController = new ViewController(this.imageController, this.exitController, '#view')
         this.goalController = new GoalController(storage.get('tease.setup.goal'), this.exitController, this.viewController, storage.get('tease.setup.goalx'))
