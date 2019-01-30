@@ -47,7 +47,7 @@ export default class Action {
     constructor(actiondata: object, index: number) {
         let verify = verifyActionData(actiondata)
         if (verify[0] == false) {
-            console.warn(`Action at index ${index} could not compile due to error in ${verify[1]}`)
+            console.warn(`Action at index ${index} could not compile due to error in ${verify[1]}.`)
             return
         }
 
@@ -90,7 +90,7 @@ export default class Action {
             fors.splice(0, 1)
         this.data.fors.type = fors[0]
         if (!isNullOrUndefined(fors[1]))
-            this.data.fors.value = fors.splice(1)
+            this.data.fors.value = fors[1]
         
         // Parse Action
         let action = actiondata['action']
@@ -166,6 +166,8 @@ export default class Action {
                     categoryName: action[1].toLowerCase()
                 }
                 break
+            case 'ctc:force': // Obsolete, cleans to 'ctc'
+                this.data.type = 'ctc'
             case 'contact':
             case 'ctc':
             case 'ignore':

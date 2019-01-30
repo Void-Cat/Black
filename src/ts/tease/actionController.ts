@@ -84,6 +84,8 @@ export default class ActionController {
         if (action.data.start === -1 && this.viewController.index > 0)
             return
 
+        console.debug('[ActionController/push] Adding action:', action)
+
         let id = this.actions.id++
         this.actions.raw[id] = action
         
@@ -96,12 +98,10 @@ export default class ActionController {
                 break
             case 'cum':
             case 'supermode':
-                this.actions.fors.cum[action.data.fors.value[0]].push(id)
+                this.actions.fors.cum[action.data.fors.value].push(id)
                 break
             case 'instruction':
                 let value = action.data.fors.value
-                if (Array.isArray(value))
-                    value = value[0]
 
                 if (value == 'any')
                     this.actions.fors.instruction.any.push(id)
@@ -126,12 +126,10 @@ export default class ActionController {
                 break
             case 'cum':
             case 'supermode':
-                this.actions.until.cum[action.data.until.value[0]].push(id)
+                this.actions.until.cum[action.data.until.value].push(id)
                 break
             case 'instruction':
                 let value = action.data.until.value
-                if (Array.isArray(value))
-                    value = value[0]
 
                 if (value == 'any')
                     this.actions.until.instruction.any.push(id)
@@ -183,9 +181,9 @@ export default class ActionController {
                     this.actions.fors[action.data.fors.type].splice(forsIndex, 1)
                 break
             case 'cum':
-                forsIndex = this.actions.fors.cum[action.data.fors.value[0]].indexOf(id)
+                forsIndex = this.actions.fors.cum[action.data.fors.value].indexOf(id)
                 if (forsIndex >= 0)
-                    this.actions.fors.cum[action.data.fors.value[0]].splice(forsIndex, 1)
+                    this.actions.fors.cum[action.data.fors.value].splice(forsIndex, 1)
                 break
             case 'instruction':
                 let value = action.data.fors.value
@@ -217,9 +215,9 @@ export default class ActionController {
                     this.actions.until[action.data.until.type].splice(untilIndex, 1)
                 break
             case 'cum':
-                untilIndex = this.actions.until.cum[action.data.until.value[0]].indexOf(id)
+                untilIndex = this.actions.until.cum[action.data.until.value].indexOf(id)
                 if (untilIndex >= 0)
-                    this.actions.until.cum[action.data.until.value[0]].splice(untilIndex, 1)
+                    this.actions.until.cum[action.data.until.value].splice(untilIndex, 1)
                 break
             case 'instruction':
                 let value = action.data.until.value
@@ -258,6 +256,7 @@ export default class ActionController {
         if (after.active === true) {
             let currentIndex = this.viewController.index
             after.actions.forEach((actiondata: object) => {
+                actiondata['start'] = 'draw' // Prevents actions from being seen as start actions (fallback mechanism.)
                 this.push(new Action(actiondata, currentIndex), true)
             })
             this.exec(new TeaseEvent('instant', undefined, 'after'))
@@ -603,7 +602,7 @@ export default class ActionController {
             else if (ctc === 'false')
                 this.goalController.ctcState(false)
             else
-                console.warn(`[ActionController/ExecByType/ctc] Action not recognized: ${action.data.action}.`)
+                console.warn(`[ActionController/ExecByType/ctc] Action not recognized: ${ctc}.`)
         },
         ignore: (action: Action) => {
             let typeName = action.data.action.toLowerCase()

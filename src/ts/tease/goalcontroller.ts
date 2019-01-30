@@ -62,6 +62,7 @@ export default class GoalController {
 
     public handleEvent(event: TeaseEvent) : boolean {
         if (event.type === 'cum') {
+            console.debug(`[GoalController/handleEvent] Handeling event. Current ctc is '${this.ctc}'.`)
             this.exitController.cumming[event.value] += 1
             switch (this.ctc) {
                 case 'ruin':
