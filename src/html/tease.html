@@ -426,8 +426,6 @@
         </div>
     </div>
     
-    <!-- <event-catcher style="display: none;"></event-catcher> -->
-    
     <!-- Script -->
     
     <script>
@@ -439,7 +437,6 @@
         
         var storage = new Store()
     </script>
-    <!-- <script src="../ts/tease/tease.ts" type="module"></script> -->
     <script>
         import Theme from '../js/catworks/themer.js'
         import Tease from '../ts/tease/tease.ts'
@@ -526,8 +523,8 @@
 
         function cumEvent(type) {
             let event = new TeaseEvent('cum', type)
-            tease.actionController.exec(event)
             tease.goalController.handleEvent(event)
+            tease.actionController.exec(event)
         }
 
         function saveTease() {
