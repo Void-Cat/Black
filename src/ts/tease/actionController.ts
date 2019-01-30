@@ -4,11 +4,9 @@ import StrokingController from './strokingController'
 import ViewController from './viewcontroller'
 import Action from './teaseAction'
 import TeaseEvent from './teaseEvent'
-import { isNullOrUndefined, isArray } from 'util'
+import { isNullOrUndefined } from 'util'
 import GoalController from './goalcontroller'
 import ExitController from './exitcontroller'
-import Tease, { Card } from './tease';
-import { type } from 'os';
 
 export default class ActionController {
     actions = {
@@ -89,7 +87,6 @@ export default class ActionController {
         let id = this.actions.id++
         this.actions.raw[id] = action
         
-        console.debug(`[ActionController/Push] Pushing new action '${id}' with FORS parameters:`, action.data.fors)
         switch (action.data.fors.type) {
             case 'key':
             case 'picture':
@@ -119,7 +116,6 @@ export default class ActionController {
                 break
         }
 
-        console.debug(`[ActionController/Push] Pushing '${id}' with UNTIL parameters:`, action.data.until)
         switch (action.data.until.type) {
             case 'end':
             case 'instant':
@@ -169,8 +165,6 @@ export default class ActionController {
         let action = this.actions.raw[id]
         let activeIndex = this.actions.active.indexOf(id)
         let inactiveIndex = this.actions.inactive.indexOf(id)
-
-        console.debug(`[ActionController] Removing action with id '${id}'.\n`, action)
         
         // Remove from active/inactive lists
         if (activeIndex >= 0)
