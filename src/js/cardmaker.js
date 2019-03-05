@@ -12,6 +12,12 @@ function localize(path) {
         return path.replace(/^[a-z]+:\/+/gi, 'local:///')
 }
 
+function delocalize(path) {
+    if (path.indexOf(':///') !== -1)
+        path = path.split(':///')[1]
+    return path
+}
+
 if (typeof pngImage === 'undefined') var pngImage
 
 var genderSelect = new mdc.select.MDCSelect($('#genderSelect')[0])
@@ -505,13 +511,18 @@ $('#step-3-next').click(() => {
         if ($('#advancedMode').is(':checked')) ctisactions = ctisactions.actions[0].replace(/\n\r/g, '')
         let json = $('#advancedMode').is(':checked') ? ctisactions : JSON.stringify(ctisactions)
         let n = 1
-        let getF = fs.readdirSync(settings.saveLoc)
+        let getF = fs.readdirSync(delocalize(settings.saveLoc))
         getF.forEach((file) => {
             if (file.lastIndexOf('.ctis') === -1) {
                 if (file.toLowerCase().indexOf(settings.deckName.toLowerCase() + '.' + settings.cardType.toLowerCase()) !== -1) n++
             }
         })
         let filename = settings.saveLoc + '/' + settings.type.toUpperCase() + '.' + settings.author + '.' + settings.deckName + '.' + settings.cardType + '.' + n
+        while (getF.indexOf(filename) > 0) {
+            n++
+            filename = settings.saveLoc + '/' + settings.type.toUpperCase() + '.' + settings.author + '.' + settings.deckName + '.' + settings.cardType + '.' + n
+        }
+        filename = delocalize(filename)
         fs.writeFileSync(filename + '.ctis', json)
         if (!settings.convert) {
             fs.writeFileSync(filename + '.png', pngImage)
