@@ -527,19 +527,28 @@ export default class ActionController {
                     var cv : any = this.strokingController.strokerate
                 else if (conditional.type == 'sublevel')
                     var cv : any = parseInt(storage.get('profile.sublevel'), 10)
+
+                let conditionalValue = parseInt(conditional.value, 10)
+                if (isNaN(conditionalValue)) {
+                    console.warn(`Failed to process conditional ${conditional.type}:${conditional.comparator}:${conditional.value}. Value wasn't an int? Returning false.`)
+                    return false
+                }
+
                 switch (conditional.comparator) {
                     case '==':
-                        return (cv == conditional.value)
+                        return (cv == conditionalValue)
                     case '>':
-                        return (cv > conditional.value)
+                        return (cv > conditionalValue)
                     case '<':
-                        return (cv < conditional.value)
+                        return (cv < conditionalValue)
                     case '>=':
-                        return (cv >= conditional.value)
+                        return (cv >= conditionalValue)
                     case '<=':
-                        return (cv <= conditional.value)
+                        return (cv <= conditionalValue)
                     case '!=':
-                        return (cv != conditional.value)
+                        return (cv != conditionalValue)
+                    default:
+                        console.warn(`Failed to process conditional ${conditional.type}:${conditional.comparator}:${conditional.value}. Comparator not recognized? Returning false.`)
                 }
                 return false
         }

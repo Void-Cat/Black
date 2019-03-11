@@ -71,7 +71,7 @@ export default class Action {
             let type = conditional[0]
             this.data.conditional.type = type
             if (type == 'sublevel' || type == 'slidetime' || type == 'strokecount')
-                this.data.conditional.comparator = conditional.splice(1, 1)
+                this.data.conditional.comparator = conditional.splice(1, 1)[0]
             this.data.conditional.value = conditional[1]
             if (!isNullOrUndefined(conditional[2]))
                 this.data.conditional.force = (conditional[2] == 'force')

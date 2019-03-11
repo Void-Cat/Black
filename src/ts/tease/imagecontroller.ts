@@ -187,7 +187,7 @@ export default class ImageController {
                 try {
                     ctis = JSON.parse(fs.readFileSync(ctispath))
                 } catch (e) {
-                    console.warn('Failed to read CTIS card at ', ctispath)
+                    console.warn(`Failed to read CTIS card at '${ctispath}'. With error:\n`, e)
                 }
             }
             // Add the card if cardmode is ratio
