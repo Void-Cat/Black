@@ -491,7 +491,7 @@ $('#step-3-next').click(() => {
             act.start = inputs[0]
             if (['ignore', 'contact', 'position', 'instruction', 'strokecount', 'slidetime', 'setslide', 'ctc', 'ctc:force', 'mood', 'sublevel', 'item', 'key', 'chastity', 'stop'].indexOf(inputs[1]) === -1) ret = false
             act.type = inputs[1]
-            if (inputs[2].match(/(^((slidetime|strokecount|sublevel):((<|>)=?|==|!=):\d+(:force)?|((chastity:(true|false)|mood:(good|neutral|bad)|(nextinstruction|lastinstruction):\w+)(:force)?))$|^$|^undefined$)/gi).length <= 0) ret = false
+            if (inputs[2].match(/(^((slidetime|strokecount|sublevel):((<|>)=?|==|!=):\d+(:force)?|((chastity:(true|false)|mood:(good|neutral|bad)|(nextinstruction|lastinstruction):\w+)(:force)?))$|^$|^undefined$)/gi).length !== null) ret = false
             if (inputs[2] === '' || inputs[2] === 'undefined') inputs[2] = undefined
             act.conditional = inputs[2]
             if (inputs[3] !== 'instant' && inputs[3].indexOf('type:') === -1 && inputs[3].indexOf('cum:') === -1) ret = false
