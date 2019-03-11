@@ -20,7 +20,7 @@ export default class StrokingController {
     constructor(viewController: ViewController) {
         this.viewController = viewController
         this.slidetime = this.strokerate = storage.get('tease.setup.slidetime')
-        let audiosrc
+        let audiosrc : string
         let prefix = (app.isPackaged ? 'local:///' : 'file:///')
 
         switch (storage.get('tease.setup.tickersound')) {
