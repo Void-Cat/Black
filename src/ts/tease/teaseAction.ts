@@ -74,7 +74,7 @@ export default class Action {
                 this.data.conditional.comparator = conditional.splice(1, 1)
             this.data.conditional.value = conditional[1]
             if (!isNullOrUndefined(conditional[2]))
-                this.data.conditional.force = (conditional[2] == 'true')
+                this.data.conditional.force = (conditional[2] == 'force')
         }
 
         // Parse Type
