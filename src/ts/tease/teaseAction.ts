@@ -264,9 +264,10 @@ export default class Action {
 
     public getLive(name: string | number, def?: any) : any {
         if (this.live[name] == null) {
-            console.warn(`[TeaseAction] Live value '${name}' was never defined for action with index ${this.data.index}.`)
             if (def !== undefined)
                 this.setLive(name, def)
+            else
+                console.warn(`[TeaseAction/getLive] Live value '${name}' was never defined for action with index ${this.data.index}.`)
             return def
         }
         return this.live[name]
@@ -274,7 +275,7 @@ export default class Action {
 
     public removeLive(name: string | number) : boolean {
         if (this.live[name] == null) {
-            console.warn(`[TeaseAction] Live value '${name}' never defined for action with index ${this.data.index}.`)
+            console.warn(`[TeaseAction/removeLive] Live value '${name}' never defined for action with index ${this.data.index}.`)
             return false
         }
         delete this.live[name]
